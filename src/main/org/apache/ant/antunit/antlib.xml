@@ -14,9 +14,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<antlib xmlns:au="antlib:org.apache.ant.antlib.antunit">
+<antlib xmlns:au="antlib:org.apache.ant.antunit">
   <taskdef name="assertTrue"
-    classname="org.apache.ant.antlib.antunit.AssertTask"/>
+    classname="org.apache.ant.antunit.AssertTask"/>
 
   <macrodef name="assertFalse">
     <attribute name="message" default="Assertion failed"/>

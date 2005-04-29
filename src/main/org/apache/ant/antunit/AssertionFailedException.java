@@ -15,7 +15,7 @@
  *
  */
 
-package org.apache.ant.antlib.antunit;
+package org.apache.ant.antunit;
 
 import org.apache.tools.ant.BuildException;
 
