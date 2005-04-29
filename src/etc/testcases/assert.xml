@@ -114,30 +114,30 @@
 
   <target name="assertDestIsUptodatePass">
     <au:assertDestIsUptodate
-      src="../../main/org/apache/ant/antlib/antunit/AssertTask.java"
+      src="../../main/org/apache/ant/antunit/AssertTask.java"
 
-      dest="../../../build/classes/org/apache/ant/antlib/antunit/AssertTask.class"/>
+      dest="../../../build/classes/org/apache/ant/antunit/AssertTask.class"/>
   </target>
 
   <target name="assertDestIsUptodateFail">
     <au:assertDestIsUptodate
-      dest="../../main/org/apache/ant/antlib/antunit/AssertTask.java"
+      dest="../../main/org/apache/ant/antunit/AssertTask.java"
 
-      src="../../../build/classes/org/apache/ant/antlib/antunit/AssertTask.class"/>
+      src="../../../build/classes/org/apache/ant/antunit/AssertTask.class"/>
   </target>
 
   <target name="assertDestIsOutofdatePass">
     <au:assertDestIsOutofdate
-      dest="../../main/org/apache/ant/antlib/antunit/AssertTask.java"
+      dest="../../main/org/apache/ant/antunit/AssertTask.java"
 
-      src="../../../build/classes/org/apache/ant/antlib/antunit/AssertTask.class"/>
+      src="../../../build/classes/org/apache/ant/antunit/AssertTask.class"/>
   </target>
 
   <target name="assertDestIsOutofdateFail">
     <au:assertDestIsOutofdate
-      src="../../main/org/apache/ant/antlib/antunit/AssertTask.java"
+      src="../../main/org/apache/ant/antunit/AssertTask.java"
 
-      dest="../../../build/classes/org/apache/ant/antlib/antunit/AssertTask.class"/>
+      dest="../../../build/classes/org/apache/ant/antunit/AssertTask.class"/>
   </target>
 
 </project>

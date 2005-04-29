@@ -97,11 +97,11 @@ public class AssertTest extends BuildFileTest {
     }
     public void testDestIsUptodateFail() {
         testFail("assertDestIsUptodateFail",
-                 "Expected '../../main/org/apache/ant/antlib/antunit/AssertTask.java' to be more recent than '../../../build/classes/org/apache/ant/antlib/antunit/AssertTask.class'");
+                 "Expected '../../main/org/apache/ant/antunit/AssertTask.java' to be more recent than '../../../build/classes/org/apache/ant/antunit/AssertTask.class'");
     }
     public void testDestIsOutofdateFail() {
         testFail("assertDestIsOutofdateFail",
-                 "Expected '../../main/org/apache/ant/antlib/antunit/AssertTask.java' to be more recent than '../../../build/classes/org/apache/ant/antlib/antunit/AssertTask.class'");
+                 "Expected '../../main/org/apache/ant/antunit/AssertTask.java' to be more recent than '../../../build/classes/org/apache/ant/antunit/AssertTask.class'");
     }
 
 
