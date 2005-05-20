@@ -15,8 +15,14 @@
   limitations under the License.
 -->
 <antlib xmlns:au="antlib:org.apache.ant.antunit">
+  <taskdef name="antunit"
+    classname="org.apache.ant.antunit.AntUnit"/>
+
   <taskdef name="assertTrue"
     classname="org.apache.ant.antunit.AssertTask"/>
+
+  <typedef name="plainlistener"
+    classname="org.apache.ant.antunit.PlainAntUnitListener"/>
 
   <macrodef name="assertFalse">
     <attribute name="message" default="Assertion failed"/>
