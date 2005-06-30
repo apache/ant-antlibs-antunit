@@ -1,0 +1,119 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Language" content="en-us"></meta>
+    <title>AntUnit Task</title>
+  </head>
+
+  <body>
+    <h2><a name="antunit">AntUnit</a></h2>
+
+    <h3>Description</h3>
+
+    <p>Runs Ant on targets of a build file that follow a ceratin
+      naming convention.  If Ant throws the special subclass of
+      BuildException that the <a href="assert.html">assertTrue</a>
+      task uses, consider it a failed test.  Any other exception is
+      considered a failure.  If Ant completes the target without any
+      exception, consider it a passed test.</p>
+
+    <p>Tests are specified via filesets (to become ResourceCollection
+    soon).</p>
+
+    <p>All targets whose name starts with "test" are considered test
+    cases.  If a test build file contains a target named setUp, this
+    gets executed before each test target.  If it contains a target
+    named tearDown this gets executed after each test target.  Each
+    test target is run in a fresh ant project.</p>
+
+    <p>So in a build file with targets setUp, teardown, test1 and
+    test2, antunit will run two Ant builds.  One will run the targets
+    setUp, test1 and tearDown (in that order), the other one will run
+    setUp, test2 and tearDown.  The order of those two Ant builds is
+    not defined.</p>
+
+    <p>&lt;antunit&gt; also supports AntUnitListeners, i.e. classes
+    that receive notifications on test runs, failures and so one.
+    Currently only a single implementation of this interface is
+    provided with this ant library.</p>
+
+    <h3>Parameters</h3>
+    <p>This task doesn't support any attributes.</p>
+
+    <h3>Parameters specified as nested elements</h3>
+
+    <h4>fileset - or a child type</h4>
+
+    <p>Specifies the build files to run as tests.  At least one
+    fileset is required.</p>
+
+    <h4>any implementation of AntUnitListener</h4>
+
+    <p>Creates a test listener that gets attached to the task.</p>
+
+    <p>The only listener that is part of this antlib is
+    &lt;plainlistener/&gt; this one creates reports similar to the
+    "plain" &lt;formatter&gt; of the &lt;junit&gt; task.</p>
+
+    <h3>Examples</h3>
+
+    <p>This build file snippet (from src/etc/testcases/antunit/base.xml)</p>
+<pre>
+  &lt;target name="setUp">
+    &lt;echo>setup&lt;/echo>
+  &lt;/target>
+
+  &lt;target name="test1">
+    &lt;echo>test1&lt;/echo>
+  &lt;/target>
+
+  &lt;target name="test2">
+    &lt;echo>test2&lt;/echo>
+  &lt;/target>
+
+  &lt;target name="Xtest3">
+    &lt;echo>test3&lt;/echo>
+  &lt;/target>
+
+  &lt;target name="test4">
+    &lt;au:assertTrue message="test4 fails">
+      &lt;istrue value="false"/>
+    &lt;/au:assertTrue>
+  &lt;/target>
+
+  &lt;target name="test5">
+    &lt;fail message="test5 exits with error"/>
+  &lt;/target>
+
+  &lt;target name="tearDown">
+    &lt;echo>tearDown&lt;/echo>
+  &lt;/target>
+</pre>
+
+    <p>together with</p>
+
+<pre>
+    &lt;au:antunit>
+      &lt;fileset dir="antunit" includes="base.xml"/>
+      &lt;au:plainlistener/>
+    &lt;/au:antunit>
+</pre>
+
+    <p>results in output similar to</p>
+
+<pre>
+[au:antunit] Build File: .../src/etc/testcases/antunit/base.xml
+[au:antunit] Tests run: 4, Failures: 1, Errors: 1, Time elapsed: 0,187 sec
+[au:antunit] Target: test5 took 0,016 sec
+[au:antunit]    Caused an ERROR
+[au:antunit] test5 exits with error
+[au:antunit] Target: test4 took 0,129 sec
+[au:antunit]    FAILED
+[au:antunit] test4 fails
+[au:antunit] Target: test2 took 0 sec
+[au:antunit] Target: test1 took 0 sec
+</pre>
+
+    <hr/>
+      <p align="center">Copyright &copy; 2005 The Apache Software Foundation. All rights Reserved.</p>
+  </body>
+</html>

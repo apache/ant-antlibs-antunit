@@ -1,0 +1,109 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Language" content="en-us"></meta>
+    <title>AntUnit Ant Library</title>
+  </head>
+
+  <body>
+    <h2>Introduction</h2>
+
+    <p>This is a library of Ant tasks that support writing tests for
+    tasks using build files instead of JUnit.</p>
+
+    <h2>Requirements</h2>
+
+    <p>The current version requires Ant 1.7.x (read CVS HEAD).</p>
+
+    <h2>Where is it?</h2>
+
+    <p>The source code for the library currently lives in the
+    developer sandbox in Ant's SVN - <a
+    href="http://svn.apache.org/viewcvs.cgi/ant/sandbox/antlibs/antunit/trunk/">http://svn.apache.org/viewcvs.cgi/ant/sandbox/antlibs/antunit/trunk/</a>.</p>
+
+    <h2>Installation</h2>
+
+    <p>If you are building this from sources, run the antlib target
+    and you'll get a file <code>ant-antunit.jar</code>.</p>
+
+    <p>There are several ways to use the tasks:</p>
+
+    <ul>
+      <li>The traditional way:
+        <pre>
+          &lt;taskdef 
+            resource="org/apache/ant/antunit/antlib.xml"&gt;
+            &lt;classpath&gt;
+              &lt;pathelement location="YOUR-PATH-TO/ant-antunit.jar"/&gt;
+            &lt;/classpath&gt;
+          &lt;/taskdef&gt;
+        </pre>
+
+        With this you can use the tasks like plain Ant tasks, they'll
+        live in the default namespace.  I.e. if you can run
+        &lt;exec&gt; without any namespace prefix, you can do so for
+        &lt;antunit&gt; as well.
+      </li>
+
+      <li>Similar, but assigning a namespace URI
+        <pre>
+          &lt;taskdef 
+            uri="antlib:org.apache.ant.antunit"
+            resource="org/apache/ant/antunit/antlib.xml"&gt;
+            &lt;classpath&gt;
+              &lt;pathelement location="YOUR-PATH-TO/ant-antunit.jar"/&gt;
+            &lt;/classpath&gt;
+          &lt;/taskdef&gt;
+        </pre>
+
+        This puts you task into a separate namespace than Ant's
+        namespace.  You would use the tasks like
+
+        <pre>
+          &lt;project
+            xmlns:au="antlib:org.apache.ant.antunit"
+            xmlns="antlib:org.apache.tools.ant"&gt;
+            ...
+            &lt;au:assertTrue&gt;
+              &lt;equals arg1="1" arg2="2"/&gt;
+            &lt;/au:assertTrue&gt;
+        </pre>
+
+        or a variation thereof.
+      </li>
+
+      <li>Using Ant's autodiscovery.  Place <code>ant-antunit.jar</code>
+      into a directory and use <code>ant -lib
+      DIR-CONTAINING-THE-JAR</code> or copy it into
+      <code>ANT_HOME/lib</code> - and then in your build file, simply
+      declare the namespace on the <code>project</code> tag:
+
+        <pre>
+          &lt;project
+            xmlns:au="antlib:org.apache.ant.antunit"
+            xmlns="antlib:org.apache.tools.ant"&gt;
+        </pre>
+
+        And all tasks of this library will automatically be available
+        in the <code>au</code> namespace without any
+        <code>taskdef</code>.
+      </li>
+    </ul>
+
+    <h2>Tasks</h2>
+
+    <ul>
+      <li><a href="antunit.html">antunit</a> - run unit tests, the
+      tests are defined using build files that contain targets which
+      follow a certain namin convention.  This task borrows a lot of
+      ideas from JUnit 3 and the junit task.</li>
+
+      <li><a href="assert.html">assertTrue</a> - asserts a condition
+      and throws a custom BuildException if the assertion fails.</li>
+
+      <li><a href="assertions.html">more assertions</a> - useful
+      specialized versions of assertTrue.</li>
+
+    <hr/>
+      <p align="center">Copyright &copy; 2005 The Apache Software Foundation. All rights Reserved.</p>
+  </body>
+</html>

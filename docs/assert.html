@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Language" content="en-us"></meta>
+    <title>assertTrue Task</title>
+  </head>
+
+  <body>
+    <h2><a name="assertTrue">AssertTrue</a></h2>
+
+    <h3>Description</h3>
+
+    <p>Asserts a condition and makes the build fail (using a special
+    kind of BuildException) if it doesn't hold true.</p>
+
+    <h3>Parameters</h3>
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <td valign="top"><b>Attribute</b></td>
+        <td valign="top"><b>Description</b></td>
+        <td align="center" valign="top"><b>Required</b></td>
+      </tr>
+      <tr>
+        <td valign="top">message</td>
+        <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Assertion failed".</td>
+        <td align="center">No.</td>
+      </tr>
+    </table>
+
+    <h3>Parameters specified as nested elements</h3>
+    <h4>exactly one supported condition</h4>
+
+    <p>You can use all supported conditions of Ant's core as well as
+    any class that implements the Condition interface as a nested
+    child element.  This element is required - exactly one child - and
+    specifies the condition to assert.</p>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "foo is bar" if the
+      property foo has the value bar:</p>
+
+    <pre>
+      &lt;assertTrue message="foo is bar"&gt;
+        &lt;not&gt;
+          &lt;equals arg1="${foo}" arg2="bar"/&gt;
+        &lt;/not&gt;
+      &lt;/assertTrue message="foo is bar"&gt;
+    </pre>
+
+    <hr/>
+      <p align="center">Copyright &copy; 2005 The Apache Software Foundation. All rights Reserved.</p>
+  </body>
+</html>

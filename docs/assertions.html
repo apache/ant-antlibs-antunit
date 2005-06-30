@@ -1,0 +1,305 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Language" content="en-us"></meta>
+    <title>More Assertion Tasks</title>
+  </head>
+
+  <body>
+    <h1>More Assertion Tasks</h1>
+
+    <p>This Ant library also provides a couple of pre-defined
+    assertions that are specializations of the <a
+    href="assert.html">&lt;assertTrue&gt;</a> task.</p>
+
+    <h2><a name="assertFalse">AssertFalse</a></h2>
+
+    <h3>Description</h3>
+
+    <p>Negates &lt;assertTrue&gt;.  Supports the same attributes and
+    nested elements as &lt;assertTrue&gt; but makes the build fail if
+    the nested condition is true.</p>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "foo is bar" if the
+      property foo has the value bar:</p>
+
+    <pre>
+      &lt;assertFalse message="foo is bar"&gt;
+        &lt;equals arg1="${foo}" arg2="bar"/&gt;
+      &lt;/assertFalse message="foo is bar"&gt;
+    </pre>
+
+    <h2><a name="assertEquals">assertEquals</a></h2>
+
+    <p>Asserts that its two arguments are equal.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">expected</td>
+          <td valign="top">First string to test.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">actual</td>
+          <td valign="top">Second string to test.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected
+            '<em>expected</em>' but was '<em>actual</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+        <tr>
+          <td valign="top">casesensitive</td>
+          <td valign="top">Perform a case sensitive comparision.
+            Default is true.</td>
+          <td valign="top" align="center">No</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "foo is not bar" if the
+      property foo doesn't hold the value bar regardless of case:</p>
+
+    <pre>
+      &lt;assertEquals message="foo is bar" expected="bar"
+                      actual="${foo}" casesensitive="false"/&gt;
+    </pre>
+
+    <h2><a name="assertPropertySet">assertPropertySet</a></h2>
+
+    <p>Asserts that a property has a value.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">name</td>
+          <td valign="top">Name of the property.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected
+            property '<em>name</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "Expected property 'foo'"
+    if the property foo is not defined:</p>
+
+    <pre>
+      &lt;assertPropertySet name="foo"/&gt;
+    </pre>
+
+    <h2><a name="assertPropertyEquals">assertPropertyEquals</a></h2>
+
+    <p>Asserts that a given property is set and holds a certain
+    value.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">name</td>
+          <td valign="top">Name of the property.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">value</td>
+          <td valign="top">Expected value.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true. Defaults to "Expected property
+            '<em>name</em>' to have value '<em>value</em>' but was
+            '<em>value of property name</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+        <tr>
+          <td valign="top">casesensitive</td>
+          <td valign="top">Perform a case sensitive comparision.
+            Default is true.</td>
+          <td valign="top" align="center">No</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "foo is not bar" if the
+      property foo doesn't hold the value bar regardless of case:</p>
+
+    <pre>
+      &lt;assertPropertyEquals message="foo is not bar" value="bar"
+                              name="foo" casesensitive="false"/&gt;
+    </pre>
+
+    <h2><a name="assertFileExists">assertFileExists</a></h2>
+
+    <p>Asserts that a given file exists.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">file</td>
+          <td valign="top">Location of the file.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected
+            file '<em>file</em>' to exist".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the file ${ant.home}/lib/ant.jar doesn't
+      exist:</p>
+
+    <pre>
+      &lt;assertFileExists name="${ant.home}/lib/ant.jar"/&gt;
+    </pre>
+
+    <h2><a name="assertFileDoesntExist">assertFileDoesntExists</a></h2>
+
+    <p>Asserts that a given file does not exists.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">file</td>
+          <td valign="top">Location of the file.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Didn't expect
+            file '<em>file</em>' to exist".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the file ${ant.home}/lib/ant.jar
+      exists:</p>
+
+    <pre>
+      &lt;assertFileDoesntExist name="${ant.home}/lib/ant.jar"/&gt;
+    </pre>
+
+    <h2><a name="assertDestIsUpToDate">assertDestIsUpToDate</a></h2>
+
+    <p>Asserts that a dest file is more recent than the source
+      file.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">src</td>
+          <td valign="top">source file.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">dest</td>
+          <td valign="top">dest file.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected '<em>dest</em>'
+            to be more recent than '<em>src</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the file ${ant.home}/lib/ant.jar is
+      more recent than the current build file:</p>
+
+    <pre>
+      &lt;assertDestIsUptodate dest="${ant.file}" src="${ant.home}/lib/ant.jar"/&gt;
+    </pre>
+
+    <h2><a name="assertDestIsOutofDate">assertDestIsOutofDate</a></h2>
+
+    <p>Asserts that a source file is more recent than the dest
+      file.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">src</td>
+          <td valign="top">source file.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">dest</td>
+          <td valign="top">dest file.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected '<em>src</em>'
+            to be more recent than '<em>dest</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the file ${ant.home}/lib/ant.jar is
+      older than the current build file:</p>
+
+    <pre>
+      &lt;assertDestIsOutofdate dest="${ant.file}" src="${ant.home}/lib/ant.jar"/&gt;
+    </pre>
+
+    <hr/>
+      <p align="center">Copyright &copy; 2005 The Apache Software Foundation. All rights Reserved.</p>
+  </body>
+</html>
