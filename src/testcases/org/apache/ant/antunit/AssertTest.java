@@ -62,6 +62,12 @@ public class AssertTest extends BuildFileTest {
     public void testDestIsOutofdatePass() {
         testPass("assertDestIsOutofdatePass");
     }
+    public void testFilesMatchPass() {
+        testPass("assertFilesMatchPass");
+    }
+    public void testFilesDifferPass() {
+        testPass("assertFilesDifferPass");
+    }
 
     public void testTrueFail() {
         testFail("assertTrueFail");
@@ -103,7 +109,14 @@ public class AssertTest extends BuildFileTest {
         testFail("assertDestIsOutofdateFail",
                  "Expected '../../main/org/apache/ant/antunit/AssertTask.java' to be more recent than '../../../build/classes/org/apache/ant/antunit/AssertTask.class'");
     }
-
+    public void testFilesMatchFail() {
+        testFail("assertFilesMatchFail",
+                 "Expected files 'assert.xml' and 'antunit.xml' to match");
+    }
+    public void testFilesDifferFail() {
+        testFail("assertFilesDifferFail",
+                 "Expected files 'assert.xml' and 'assert.xml' to differ");
+    }
 
     private void testPass(String target) {
         executeTarget(target);

@@ -120,4 +120,28 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="assertFilesMatch">
+    <attribute name="expected"/>
+    <attribute name="actual"/>
+    <attribute name="message"
+      default="Expected files '@{expected}' and '@{actual}' to match"/>
+    <sequential>
+      <au:assertTrue message="@{message}">
+        <filesmatch file1="@{expected}" file2="@{actual}"/>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertFilesDiffer">
+    <attribute name="expected"/>
+    <attribute name="actual"/>
+    <attribute name="message"
+      default="Expected files '@{expected}' and '@{actual}' to differ"/>
+    <sequential>
+      <au:assertFalse message="@{message}">
+        <filesmatch file1="@{expected}" file2="@{actual}"/>
+      </au:assertFalse>
+    </sequential>
+  </macrodef>
+
 </antlib>

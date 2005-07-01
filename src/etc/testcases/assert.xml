@@ -140,4 +140,20 @@
       dest="../../../build/classes/org/apache/ant/antunit/AssertTask.class"/>
   </target>
 
+  <target name="assertFilesMatchPass">
+    <au:assertFilesMatch expected="assert.xml" actual="assert.xml"/>
+  </target>
+
+  <target name="assertFilesMatchFail">
+    <au:assertFilesMatch expected="assert.xml" actual="antunit.xml"/>
+  </target>
+
+  <target name="assertFilesDifferFail">
+    <au:assertFilesDiffer expected="assert.xml" actual="assert.xml"/>
+  </target>
+
+  <target name="assertFilesDifferPass">
+    <au:assertFilesDiffer expected="assert.xml" actual="antunit.xml"/>
+  </target>
+
 </project>

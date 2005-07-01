@@ -299,6 +299,82 @@
       &lt;assertDestIsOutofdate dest="${ant.file}" src="${ant.home}/lib/ant.jar"/&gt;
     </pre>
 
+    <h2><a name="assertFilesMatch">assertFilesMatch</a></h2>
+
+    <p>Asserts that two files have the same content.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">expected</td>
+          <td valign="top">first file.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">actual</td>
+          <td valign="top">second file.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected files '<em>expected</em>'
+            and '<em>actual</em>' to match".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+    
+    <h3>Example</h3>
+
+    <p>Make the build fail if the file build.xml and backups/build.xml
+    differ.</p>
+
+    <pre>
+      &lt;assertFilesMatch expected="backups/build.xml" actual="build.xml"/&gt;
+    </pre>
+
+    <h2><a name="assertFilesDiffer">assertFilesDiffer</a></h2>
+
+    <p>Asserts that two files have different content.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">expected</td>
+          <td valign="top">first file.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">actual</td>
+          <td valign="top">second file.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected files '<em>expected</em>'
+            and '<em>actual</em>' to differ".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+    
+    <h3>Example</h3>
+
+    <p>Make the build fail if the file build.xml and backups/build.xml
+    match.</p>
+
+    <pre>
+      &lt;assertFilesDiffer expected="backups/build.xml" actual="build.xml"/&gt;
+    </pre>
+
     <hr/>
       <p align="center">Copyright &copy; 2005 The Apache Software Foundation. All rights Reserved.</p>
   </body>
