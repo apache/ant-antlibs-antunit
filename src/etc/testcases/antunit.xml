@@ -25,4 +25,11 @@
       <au:plainlistener/>
     </au:antunit>
   </target>
+
+  <target name="antunit-copy">
+    <au:antunit>
+      <fileset dir="antunit" includes="copy.xml"/>
+      <au:plainlistener/>
+    </au:antunit>
+  </target>
 </project>
