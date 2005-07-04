@@ -27,6 +27,9 @@
   <typedef name="plainlistener"
     classname="org.apache.ant.antunit.PlainAntUnitListener"/>
 
+  <typedef name="logcontains"
+    classname="org.apache.ant.antunit.LogContains"/>
+
   <macrodef name="assertFalse">
     <attribute name="message" default="Assertion failed"/>
     <element name="assertion" implicit="true"/>
