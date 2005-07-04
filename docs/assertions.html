@@ -375,6 +375,78 @@
       &lt;assertFilesDiffer expected="backups/build.xml" actual="build.xml"/&gt;
     </pre>
 
+    <h2><a name="assertReferenceSet">assertReferenceSet</a></h2>
+
+    <p>Asserts that a reference has a value.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">refid</td>
+          <td valign="top">Id of the reference.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected
+            reference '<em>id</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "Expected reference 'foo'"
+    if the reference foo is not defined:</p>
+
+    <pre>
+      &lt;assertReferenceSet name="foo"/&gt;
+    </pre>
+
+    <h2><a name="assertReferenceIsType">assertReferenceIsType</a></h2>
+
+    <p>Asserts that a reference has a value of a given type.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">refid</td>
+          <td valign="top">Id of the reference.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">type</td>
+          <td valign="top">Name of the data type or task this
+          reference is expected to be.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected
+            reference '<em>id</em>' to be a '<em>type</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if Ant's current Executor is not of type
+    org.apache.tools.ant.helper.DefaultExecutor:</p>
+
+    <pre>
+      &lt;assertReferenceIsType name="ant.executor" type="org.apache.tools.ant.helper.DefaultExecutor"/&gt;
+    </pre>
+
     <hr/>
       <p align="center">Copyright &copy; 2005 The Apache Software Foundation. All rights Reserved.</p>
   </body>

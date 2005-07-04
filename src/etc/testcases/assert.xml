@@ -156,4 +156,26 @@
     <au:assertFilesDiffer expected="assert.xml" actual="antunit.xml"/>
   </target>
 
+  <target name="assertReferenceSetPass">
+    <path id="foo1"/>
+    <au:assertReferenceSet refid="foo1"/>
+  </target>
+
+  <target name="assertReferenceSetFail">
+    <au:assertReferenceSet refid="foo2"/>
+  </target>
+
+  <target name="assertReferenceIsTypePass">
+    <path id="foo3"/>
+    <au:assertReferenceIsType refid="foo3" type="org.apache.tools.ant.types.Path"/>
+  </target>
+
+  <target name="assertReferenceIsTypeFailNotSet">
+    <au:assertReferenceIsType refid="foo4" type="org.apache.tools.ant.types.Path"/>
+  </target>
+
+  <target name="assertReferenceIsTypeFailWrongType">
+    <path id="foo5"/>
+    <au:assertReferenceIsType refid="foo5" type="org.apache.tools.ant.types.FileSet"/>
+  </target>
 </project>

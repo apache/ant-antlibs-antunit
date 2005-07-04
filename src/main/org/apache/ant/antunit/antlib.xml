@@ -147,4 +147,28 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="assertReferenceSet">
+    <attribute name="refid"/>
+    <attribute name="message"
+      default="Expected reference '@{refid}'"/>
+    <sequential>
+      <au:assertTrue message="@{message}">
+        <isreference refid="@{refid}"/>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertReferenceIsType">
+    <attribute name="refid"/>
+    <attribute name="type"/>
+    <attribute name="message"
+      default="Expected reference '@{refid}' to be a '@{type}'"/>
+    <sequential>
+      <au:assertReferenceSet refid="@{refid}"/>
+      <au:assertTrue message="@{message}">
+        <isreference refid="@{refid}" type="@{type}"/>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
 </antlib>

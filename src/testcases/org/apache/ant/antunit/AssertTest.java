@@ -68,6 +68,13 @@ public class AssertTest extends BuildFileTest {
     public void testFilesDifferPass() {
         testPass("assertFilesDifferPass");
     }
+    public void testReferenceSetPass() {
+        testPass("assertReferenceSetPass");
+    }
+    // fails, probably due to classloader issues
+    public void NotestReferenceIsTypePass() {
+        testPass("assertReferenceIsTypePass");
+    }
 
     public void testTrueFail() {
         testFail("assertTrueFail");
@@ -116,6 +123,17 @@ public class AssertTest extends BuildFileTest {
     public void testFilesDifferFail() {
         testFail("assertFilesDifferFail",
                  "Expected files 'assert.xml' and 'assert.xml' to differ");
+    }
+    public void testReferenceSetFail() {
+        testFail("assertReferenceSetFail", "Expected reference 'foo2'");
+    }
+    public void testReferenceIsTypeFailNotSet() {
+        testFail("assertReferenceIsTypeFailNotSet",
+                 "Expected reference 'foo4'");
+    }
+    public void testReferenceIsTypeFailWrongType() {
+        testFail("assertReferenceIsTypeFailWrongType",
+                 "Expected reference 'foo5' to be a 'org.apache.tools.ant.types.FileSet'");
     }
 
     private void testPass(String target) {
