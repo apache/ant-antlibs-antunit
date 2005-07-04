@@ -103,6 +103,10 @@
       <li><a href="assertions.html">more assertions</a> - useful
       specialized versions of assertTrue.</li>
 
+      <li><a href="expectfailure.html">expectfailure</a> - a task
+      container useful for tests that assert build failures.</li>
+    </ul>
+
     <hr/>
       <p align="center">Copyright &copy; 2005 The Apache Software Foundation. All rights Reserved.</p>
   </body>

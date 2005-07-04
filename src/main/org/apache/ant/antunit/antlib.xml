@@ -21,6 +21,9 @@
   <taskdef name="assertTrue"
     classname="org.apache.ant.antunit.AssertTask"/>
 
+  <taskdef name="expectfailure"
+    classname="org.apache.ant.antunit.ExpectFailureTask"/>
+
   <typedef name="plainlistener"
     classname="org.apache.ant.antunit.PlainAntUnitListener"/>
 

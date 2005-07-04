@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Language" content="en-us"></meta>
+    <title>expectfailure Task</title>
+  </head>
+
+  <body>
+    <h2><a name="expectfailure">expectfailure</a></h2>
+
+    <h3>Description</h3>
+
+    <p>Asserts that a number of nested tasks throws a BuildException.</p>
+
+    <h3>Parameters</h3>
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <td valign="top"><b>Attribute</b></td>
+        <td valign="top"><b>Description</b></td>
+        <td align="center" valign="top"><b>Required</b></td>
+      </tr>
+      <tr>
+        <td valign="top">message</td>
+        <td valign="top">Message for the exception if the condition
+        doesn't hold true.  Defaults to "Expected build failure" if
+        expectedMessage hasn't been specified or "Expected build
+        failure with message '<em>expectedMessage</em>' but was
+        '<em>actualMessage</em>'" if it has been specified and a
+        different exception has been thrown.</td>
+        <td align="center">No.</td>
+      </tr>
+      <tr>
+        <td valign="top">expectedMessage</td>
+        <td valign="top">Used to assert a specific exception message.</td>
+        <td align="center">No.</td>
+      </tr>
+    </table>
+
+    <h3>Parameters specified as nested elements</h3>
+    <h4>all Ant tasks</h4>
+
+    <p>You can use all supported tasks and types as nested element of
+    this task.</p>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "expected build failure
+    with message='failed' but was 'passed'":</p>
+
+    <pre>
+      &lt;expectfailure expectedMessage="failed"&gt;
+        &lt;fail&gt;passed&lt;fail&gt;
+      &lt;/expectfailure&gt;
+    </pre>
+
+    <p>Make the build fail with the message "expected build failure"
+    because the nested task doesn't cause a build failure:</p>
+
+    <pre>
+      &lt;expectfailure&gt;
+        &lt;echo&gt;BUILD FAILED&lt;/echo&gt;
+      &lt;/expectfailure&gt;
+    </pre>
+
+    <hr/>
+      <p align="center">Copyright &copy; 2005 The Apache Software Foundation. All rights Reserved.</p>
+  </body>
+</html>
