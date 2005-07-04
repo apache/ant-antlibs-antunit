@@ -47,6 +47,7 @@ PRODUCT_BUILD=6.5 (BLD_65036)
       </filterset>
     </copy>
     <concat><path path="copy.filter.out"/></concat>
+    <au:assertLogDoesntContain text="loop in tokens" level="debug"/>
   </target>
 
   <target name="infinitetest">
@@ -61,6 +62,7 @@ a=b=
       </filterset>
     </copy>
     <concat><path path="copy.filter.out"/></concat>
+    <au:assertLogContains text="loop in tokens" level="debug"/>
   </target>
 
   <target name="test3">
@@ -141,9 +143,11 @@ a=b=
     <au:assertFilesMatch actual="copytest1.tmp" expected="expected/utf-8"/>
   </target>
 
-  <target name="XtestMissingFileIgnore">
+  <target name="testMissingFileIgnore">
+    <property name="not-there" location="not-there"/>
     <copy file="not-there" tofile="copytest1.tmp"
       failonerror="false"/>
+    <au:assertLogContains text="Warning: Could not find file ${not-there} to copy."/>
   </target>
 
   <target name="testMissingFileBail">
@@ -154,10 +158,12 @@ a=b=
     </au:expectfailure>
   </target>
 
-  <target name="XtestMissingDirIgnore">
+  <target name="testMissingDirIgnore">
+    <property name="not-there" location="not-there"/>
     <copy todir="copytest1dir" failonerror="false">
       <fileset dir="not-there"/>
     </copy>
+    <au:assertLogContains text="${not-there} not found."/>
   </target>
 
   <target name="testMissingDirBail">
