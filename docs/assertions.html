@@ -447,6 +447,58 @@
       &lt;assertReferenceIsType name="ant.executor" type="org.apache.tools.ant.helper.DefaultExecutor"/&gt;
     </pre>
 
+    <h2><a name="assertLogContains">assertLogContains</a></h2>
+
+    <p>Asserts that the build log contains a given message.</p>
+
+    <p>Only works in the context of an &lt;antunit&gt; task.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">text</td>
+          <td valign="top">The text to serach for.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">level</td>
+          <td valign="top">The level the message should have been
+          logged at - the task will also look into more severe
+          levels.  One of "error", "warning", "info", "verbose", "debug".</td>
+          <td valign="top" align="center">No</td>
+        </tr>
+    </table>
+
+    <h2><a name="assertLogDoesntContain">assertLogDoesntContain</a></h2>
+
+    <p>Asserts that the build log doesn't contain a given message.</p>
+
+    <p>Only works in the context of an &lt;antunit&gt; task.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">text</td>
+          <td valign="top">The text to serach for.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">level</td>
+          <td valign="top">The level the message should have been
+          logged at - the task will also look into more severe
+          levels.  One of "error", "warning", "info", "verbose", "debug".</td>
+          <td valign="top" align="center">No</td>
+        </tr>
+    </table>
+
     <hr/>
       <p align="center">Copyright &copy; 2005 The Apache Software Foundation. All rights Reserved.</p>
   </body>

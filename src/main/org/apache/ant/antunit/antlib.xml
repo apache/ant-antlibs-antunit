@@ -174,4 +174,28 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="assertLogContains">
+    <attribute name="text"/>
+    <attribute name="level" default="info"/>
+    <attribute name="message"
+      default="Expected log to contain '@{text}' at level @{level}"/>
+    <sequential>
+      <au:assertTrue message="@{message}">
+        <au:logcontains text="@{text}" level="@{level}"/>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertLogDoesntContain">
+    <attribute name="text"/>
+    <attribute name="level" default="info"/>
+    <attribute name="message"
+      default="Unexpected log '@{text}' at level @{level}"/>
+    <sequential>
+      <au:assertFalse message="@{message}">
+        <au:logcontains text="@{text}" level="@{level}"/>
+      </au:assertFalse>
+    </sequential>
+  </macrodef>
+
 </antlib>
