@@ -45,6 +45,10 @@
     <fail message="test5 exits with error"/>
   </target>
 
+  <target name="testLogCaptureActive">
+    <au:assertReferenceSet refid="ant.antunit.log"/>
+  </target>
+
   <target name="tearDown">
     <echo>tearDown</echo>
   </target>

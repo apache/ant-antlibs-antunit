@@ -37,7 +37,7 @@ public class AntUnitTest extends BuildFileTest {
         index = log.indexOf("sandbox/antlibs/antunit/trunk/src/etc/testcases/"
                             + "antunit/base.xml", index);
         assertTrue("file name", index > -1);
-        index = log.indexOf("Tests run: 4, Failures: 1, Errors: 1, Time "
+        index = log.indexOf("Tests run: 5, Failures: 1, Errors: 1, Time "
                             + "elapsed: ", index);
         assertTrue("summary", index > -1);
         assertTrue("test1", log.indexOf("test1", index) > -1);
@@ -45,6 +45,8 @@ public class AntUnitTest extends BuildFileTest {
         assertTrue("test3", log.indexOf("test3", index) == -1);
         assertTrue("test4", log.indexOf("test4", index) > -1);
         assertTrue("test5", log.indexOf("test5", index) > -1);
+        assertTrue("testLogCaptureActive",
+                   log.indexOf("testLogCaptureActive", index) > -1);
         int index2 = log.indexOf("Caused an ERROR", index);
         assertTrue("test5 error", index2 > -1
                    && log.indexOf("test5 exits with error", index2) > -1);

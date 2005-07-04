@@ -107,6 +107,7 @@ public class AntUnit extends Task {
                         v.add(SETUP);
                     }
                     v.add(name);
+                    LogCapturer lc = new LogCapturer(newProject);
                     try {
                         newProject.executeTargets(v);
                     } catch (AssertionFailedException e) {
