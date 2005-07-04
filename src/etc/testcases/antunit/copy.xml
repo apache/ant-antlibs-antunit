@@ -143,12 +143,15 @@ a=b=
 
   <target name="XtestMissingFileIgnore">
     <copy file="not-there" tofile="copytest1.tmp"
-          failonerror="false"/>
+      failonerror="false"/>
   </target>
 
-  <target name="XtestMissingFileBail">
-    <copy file="not-there" tofile="copytest1.tmp"
-          failonerror="true"/>
+  <target name="testMissingFileBail">
+    <property name="not-there" location="not-there"/>
+    <au:expectfailure expectedMessage="Warning: Could not find file ${not-there} to copy.">
+      <copy file="not-there" tofile="copytest1.tmp"
+        failonerror="true"/>
+    </au:expectfailure>
   </target>
 
   <target name="XtestMissingDirIgnore">
@@ -157,10 +160,13 @@ a=b=
     </copy>
   </target>
 
-  <target name="XtestMissingDirBail">
-    <copy todir="copytest1dir" failonerror="true">
-      <fileset dir="not-there"/>
-    </copy>
+  <target name="testMissingDirBail">
+    <property name="not-there" location="not-there"/>
+    <au:expectfailure expectedMessage="${not-there} not found.">
+      <copy todir="copytest1dir" failonerror="true">
+        <fileset dir="not-there"/>
+      </copy>
+    </au:expectfailure>
   </target>
 
   <target name="tearDown"> 
