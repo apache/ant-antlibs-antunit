@@ -71,8 +71,7 @@ public class AssertTest extends BuildFileTest {
     public void testReferenceSetPass() {
         testPass("assertReferenceSetPass");
     }
-    // fails, probably due to classloader issues
-    public void NotestReferenceIsTypePass() {
+    public void testReferenceIsTypePass() {
         testPass("assertReferenceIsTypePass");
     }
 
@@ -133,7 +132,7 @@ public class AssertTest extends BuildFileTest {
     }
     public void testReferenceIsTypeFailWrongType() {
         testFail("assertReferenceIsTypeFailWrongType",
-                 "Expected reference 'foo5' to be a 'org.apache.tools.ant.types.FileSet'");
+                 "Expected reference 'foo5' to be a 'fileset'");
     }
 
     private void testPass(String target) {

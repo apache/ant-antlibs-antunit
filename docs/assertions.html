@@ -440,11 +440,11 @@
 
     <h3>Examples</h3>
 
-    <p>Make the build fail if Ant's current Executor is not of type
-    org.apache.tools.ant.helper.DefaultExecutor:</p>
+    <p>Make the build fail if the reference <em>classpath</em> has not
+    been set or doesn't point to a &lt;path&gt;.</p>
 
     <pre>
-      &lt;assertReferenceIsType name="ant.executor" type="org.apache.tools.ant.helper.DefaultExecutor"/&gt;
+      &lt;assertReferenceIsType refid="classpath" type="path"/>
     </pre>
 
     <h2><a name="assertLogContains">assertLogContains</a></h2>

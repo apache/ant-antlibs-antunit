@@ -167,15 +167,15 @@
 
   <target name="assertReferenceIsTypePass">
     <path id="foo3"/>
-    <au:assertReferenceIsType refid="foo3" type="org.apache.tools.ant.types.Path"/>
+    <au:assertReferenceIsType refid="foo3" type="path"/>
   </target>
 
   <target name="assertReferenceIsTypeFailNotSet">
-    <au:assertReferenceIsType refid="foo4" type="org.apache.tools.ant.types.Path"/>
+    <au:assertReferenceIsType refid="foo4" type="path"/>
   </target>
 
   <target name="assertReferenceIsTypeFailWrongType">
     <path id="foo5"/>
-    <au:assertReferenceIsType refid="foo5" type="org.apache.tools.ant.types.FileSet"/>
+    <au:assertReferenceIsType refid="foo5" type="fileset"/>
   </target>
 </project>
