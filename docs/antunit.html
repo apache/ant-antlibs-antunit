@@ -9,9 +9,10 @@
 
     <h3>Description</h3>
 
-    <p>Runs Ant on targets of a build file that follow a ceratin
+    <p>Runs Ant on targets of a build file that follow a certain
       naming convention.  If Ant throws the special subclass of
-      BuildException that the <a href="assert.html">assertTrue</a>
+        <code>BuildException</code> that the 
+        <a href="assert.html"><code>assertTrue</code></a>
       task uses, consider it a failed test.  Any other exception is
       considered a failure.  If Ant completes the target without any
       exception, consider it a passed test.</p>
@@ -25,7 +26,7 @@
     named tearDown this gets executed after each test target.  Each
     test target is run in a fresh ant project.</p>
 
-    <p>So in a build file with targets setUp, teardown, test1 and
+    <p>So in a build file with targets setUp, tearDown, test1 and
     test2, antunit will run two Ant builds.  One will run the targets
     setUp, test1 and tearDown (in that order), the other one will run
     setUp, test2 and tearDown.  The order of those two Ant builds is
