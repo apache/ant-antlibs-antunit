@@ -80,6 +80,20 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="assertPropertyContains">
+    <attribute name="name"/>
+    <attribute name="value"/>
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="message"
+               default="Expected property '@{name}' to contain value '@{value}' but was '${@{name}}'"/>
+    <sequential>
+      <au:assertPropertySet message="@{message}" name="@{name}"/>
+      <au:assertTrue message="@{message}">
+        <contains string="@{name}" substring="@{value}"/>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+  
   <macrodef name="assertFileExists">
     <attribute name="file"/>
     <attribute name="message"
