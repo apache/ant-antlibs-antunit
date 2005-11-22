@@ -50,7 +50,7 @@ PRODUCT_BUILD=6.5 (BLD_65036)
     <au:assertLogDoesntContain text="loop in tokens" level="debug"/>
   </target>
 
-  <target name="infinitetest">
+  <target name="testinfinitetest">
     <delete quiet="yes" file="copy.filter.out"/>
     <delete quiet="yes" file="copy.filter.inp"/>
     <concat destfile="copy.filter.inp">
