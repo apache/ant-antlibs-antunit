@@ -34,8 +34,7 @@ public class AntUnitTest extends BuildFileTest {
         String log = getLog();
         int index = log.indexOf("Build File: ");
         assertTrue("start recorded", index > -1);
-        index = log.indexOf("sandbox/antlibs/antunit/trunk/src/etc/testcases/"
-                            + "antunit/base.xml", index);
+        index = log.indexOf("/src/etc/testcases/antunit/base.xml", index);
         assertTrue("file name", index > -1);
         index = log.indexOf("Tests run: 5, Failures: 1, Errors: 1, Time "
                             + "elapsed: ", index);
