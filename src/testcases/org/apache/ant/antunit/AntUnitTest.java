@@ -1,5 +1,5 @@
 /*
- * Copyright  2005 The Apache Software Foundation
+ * Copyright 2005-2006 The Apache Software Foundation
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,7 +34,9 @@ public class AntUnitTest extends BuildFileTest {
         String log = getLog();
         int index = log.indexOf("Build File: ");
         assertTrue("start recorded", index > -1);
-        index = log.indexOf("/src/etc/testcases/antunit/base.xml", index);
+        index = log.indexOf("/src/etc/testcases/antunit/base.xml"
+                            .replace('/', java.io.File.separatorChar),
+                            index);
         assertTrue("file name", index > -1);
         index = log.indexOf("Tests run: 5, Failures: 1, Errors: 1, Time "
                             + "elapsed: ", index);
