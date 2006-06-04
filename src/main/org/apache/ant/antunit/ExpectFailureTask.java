@@ -40,7 +40,7 @@ public class ExpectFailureTask extends Sequential {
     }
 
     /**
-     * The message to use in the AssertinFailedException if the nested
+     * The message to use in the AssertionFailedException if the nested
      * tasks fail to raise the "correct" exception.
      */
     public void setMessage(String m) {
@@ -53,14 +53,17 @@ public class ExpectFailureTask extends Sequential {
             super.execute();
         } catch (BuildException e) {
             thrown = true;
-            if (expectedMessage != null
-                && !expectedMessage.equals(e.getMessage())) {
+            String caughtMessage = e.getMessage();
+            if (expectedMessage != null &&
+                    (caughtMessage == null
+                            || caughtMessage.indexOf(expectedMessage) < 0)) {
                 if (message == null) {
-                    throw new AssertionFailedException("Expected build failure "
-                                                       + "with message '"
-                                                       + expectedMessage
-                                                       + "' but was '"
-                                                       + e.getMessage() + "'");
+                    throw new AssertionFailedException(
+                            "Expected build failure "
+                                    + "with message '"
+                                    + expectedMessage
+                                    + "' but was '"
+                                    + caughtMessage + "'");
                 } else {
                     throw new AssertionFailedException(message);
                 }

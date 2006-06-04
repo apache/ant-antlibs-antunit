@@ -56,8 +56,8 @@ public class AssertTask extends ConditionBase {
     public void execute() throws BuildException {
         int count = countConditions();
         if (count > 1) {
-            throw new BuildException("You must not specify more tha one "
-                                     + "conditions");
+            throw new BuildException("You must not specify more than one "
+                                     + "condition");
         }
         if (count < 1) {
             throw new BuildException("You must specify a condition");

@@ -55,12 +55,20 @@ public class AntUnit extends Task {
 
     private ArrayList listeners = new ArrayList();
 
+    private int failures=0;
+    private int errors=0;
+    private boolean failOnError=true;
+    
     public void add(FileSet fs) {
         filesets.add(fs);
     }
 
     public void add(AntUnitListener al) {
         listeners.add(al);
+    }
+
+    public void setFailOnError(boolean failOnError) {
+        this.failOnError = failOnError;
     }
 
     public void execute() {
@@ -71,6 +79,12 @@ public class AntUnit extends Task {
         Iterator iter = filesets.iterator();
         while (iter.hasNext()) {
             doFileSet((FileSet) iter.next());
+        }
+        if (failOnError && (failures > 0 || errors > 0)) {
+            throw new BuildException("Tests failed with "
+                    + failures + " failure" + (failures != 1 ? "s" : "")
+                    + " and "
+                    + errors + " error" + (errors != 1 ? "s" : ""));
         }
     }
 
@@ -193,6 +207,7 @@ public class AntUnit extends Task {
     }
 
     private void fireFail(String targetName, AssertionFailedException ae) {
+        failures++;
         Iterator it = listeners.iterator();
         while (it.hasNext()) {
             AntUnitListener al = (AntUnitListener) it.next();
@@ -201,6 +216,7 @@ public class AntUnit extends Task {
     }
 
     private void fireError(String targetName, Throwable t) {
+        errors++;
         Iterator it = listeners.iterator();
         while (it.hasNext()) {
             AntUnitListener al = (AntUnitListener) it.next();
