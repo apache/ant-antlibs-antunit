@@ -58,7 +58,10 @@ public class AntUnit extends Task {
     private int failures=0;
     private int errors=0;
     private boolean failOnError=true;
-    
+    public static final String ERROR_TESTS_FAILED = "Tests failed with ";
+    public static final String ERROR_NO_FILESET = "You must specify at least one nested"
+                            + " fileset.";
+
     public void add(FileSet fs) {
         filesets.add(fs);
     }
@@ -73,15 +76,14 @@ public class AntUnit extends Task {
 
     public void execute() {
         if (filesets.size() == 0) {
-            throw new BuildException("You must specify at least one nested"
-                                     + " fileset.");
+            throw new BuildException(ERROR_NO_FILESET);
         }
         Iterator iter = filesets.iterator();
         while (iter.hasNext()) {
             doFileSet((FileSet) iter.next());
         }
         if (failOnError && (failures > 0 || errors > 0)) {
-            throw new BuildException("Tests failed with "
+            throw new BuildException(ERROR_TESTS_FAILED
                     + failures + " failure" + (failures != 1 ? "s" : "")
                     + " and "
                     + errors + " error" + (errors != 1 ? "s" : ""));

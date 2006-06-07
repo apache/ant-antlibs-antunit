@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
- Copyright  2005 The Apache Software Foundation
+ Copyright  2005-2006 The Apache Software Foundation
  
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,8 +17,11 @@
 -->
 
 <project name="antunit-test"
-         default="all" xmlns:au="antlib:org.apache.ant.antunit">
+      default="all"
+         xmlns:au="antlib:org.apache.ant.antunit">
 
+  <target name="all" depends="antunit-basetest,antunit-copy" />
+  
   <target name="antunit-basetest">
     <au:antunit>
       <fileset dir="antunit" includes="base.xml"/>

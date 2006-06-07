@@ -25,7 +25,8 @@ public class ExpectFailureTest extends BuildFileTest {
         super(name);
     }
 
-    public void setUp() {
+    public void setUp() throws Exception {
+        super.setUp();
         configureProject("src/etc/testcases/expectfailure.xml");
     }
 

@@ -25,12 +25,15 @@ public class AntUnitTest extends BuildFileTest {
         super(name);
     }
 
-    public void setUp() {
+    public void setUp() throws Exception {
+        super.setUp();
         configureProject("src/etc/testcases/antunit.xml");
     }
 
     public void testBase() {
-        executeTarget("antunit-basetest");
+        expectBuildExceptionContaining("antunit-basetest",
+            "expected basetest to fail",
+            AntUnit.ERROR_TESTS_FAILED);
         String log = getLog();
         int index = log.indexOf("Build File: ");
         assertTrue("start recorded", index > -1);
