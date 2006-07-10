@@ -27,6 +27,9 @@
   <typedef name="plainlistener"
     classname="org.apache.ant.antunit.PlainAntUnitListener"/>
 
+  <typedef name="logcapturer"
+           classname="org.apache.ant.antunit.LogCapturer"/>
+
   <typedef name="logcontains"
     classname="org.apache.ant.antunit.LogContains"/>
 
