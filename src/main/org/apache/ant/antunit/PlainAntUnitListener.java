@@ -26,7 +26,8 @@ import java.text.NumberFormat;
 import org.apache.tools.ant.BuildException;
 
 /**
- * A test listener for &lt;antunit&gt;.
+ * A test listener for &lt;antunit&gt; modeled aftern the Plain JUnit
+ * test listener that is part of Ant.
  */
 public class PlainAntUnitListener implements AntUnitListener {
     /**
@@ -44,7 +45,13 @@ public class PlainAntUnitListener implements AntUnitListener {
      */
     private PrintWriter wri;
 
+    /**
+     * keeps track of the numer of executed targets, the failures an errors.
+     */
     private int runCount, failureCount, errorCount;
+    /**
+     * time for the starts of the current test-suite and test-target.
+     */
     private long start, testStart;
 
     public void setOutput(OutputStream out) {
@@ -85,23 +92,6 @@ public class PlainAntUnitListener implements AntUnitListener {
         sb.append(" sec");
         sb.append(newLine);
 
-//        // append the err and output streams to the log
-//        if (systemOutput != null && systemOutput.length() > 0) {
-//            sb.append("------------- Standard Output ---------------")
-//                .append(newLine)
-//                .append(systemOutput)
-//                .append("------------- ---------------- ---------------")
-//                .append(newLine);
-//        }
-//
-//        if (systemError != null && systemError.length() > 0) {
-//            sb.append("------------- Standard Error -----------------")
-//                .append(newLine)
-//                .append(systemError)
-//                .append("------------- ---------------- ---------------")
-//                .append(newLine);
-//        }
-
         if (out != null) {
             try {
                 out.write(sb.toString().getBytes());
@@ -131,6 +121,7 @@ public class PlainAntUnitListener implements AntUnitListener {
         double seconds = (System.currentTimeMillis() - testStart) / 1000.0;
         wri.println(" took " + nf.format(seconds) + " sec");
     }
+
     public void addFailure(String target, AssertionFailedException ae) {
         failureCount++;
         formatError("\tFAILED", ae);

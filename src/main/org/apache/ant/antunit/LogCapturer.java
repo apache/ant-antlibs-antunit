@@ -23,9 +23,9 @@ import org.apache.tools.ant.Project;
 
 /**
  * Captures log messages generated during an antunit task run and
- * makes it available to tasks via a project reference.
+ * makes them available to tasks via a project reference.
  *
- * <p>This class captures all messaged generated during the build and
+ * <p>This class captures all messages generated during the build and
  * adds itself as project reference to the project using the id
  * <code>ant.antunit.log</code>.</p>
  */

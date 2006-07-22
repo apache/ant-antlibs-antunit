@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation
+ * Copyright 2005-2006 The Apache Software Foundation
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -46,30 +46,75 @@ import org.apache.tools.ant.types.FileSet;
  */
 public class AntUnit extends Task {
 
+    /**
+     * name of the magic setUp target.
+     */
     private static final String SETUP = "setUp";
+    /**
+     * prefix that identifies test targets.
+     */
     private static final String TEST = "test";
+    /**
+     * name of the magic tearDown target.
+     */
     private static final String TEARDOWN = "tearDown";
 
+    /**
+     * The build files to process.
+     */
     private ArrayList filesets = new ArrayList();
+
+    /**
+     * project instance for the build file currently under test.
+     */
     private Project newProject;
 
+    /**
+     * listeners.
+     */
     private ArrayList listeners = new ArrayList();
 
+    /**
+     * has a failure occured?
+     */
     private int failures=0;
+    /**
+     * has an error occured?
+     */
     private int errors=0;
+    /**
+     * stop testing if an error or failure occurs?
+     */
     private boolean failOnError=true;
-    public static final String ERROR_TESTS_FAILED = "Tests failed with ";
-    public static final String ERROR_NO_FILESET = "You must specify at least one nested"
-                            + " fileset.";
 
+    /**
+     * Message to print if an error or failure occured.
+     */
+    public static final String ERROR_TESTS_FAILED = "Tests failed with ";
+
+    /**
+     * Message if no tests have been specified.
+     */
+    public static final String ERROR_NO_FILESET =
+        "You must specify at least one nested fileset.";
+
+    /**
+     * adds build files to run as tests.
+     */
     public void add(FileSet fs) {
         filesets.add(fs);
     }
 
+    /**
+     * Adds a test listener.
+     */
     public void add(AntUnitListener al) {
         listeners.add(al);
     }
 
+    /**
+     * stop testing if an error or failure occurs?
+     */
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;
     }
@@ -90,6 +135,9 @@ public class AntUnit extends Task {
         }
     }
 
+    /**
+     * Processes a fileset.
+     */
     private void doFileSet(FileSet fs) {
         DirectoryScanner ds = fs.getDirectoryScanner(getProject());
         File fromDir = fs.getDir(getProject());
@@ -99,7 +147,11 @@ public class AntUnit extends Task {
         }
     }
 
+    /**
+     * Processes a single build file.
+     */
     private void doFile(File f) {
+        // setup project instance
         newProject = new Project();
         newProject.setDefaultInputStream(getProject().getDefaultInputStream());
         newProject.setJavaVersionProperty();
@@ -107,10 +159,16 @@ public class AntUnit extends Task {
         getProject().initSubProject(newProject);
         newProject.setUserProperty("ant.file" , f.getAbsolutePath());
         attachListeners(f, newProject);
+
+        // read build file
         ProjectHelper.configureProject(newProject, f);
+
+        // find targets
         Map targets = newProject.getTargets();
         Target setUp = (Target) targets.get(SETUP);
         Target tearDown = (Target) targets.get(TEARDOWN);
+
+        // start test
         newProject.fireBuildStarted();
         Throwable caught = null;
         try {
@@ -131,6 +189,10 @@ public class AntUnit extends Task {
                     } catch (BuildException e) {
                         BuildException orig = e;
                         boolean failed = false;
+
+                        // try to see whether the BuildException masks
+                        // an AssertionFailedException.  if so, treat
+                        // it as failure instead of error.
                         Throwable t = e.getCause();
                         while (t != null && t instanceof BuildException) {
                             if (t instanceof AssertionFailedException) {
@@ -140,10 +202,12 @@ public class AntUnit extends Task {
                             }
                             t = ((BuildException) t).getCause();
                         }
+
                         if (!failed) {
                             fireError(name, e);
                         }
                     } finally {
+                        // clean up
                         if (tearDown != null) {
                             newProject.executeTarget(TEARDOWN);
                         }
@@ -158,6 +222,9 @@ public class AntUnit extends Task {
         }
     }
         
+    /**
+     * Redirect output to new project instance.
+     */
     public void handleOutput(String outputToHandle) {
         if (newProject != null) {
             newProject.demuxOutput(outputToHandle, false);
@@ -166,6 +233,9 @@ public class AntUnit extends Task {
         }
     }
 
+    /**
+     * Redirect input to new project instance.
+     */
     public int handleInput(byte[] buffer, int offset, int length)
         throws IOException {
         if (newProject != null) {
@@ -174,6 +244,9 @@ public class AntUnit extends Task {
         return super.handleInput(buffer, offset, length);
     }
 
+    /**
+     * Redirect flush to new project instance.
+     */
     public void handleFlush(String toFlush) {
         if (newProject != null) {
             newProject.demuxFlush(toFlush, false);
@@ -182,6 +255,9 @@ public class AntUnit extends Task {
         }
     }
 
+    /**
+     * Redirect error output to new project instance.
+     */
     public void handleErrorOutput(String errorOutputToHandle) {
         if (newProject != null) {
             newProject.demuxOutput(errorOutputToHandle, true);
@@ -190,6 +266,9 @@ public class AntUnit extends Task {
         }
     }
 
+    /**
+     * Redirect error flush to new project instance.
+     */
     public void handleErrorFlush(String errorOutputToFlush) {
         if (newProject != null) {
             newProject.demuxFlush(errorOutputToFlush, true);
@@ -198,6 +277,10 @@ public class AntUnit extends Task {
         }
     }
 
+    /**
+     * Wraps all registered test listeners in BuildListeners and
+     * attaches them to the new project instance.
+     */
     private void attachListeners(File buildFile, Project p) {
         Iterator it = listeners.iterator();
         while (it.hasNext()) {
@@ -208,6 +291,9 @@ public class AntUnit extends Task {
         }
     }
 
+    /**
+     * invokes addFailure on all registered test listeners.
+     */
     private void fireFail(String targetName, AssertionFailedException ae) {
         failures++;
         Iterator it = listeners.iterator();
@@ -217,6 +303,9 @@ public class AntUnit extends Task {
         }
     }
 
+    /**
+     * invokes addError on all registered test listeners.
+     */
     private void fireError(String targetName, Throwable t) {
         errors++;
         Iterator it = listeners.iterator();
@@ -226,14 +315,19 @@ public class AntUnit extends Task {
         }
     }
 
+    /**
+     * Adapts AntUnitListener to BuildListener.
+     */
     private class BuildToAntUnitListener implements BuildListener {
         private String buildFile;
         private AntUnitListener a;
+
         BuildToAntUnitListener(String buildFile, AntUnitListener a) {
             this.buildFile = buildFile;
             this.a = a;
             a.setOutput(new LogOutputStream(AntUnit.this, Project.MSG_INFO));
         }
+
         public void buildStarted(BuildEvent event) {
             a.startTestSuite(buildFile);
         }

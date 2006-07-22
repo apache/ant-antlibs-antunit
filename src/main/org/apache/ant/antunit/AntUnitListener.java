@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation
+ * Copyright 2005-2006 The Apache Software Foundation
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,12 +23,36 @@ import java.io.OutputStream;
  * A test listener for &lt;antunit&gt;.
  */
 public interface AntUnitListener {
+    /**
+     * Sets the stream the listener shall write its output to.
+     *
+     * <p>Usually points to Ant's logging system.</p>
+     */
     void setOutput(OutputStream out);
 
+    /**
+     * Invoked once per build file, before any targets get executed.
+     */
     void startTestSuite(String buildFile);
+    /**
+     * Invoked once per build file, after all targets have been executed.
+     */
     void endTestSuite(String buildFile);
+    /**
+     * Invoked before a test target gets executed.
+     */
     void startTest(String target);
+    /**
+     * Invoked after a test target has been executed.
+     */
     void endTest(String target);
+    /**
+     * Invoked if an assert tasked caused an error during execution.
+     */
     void addFailure(String target, AssertionFailedException ae);
+    /**
+     * Invoked if any error other than a failed assertion occured
+     * during execution.
+     */
     void addError(String target, Throwable ae);
 }
