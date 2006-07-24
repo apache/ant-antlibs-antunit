@@ -16,7 +16,6 @@
  */
 package org.apache.ant.antunit;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileTest;
 
 public class AntUnitTest extends BuildFileTest {

@@ -1,5 +1,5 @@
 /*
- * Copyright  2005 The Apache Software Foundation
+ * Copyright  2005-2006 The Apache Software Foundation
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  */
 package org.apache.ant.antunit;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildFileTest;
 
 public class ExpectFailureTest extends BuildFileTest {
