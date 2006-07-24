@@ -27,13 +27,13 @@ import java.util.Vector;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
-import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
-import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.ResourceCollection;
+import org.apache.tools.ant.types.resources.FileResource;
 
 /**
  * Run all targets in a given build file who's name starts with "test".
@@ -101,8 +101,8 @@ public class AntUnit extends Task {
     /**
      * adds build files to run as tests.
      */
-    public void add(FileSet fs) {
-        filesets.add(fs);
+    public void add(ResourceCollection rc) {
+        filesets.add(rc);
     }
 
     /**
@@ -125,7 +125,7 @@ public class AntUnit extends Task {
         }
         Iterator iter = filesets.iterator();
         while (iter.hasNext()) {
-            doFileSet((FileSet) iter.next());
+            doFileSet((ResourceCollection) iter.next());
         }
         if (failOnError && (failures > 0 || errors > 0)) {
             throw new BuildException(ERROR_TESTS_FAILED
@@ -138,12 +138,10 @@ public class AntUnit extends Task {
     /**
      * Processes a fileset.
      */
-    private void doFileSet(FileSet fs) {
-        DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-        File fromDir = fs.getDir(getProject());
-        String[] files = ds.getIncludedFiles();
-        for (int i = 0; i < files.length; i++) {
-            doFile(new File(fromDir, files[i]));
+    private void doFileSet(ResourceCollection rc) {
+        Iterator i = rc.iterator();
+        while(i.hasNext()) {
+            doFile(((FileResource)i.next()).getFile());
         }
     }
 
