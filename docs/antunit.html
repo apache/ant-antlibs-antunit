@@ -1,3 +1,21 @@
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
 <html>
   <head>
     <meta http-equiv="Content-Language" content="en-us"></meta>
@@ -44,19 +62,22 @@
 
     <pre>
 /*
- * Copyright 2005 The Apache Software Foundation
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  *
  */
 
@@ -97,10 +118,10 @@ public class LogCapturer {
 
     <h3>Parameters specified as nested elements</h3>
 
-    <h4>fileset - or a child type</h4>
+    <h4>any file system resource collection</h4>
 
     <p>Specifies the build files to run as tests.  At least one
-    fileset is required.</p>
+    resource is required.</p>
 
     <h4>any implementation of AntUnitListener</h4>
 
@@ -149,7 +170,7 @@ public class LogCapturer {
 
 <pre>
     &lt;au:antunit>
-      &lt;fileset dir="antunit" includes="base.xml"/>
+      &lt;file file="antunit/base.xml"/>
       &lt;au:plainlistener/>
     &lt;/au:antunit>
 </pre>
@@ -168,8 +189,5 @@ public class LogCapturer {
 [au:antunit] Target: test2 took 0 sec
 [au:antunit] Target: test1 took 0 sec
 </pre>
-
-    <hr/>
-      <p align="center">Copyright &copy; 2005 The Apache Software Foundation. All rights Reserved.</p>
   </body>
 </html>

@@ -62,4 +62,22 @@ public class AntUnitTest extends BuildFileTest {
                    && log.indexOf("test4 fails", index2) > -1);
         assertTrue("Only one failure", log.indexOf("FAILED", index2 + 1) == -1);
     }
+
+    public void testNoTests() {
+        expectSpecificBuildException("noTests", "No tests have been specified",
+                                     AntUnit.ERROR_NO_TESTS);
+    }
+
+    public void testNonFile() {
+        expectSpecificBuildException("nonFile",
+                                     "URL has been specified",
+                                     AntUnit.ERROR_NON_FILES);
+    }
+
+    public void testNonExistingFile() {
+        executeTarget("nonExistingFile");
+        assertDebuglogContaining(java.io.File.separator
+                                 + "I don't exist.xml since it doesn't exist");
+    }
+
 }

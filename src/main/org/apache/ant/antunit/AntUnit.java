@@ -36,6 +36,7 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
 import org.apache.tools.ant.types.ResourceCollection;
+import org.apache.tools.ant.types.resources.Union;
 import org.apache.tools.ant.types.resources.FileResource;
 
 /**
@@ -65,7 +66,7 @@ public class AntUnit extends Task {
     /**
      * The build files to process.
      */
-    private ArrayList filesets = new ArrayList();
+    private Union buildFiles = new Union();
 
     /**
      * project instance for the build file currently under test.
@@ -98,14 +99,20 @@ public class AntUnit extends Task {
     /**
      * Message if no tests have been specified.
      */
-    public static final String ERROR_NO_FILESET =
-        "You must specify at least one nested fileset.";
+    public static final String ERROR_NO_TESTS =
+        "You must specify build files to test.";
+
+    /**
+     * Message if non-File resources have been specified.
+     */
+    public static final String ERROR_NON_FILES =
+        "Only file system resources are supported.";
 
     /**
      * adds build files to run as tests.
      */
     public void add(ResourceCollection rc) {
-        filesets.add(rc);
+        buildFiles.add(rc);
     }
 
     /**
@@ -123,13 +130,10 @@ public class AntUnit extends Task {
     }
 
     public void execute() {
-        if (filesets.size() == 0) {
-            throw new BuildException(ERROR_NO_FILESET);
+        if (buildFiles.size() == 0) {
+            throw new BuildException(ERROR_NO_TESTS);
         }
-        Iterator iter = filesets.iterator();
-        while (iter.hasNext()) {
-            doFileSet((ResourceCollection) iter.next());
-        }
+        doResourceCollection(buildFiles);
         if (failOnError && (failures > 0 || errors > 0)) {
             throw new BuildException(ERROR_TESTS_FAILED
                     + failures + " failure" + (failures != 1 ? "s" : "")
@@ -139,12 +143,22 @@ public class AntUnit extends Task {
     }
 
     /**
-     * Processes a fileset.
+     * Processes a ResourceCollection.
      */
-    private void doFileSet(ResourceCollection rc) {
+    private void doResourceCollection(ResourceCollection rc) {
+        if (!rc.isFilesystemOnly()) {
+            throw new BuildException(ERROR_NON_FILES);
+        }
+
         Iterator i = rc.iterator();
         while(i.hasNext()) {
-            doFile(((FileResource)i.next()).getFile());
+            FileResource r = (FileResource) i.next();
+            if (r.isExists()) {
+                doFile(r.getFile());
+            } else {
+                log("Skipping " + r + " since it doesn't exist",
+                    Project.MSG_VERBOSE);
+            }
         }
     }
 
@@ -152,6 +166,8 @@ public class AntUnit extends Task {
      * Processes a single build file.
      */
     private void doFile(File f) {
+        log("Running tests in build file " + f, Project.MSG_DEBUG);
+
         // setup project instance
         newProject = new Project();
         newProject.setDefaultInputStream(getProject().getDefaultInputStream());

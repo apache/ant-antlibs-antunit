@@ -27,8 +27,27 @@ under the License.
   
   <target name="antunit-basetest">
     <au:antunit>
-      <fileset dir="antunit" includes="base.xml"/>
+      <file file="antunit/base.xml"/>
       <au:plainlistener/>
+    </au:antunit>
+  </target>
+
+  <target name="noTests">
+    <au:antunit/>
+  </target>
+
+  <target name="nonFile">
+    <au:antunit>
+      <url url="http://ant.apache.org/"/>
+    </au:antunit>
+  </target>
+
+  <target name="nonExistingFile">
+    <au:antunit failOnError="false">
+      <filelist dir="antunit">
+        <file name="base.xml"/>
+        <file name="I don't exist.xml"/>
+      </filelist>
     </au:antunit>
   </target>
 
