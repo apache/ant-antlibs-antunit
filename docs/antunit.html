@@ -35,10 +35,10 @@ under the License.
       considered a failure.  If Ant completes the target without any
       exception, consider it a passed test.</p>
 
-    <p>Tests are specified via filesets (to become ResourceCollection
-    soon).</p>
+    <p>Tests are specified via ResourceCollections soon.</p>
 
-    <p>All targets whose name starts with "test" are considered test
+    <p>All targets whose name starts with "test" (but not if the name
+    is "test" exactly) are considered test
     cases.  If a test build file contains a target named setUp, this
     gets executed before each test target.  If it contains a target
     named tearDown this gets executed after each test target.  Each

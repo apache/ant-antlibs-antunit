@@ -60,6 +60,10 @@ under the License.
     <au:assertReferenceSet refid="ant.antunit.log"/>
   </target>
 
+  <target name="test">
+    <fail>should be ignored</fail>
+  </target>
+
   <target name="tearDown">
     <echo>tearDown</echo>
   </target>

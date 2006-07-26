@@ -192,7 +192,7 @@ public class AntUnit extends Task {
             Iterator iter = targets.keySet().iterator();
             while (iter.hasNext()) {
                 String name = (String) iter.next();
-                if (name.startsWith(TEST)) {
+                if (name.startsWith(TEST) && !name.equals(TEST)) {
                     Vector v = new Vector();
                     if (setUp != null) {
                         v.add(SETUP);
