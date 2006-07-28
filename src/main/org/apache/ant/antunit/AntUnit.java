@@ -30,14 +30,16 @@ import java.util.Vector;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
+import org.apache.tools.ant.MagicNames;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
+import org.apache.tools.ant.types.PropertySet;
 import org.apache.tools.ant.types.ResourceCollection;
-import org.apache.tools.ant.types.resources.Union;
 import org.apache.tools.ant.types.resources.FileResource;
+import org.apache.tools.ant.types.resources.Union;
 
 /**
  * Run all targets in a given build file who's name starts with "test".
@@ -77,6 +79,11 @@ public class AntUnit extends Task {
      * listeners.
      */
     private ArrayList listeners = new ArrayList();
+
+    /**
+     * propertysets.
+     */
+    private ArrayList propertySets = new ArrayList();
 
     /**
      * has a failure occured?
@@ -120,6 +127,13 @@ public class AntUnit extends Task {
      */
     public void add(AntUnitListener al) {
         listeners.add(al);
+    }
+
+    /**
+     * Adds a PropertySet.
+     */
+    public void addPropertySet(PropertySet ps) {
+        propertySets.add(ps);
     }
 
     /**
@@ -169,13 +183,7 @@ public class AntUnit extends Task {
         log("Running tests in build file " + f, Project.MSG_DEBUG);
 
         // setup project instance
-        newProject = new Project();
-        newProject.setDefaultInputStream(getProject().getDefaultInputStream());
-        newProject.setJavaVersionProperty();
-        newProject.setInputHandler(getProject().getInputHandler());
-        getProject().initSubProject(newProject);
-        newProject.setUserProperty("ant.file" , f.getAbsolutePath());
-        attachListeners(f, newProject);
+        newProject = createProjectForFile(f);
 
         // read build file
         ProjectHelper.configureProject(newProject, f);
@@ -292,6 +300,38 @@ public class AntUnit extends Task {
         } else {
             super.handleErrorFlush(errorOutputToFlush);
         }
+    }
+
+    /**
+     * Creates a new project instance and configures it.
+     */
+    private Project createProjectForFile(File f) {
+        Project p = new Project();
+        p.setDefaultInputStream(getProject().getDefaultInputStream());
+        p.setJavaVersionProperty();
+        p.setInputHandler(getProject().getInputHandler());
+        getProject().initSubProject(p);
+        for (Iterator outer = propertySets.iterator(); outer.hasNext(); ) {
+            PropertySet set = (PropertySet) outer.next();
+            Map props = set.getProperties();
+            for (Iterator keys = props.keySet().iterator();
+                 keys.hasNext(); ) {
+                String key = keys.next().toString();
+                if (MagicNames.PROJECT_BASEDIR.equals(key)
+                    || MagicNames.ANT_FILE.equals(key)) {
+                    continue;
+                }
+
+                Object value = props.get(key);
+                if (value != null && value instanceof String
+                    && p.getProperty(key) == null) {
+                    p.setNewProperty(key, (String) value);
+                }
+            }
+        }
+        p.setUserProperty(MagicNames.ANT_FILE, f.getAbsolutePath());
+        attachListeners(f, p);
+        return p;
     }
 
     /**

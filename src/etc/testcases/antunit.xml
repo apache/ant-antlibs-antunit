@@ -50,6 +50,23 @@ under the License.
     </au:antunit>
   </target>
 
+  <target name="testNoPropertySet">
+    <au:antunit>
+      <file file="antunit/echo.xml"/>
+      <au:plainlistener/>
+    </au:antunit>
+  </target>
+
+  <target name="testPropertySet">
+    <au:antunit>
+      <file file="antunit/echo.xml"/>
+      <au:plainlistener/>
+      <propertyset>
+        <propertyref builtin="system"/>
+      </propertyset>
+    </au:antunit>
+  </target>
+
   <target name="antunit-copy">
     <au:antunit>
       <fileset dir="antunit" includes="copy.xml"/>
