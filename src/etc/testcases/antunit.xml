@@ -68,9 +68,11 @@ under the License.
   </target>
 
   <target name="antunit-copy">
+    <property name="reportsdir" location="../../../build/reports"/>
+    <mkdir dir="${reportsdir}"/>
     <au:antunit>
       <fileset dir="antunit" includes="copy.xml"/>
-      <au:plainlistener/>
+      <au:plainlistener sendLogTo="both" toDir="${reportsdir}"/>
     </au:antunit>
   </target>
 </project>

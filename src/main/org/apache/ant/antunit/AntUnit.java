@@ -382,14 +382,13 @@ public class AntUnit extends Task {
         BuildToAntUnitListener(String buildFile, AntUnitListener a) {
             this.buildFile = buildFile;
             this.a = a;
-            a.setOutput(new LogOutputStream(AntUnit.this, Project.MSG_INFO));
         }
 
         public void buildStarted(BuildEvent event) {
-            a.startTestSuite(buildFile);
+            a.startTestSuite(event.getProject(), buildFile);
         }
         public void buildFinished(BuildEvent event) {
-            a.endTestSuite(buildFile);
+            a.endTestSuite(event.getProject(), buildFile);
         }
         public void targetStarted(BuildEvent event) {
             String tName = event.getTarget().getName();

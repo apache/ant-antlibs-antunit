@@ -20,27 +20,20 @@
 
 package org.apache.ant.antunit;
 
-import java.io.OutputStream;
+import org.apache.tools.ant.Project;
 
 /**
  * A test listener for &lt;antunit&gt;.
  */
 public interface AntUnitListener {
     /**
-     * Sets the stream the listener shall write its output to.
-     *
-     * <p>Usually points to Ant's logging system.</p>
-     */
-    void setOutput(OutputStream out);
-
-    /**
      * Invoked once per build file, before any targets get executed.
      */
-    void startTestSuite(String buildFile);
+    void startTestSuite(Project testProject, String buildFile);
     /**
      * Invoked once per build file, after all targets have been executed.
      */
-    void endTestSuite(String buildFile);
+    void endTestSuite(Project testProject, String buildFile);
     /**
      * Invoked before a test target gets executed.
      */
