@@ -30,6 +30,9 @@ under the License.
   <typedef name="plainlistener"
     classname="org.apache.ant.antunit.PlainAntUnitListener"/>
 
+  <typedef name="xmllistener"
+    classname="org.apache.ant.antunit.XMLAntUnitListener"/>
+
   <typedef name="logcapturer"
            classname="org.apache.ant.antunit.LogCapturer"/>
 

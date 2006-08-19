@@ -73,6 +73,7 @@ under the License.
     <au:antunit>
       <fileset dir="antunit" includes="copy.xml"/>
       <au:plainlistener sendLogTo="both" toDir="${reportsdir}"/>
+      <au:xmllistener toDir="${reportsdir}"/>
     </au:antunit>
   </target>
 </project>
