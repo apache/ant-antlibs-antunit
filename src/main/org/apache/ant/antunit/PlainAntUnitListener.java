@@ -33,6 +33,7 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectComponent;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
 import org.apache.tools.ant.types.EnumeratedAttribute;
+import org.apache.tools.ant.util.FileUtils;
 import org.apache.tools.ant.util.TeeOutputStream;
 
 /**
@@ -178,13 +179,18 @@ public class PlainAntUnitListener extends ProjectComponent
         }
         if (logTo.getValue().equals(SendLogTo.FILE)
             || logTo.getValue().equals(SendLogTo.BOTH)) {
+
+            buildFile = FileUtils.getFileUtils()
+                .removeLeadingPath(getProject().getBaseDir(),
+                                   new File(buildFile));
             if (buildFile.length() > 0
                 && buildFile.charAt(0) == File.separatorChar) {
                 buildFile = buildFile.substring(1);
             }
             
-            String fileName =
-                buildFile.replace(File.separatorChar, '.') + ".txt";
+            String fileName = "TEST-" +
+                buildFile.replace(File.separatorChar, '.').replace(':', '.')
+                + ".txt";
             File file = toDir == null
                 ? getProject().resolveFile(fileName)
                 : new File(toDir, fileName);
