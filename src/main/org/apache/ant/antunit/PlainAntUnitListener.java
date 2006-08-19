@@ -40,14 +40,7 @@ import org.apache.tools.ant.util.TeeOutputStream;
  * A test listener for &lt;antunit&gt; modeled aftern the Plain JUnit
  * test listener that is part of Ant.
  */
-public class PlainAntUnitListener extends ProjectComponent
-    implements AntUnitListener {
-
-    /**
-     * Formatter for timings.
-     */
-    private NumberFormat nf = NumberFormat.getInstance();
-
+public class PlainAntUnitListener extends BaseAntUnitListener {
     private OutputStream out = null;
     /**
      * Helper to store intermediate output.
@@ -58,43 +51,21 @@ public class PlainAntUnitListener extends ProjectComponent
      */
     private PrintWriter wri;
 
-    /**
-     * Directory to write reports to.
-     */
-    private File toDir;
-
-    /**
-     * Where to send log.
-     */
-    private SendLogTo logTo = new SendLogTo(SendLogTo.ANT_LOG);
-
-    /**
-     * keeps track of the numer of executed targets, the failures an errors.
-     */
-    private int runCount, failureCount, errorCount;
-    /**
-     * time for the starts of the current test-suite and test-target.
-     */
-    private long start, testStart;
-
-    /**
-     * Sets the directory to write test reports to.
-     */
-    public void setToDir(File f) {
-        toDir = f;
+    public PlainAntUnitListener() {
+        super(new BaseAntUnitListener.SendLogTo(SendLogTo.ANT_LOG));
     }
 
     /**
      * Where to send the test report.
      */
-    public void setSendLogTo(SendLogTo logTo) {
-        this.logTo = logTo;
+    public void setSendLogTo(BaseAntUnitListener.SendLogTo logTo) {
+        super.setSendLogTo(logTo);
     }
 
     public void startTestSuite(Project testProject, String buildFile) {
+        super.startTestSuite(testProject, buildFile);
         inner = new StringWriter();
         wri = new PrintWriter(inner);
-        runCount = failureCount = errorCount;
         out = getOut(buildFile);
         String newLine = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer("Build File: ");
@@ -106,7 +77,6 @@ public class PlainAntUnitListener extends ProjectComponent
         } catch (IOException ex) {
             throw new BuildException("Unable to write output", ex);
         }
-        start = System.currentTimeMillis();
     }
 
     public void endTestSuite(Project testProject, String buildFile) {
@@ -132,21 +102,11 @@ public class PlainAntUnitListener extends ProjectComponent
             } catch (IOException ioex) {
                 throw new BuildException("Unable to write output", ioex);
             } finally {
-                if (out != System.out && out != System.err) {
-                    try {
-                        out.close();
-                    } catch (IOException e) {
-                        // ignore
-                    }
-                }
+                close(out);
             }
         }
     }
 
-    public void startTest(String target) {
-        testStart = System.currentTimeMillis();
-        runCount++;
-    }
     public void endTest(String target) {
         wri.print("Target: " + target);
         double seconds = (System.currentTimeMillis() - testStart) / 1000.0;
@@ -154,11 +114,11 @@ public class PlainAntUnitListener extends ProjectComponent
     }
 
     public void addFailure(String target, AssertionFailedException ae) {
-        failureCount++;
+        super.addFailure(target, ae);
         formatError("\tFAILED", ae);
     }
     public void addError(String target, Throwable ae) {
-        errorCount++;
+        super.addError(target, ae);
         formatError("\tCaused an ERROR", ae);
     }
 
@@ -167,58 +127,4 @@ public class PlainAntUnitListener extends ProjectComponent
         wri.println(t.getMessage());
     }
 
-    private OutputStream getOut(String buildFile) {
-        OutputStream l, f;
-        l = f = null;
-        if (logTo.getValue().equals(SendLogTo.ANT_LOG)
-            || logTo.getValue().equals(SendLogTo.BOTH)) {
-            l = new LogOutputStream(this, Project.MSG_INFO);
-            if (logTo.getValue().equals(SendLogTo.ANT_LOG)) {
-                return l;
-            }
-        }
-        if (logTo.getValue().equals(SendLogTo.FILE)
-            || logTo.getValue().equals(SendLogTo.BOTH)) {
-
-            buildFile = FileUtils.getFileUtils()
-                .removeLeadingPath(getProject().getBaseDir(),
-                                   new File(buildFile));
-            if (buildFile.length() > 0
-                && buildFile.charAt(0) == File.separatorChar) {
-                buildFile = buildFile.substring(1);
-            }
-            
-            String fileName = "TEST-" +
-                buildFile.replace(File.separatorChar, '.').replace(':', '.')
-                + ".txt";
-            File file = toDir == null
-                ? getProject().resolveFile(fileName)
-                : new File(toDir, fileName);
-            try {
-                f = new FileOutputStream(file);
-            } catch (IOException e) {
-                throw new BuildException(e);
-            }
-            if (logTo.getValue().equals(SendLogTo.FILE)) {
-                return f;
-            }
-        }
-        return new TeeOutputStream(l, f);
-    }
-
-    public static class SendLogTo extends EnumeratedAttribute {
-        public static final String ANT_LOG = "ant";
-        public static final String FILE = "file";
-        public static final String BOTH = "both";
-
-        public SendLogTo() {}
-
-        public SendLogTo(String s) {
-            setValue(s);
-        }
-
-        public String[] getValues() {
-            return new String[] {ANT_LOG, FILE, BOTH};
-        }
-    }
 }
