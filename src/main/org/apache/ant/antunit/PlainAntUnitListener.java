@@ -29,7 +29,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 /**
- * A test listener for &lt;antunit&gt; modeled aftern the Plain JUnit
+ * A test listener for &lt;antunit&gt; modelled after the Plain JUnit
  * test listener that is part of Ant.
  */
 public class PlainAntUnitListener extends BaseAntUnitListener {
@@ -44,7 +44,7 @@ public class PlainAntUnitListener extends BaseAntUnitListener {
     private PrintWriter wri;
 
     public PlainAntUnitListener() {
-        super(new BaseAntUnitListener.SendLogTo(SendLogTo.ANT_LOG));
+        super(new BaseAntUnitListener.SendLogTo(SendLogTo.ANT_LOG), "txt");
     }
 
     /**

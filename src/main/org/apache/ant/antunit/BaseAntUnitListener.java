@@ -43,8 +43,10 @@ import org.apache.tools.ant.util.TeeOutputStream;
 public abstract class BaseAntUnitListener extends ProjectComponent
     implements AntUnitListener {
 
-    protected BaseAntUnitListener(SendLogTo defaultReportTarget) {
+    protected BaseAntUnitListener(SendLogTo defaultReportTarget,
+                                  String extension) {
         logTo = defaultReportTarget;
+        this.extension = extension;
     }
 
     /**
@@ -56,6 +58,11 @@ public abstract class BaseAntUnitListener extends ProjectComponent
      * Directory to write reports to.
      */
     private File toDir;
+
+    /**
+     * Extension for report files.
+     */
+    private String extension;
 
     /**
      * Directory to write reports to.
@@ -137,7 +144,7 @@ public abstract class BaseAntUnitListener extends ProjectComponent
             
             String fileName = "TEST-" +
                 buildFile.replace(File.separatorChar, '.').replace(':', '.')
-                + ".txt";
+                + "." + extension;
             File file = toDir == null
                 ? getProject().resolveFile(fileName)
                 : new File(toDir, fileName);
