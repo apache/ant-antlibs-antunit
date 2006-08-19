@@ -21,20 +21,12 @@
 package org.apache.ant.antunit;
 
 import java.io.IOException;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.NumberFormat;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.ProjectComponent;
-import org.apache.tools.ant.taskdefs.LogOutputStream;
-import org.apache.tools.ant.types.EnumeratedAttribute;
-import org.apache.tools.ant.util.FileUtils;
-import org.apache.tools.ant.util.TeeOutputStream;
 
 /**
  * A test listener for &lt;antunit&gt; modeled aftern the Plain JUnit
