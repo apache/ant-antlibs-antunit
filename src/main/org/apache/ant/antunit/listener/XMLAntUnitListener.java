@@ -32,7 +32,6 @@ import org.apache.ant.antunit.AssertionFailedException;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.optional.junit.XMLConstants;
 import org.apache.tools.ant.util.DateUtils;
 import org.apache.tools.ant.util.DOMElementWriter;
 import org.apache.tools.ant.util.DOMUtils;
