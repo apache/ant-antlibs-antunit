@@ -18,12 +18,14 @@
  *
  */
 
-package org.apache.ant.antunit;
+package org.apache.ant.antunit.listener;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import org.apache.ant.antunit.AssertionFailedException;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;

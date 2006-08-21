@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.ant.antunit;
+package org.apache.ant.antunit.listener;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,6 +27,8 @@ import java.io.Writer;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+
+import org.apache.ant.antunit.AssertionFailedException;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -38,7 +40,6 @@ import org.apache.tools.ant.util.StringUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 
 /**
  * A test listener for &lt;antunit&gt; modelled after the XML JUnit

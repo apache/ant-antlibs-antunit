@@ -28,10 +28,10 @@ under the License.
     classname="org.apache.ant.antunit.ExpectFailureTask"/>
 
   <typedef name="plainlistener"
-    classname="org.apache.ant.antunit.PlainAntUnitListener"/>
+    classname="org.apache.ant.antunit.listener.PlainAntUnitListener"/>
 
   <typedef name="xmllistener"
-    classname="org.apache.ant.antunit.XMLAntUnitListener"/>
+    classname="org.apache.ant.antunit.listener.XMLAntUnitListener"/>
 
   <typedef name="logcapturer"
            classname="org.apache.ant.antunit.LogCapturer"/>
