@@ -82,6 +82,7 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
 
             domWri.writeXMLDeclaration(wri);
             domWri.openElement(root, wri, 0, INDENT, true);
+            wri.write(StringUtils.LINE_SEP);
         } catch (IOException ex) {
             throw new BuildException(ex);
         }
@@ -123,6 +124,7 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
                                                       XMLConstants.TESTCASE);
             currentTest.setAttribute(XMLConstants.ATTR_NAME, target);
             domWri.openElement(currentTest, wri, 1, INDENT, true);
+            wri.write(StringUtils.LINE_SEP);
         } catch (IOException ex) {
             throw new BuildException(ex);
         }
