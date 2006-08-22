@@ -101,4 +101,9 @@ public interface XMLConstants {
      * name of host running the tests
      */
     String HOSTNAME = "hostname";
+
+    /**
+     * name of the build file.
+     */
+    String BUILD_FILE = "buildFile";
 }

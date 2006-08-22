@@ -137,17 +137,7 @@ public abstract class BaseAntUnitListener extends ProjectComponent
         if (logTo.getValue().equals(SendLogTo.FILE)
             || logTo.getValue().equals(SendLogTo.BOTH)) {
 
-            buildFile = FileUtils.getFileUtils()
-                .removeLeadingPath(getProject().getBaseDir(),
-                                   new File(buildFile));
-            if (buildFile.length() > 0
-                && buildFile.charAt(0) == File.separatorChar) {
-                buildFile = buildFile.substring(1);
-            }
-            
-            String fileName = "TEST-" +
-                buildFile.replace(File.separatorChar, '.').replace(':', '.')
-                + "." + extension;
+            String fileName = "TEST-" + normalize(buildFile) + "." + extension;
             File file = toDir == null
                 ? getProject().resolveFile(fileName)
                 : new File(toDir, fileName);
@@ -161,6 +151,24 @@ public abstract class BaseAntUnitListener extends ProjectComponent
             }
         }
         return new TeeOutputStream(l, f);
+    }
+
+    /**
+     * Turns the build file name into something that vaguely looks
+     * like a Java classname.  Close enough to be suitable for
+     * junitreport.
+     */
+    protected final String normalize(String buildFile) {
+        buildFile = FileUtils.getFileUtils()
+            .removeLeadingPath(getProject().getBaseDir(),
+                               new File(buildFile));
+        if (buildFile.length() > 0
+            && buildFile.charAt(0) == File.separatorChar) {
+            buildFile = buildFile.substring(1);
+        }
+
+        return buildFile.replace('.', '_').replace(':', '_')
+            .replace(File.separatorChar, '.');
     }
 
     public static class SendLogTo extends EnumeratedAttribute {

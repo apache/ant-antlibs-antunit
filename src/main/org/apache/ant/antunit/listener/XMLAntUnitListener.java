@@ -63,10 +63,14 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
             wri = new OutputStreamWriter(getOut(buildFile), "UTF8");
             doc = DOMUtils.newDocument();
             root = doc.createElement(XMLConstants.TESTSUITE);
-            String n = testProject.getName();
-            root.setAttribute(XMLConstants.ATTR_NAME,
-                              n == null ? "unknown" : n);
-            root.setAttribute("buildFile", buildFile);
+            // if we want to (ab)use <junitreport> name needs to
+            // follow the structure expected by that task:
+            // package.class.  package will be the directory holding
+            // the build file (file separators replaced by dots) and
+            // class the build file name with the last dot replaced
+            // by an underscore
+            root.setAttribute(XMLConstants.ATTR_NAME, normalize(buildFile));
+            root.setAttribute(XMLConstants.BUILD_FILE, buildFile);
 
             //add the timestamp
             String timestamp = DateUtils.format(new Date(),
