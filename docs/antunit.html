@@ -114,7 +114,26 @@ public class LogCapturer {
 </pre>
 
     <h3>Parameters</h3>
-    <p>This task doesn't support any attributes.</p>
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <td valign="top"><b>Attribute</b></td>
+        <td valign="top"><b>Description</b></td>
+        <td align="center" valign="top"><b>Required</b></td>
+      </tr>
+      <tr>
+        <td valign="top">failOnError</td>
+        <td valign="top">Whether to stop the build if one of the tests
+          fails/causes an error.  Defaults to true.</td>
+        <td align="center">No.</td>
+      </tr>
+      <tr>
+        <td valign="top">errorProperty</td>
+        <td valign="top">Name of the Ant property to set if one of the
+        tests fails/causes an error.  Only useful if the failOnError
+        attribute is set to false.</td>
+        <td align="center">No.</td>
+      </tr>
+    </table>
 
     <h3>Parameters specified as nested elements</h3>
 
