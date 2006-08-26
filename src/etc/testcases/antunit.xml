@@ -22,7 +22,7 @@ under the License.
       default="all"
          xmlns:au="antlib:org.apache.ant.antunit">
 
-  <target name="all" depends="antunit-basetest,antunit-copy" />
+  <target name="all" depends="antunit-basetest,antunit-dir" />
   
   <target name="antunit-basetest">
     <au:antunit>
@@ -67,13 +67,22 @@ under the License.
     </au:antunit>
   </target>
 
-  <target name="antunit-copy">
-    <property name="reportsdir" location="../../../build/reports"/>
+  <property name="reportsdir" location="../../../build/reports"/>
+  <target name="antunit-dir">
     <mkdir dir="${reportsdir}"/>
-    <au:antunit>
-      <fileset dir="antunit" includes="copy.xml"/>
+    <au:antunit failonerror="false" errorproperty="antunit-failure">
+      <fileset dir="antunit" includes="*.xml"/>
       <au:plainlistener sendLogTo="both" toDir="${reportsdir}"/>
       <au:xmllistener toDir="${reportsdir}"/>
     </au:antunit>
+  </target>
+
+  <target name="report" depends="antunit-dir">
+    <mkdir dir="${reportsdir}-frames"/>
+    <junitreport>
+      <fileset dir="${reportsdir}" includes="*.xml"/>
+      <report format="frames" styledir=".." todir="${reportsdir}-frames"/>
+    </junitreport>
+    <fail if="antunit-failure">At least one test has failed</fail>
   </target>
 </project>
