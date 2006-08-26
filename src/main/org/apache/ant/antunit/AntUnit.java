@@ -97,6 +97,10 @@ public class AntUnit extends Task {
      * stop testing if an error or failure occurs?
      */
     private boolean failOnError=true;
+    /**
+     * Name of a property to set in case of an error.
+     */
+    private String errorProperty = null;
 
     /**
      * Message to print if an error or failure occured.
@@ -137,6 +141,13 @@ public class AntUnit extends Task {
     }
 
     /**
+     * Sets the name of a property to set if an error or failure occurs.
+     */
+    public void setErrorProperty(String s) {
+        errorProperty = s;
+    }
+
+    /**
      * stop testing if an error or failure occurs?
      */
     public void setFailOnError(boolean failOnError) {
@@ -148,11 +159,16 @@ public class AntUnit extends Task {
             throw new BuildException(ERROR_NO_TESTS);
         }
         doResourceCollection(buildFiles);
-        if (failOnError && (failures > 0 || errors > 0)) {
+        if (failures > 0 || errors > 0) {
+            if (errorProperty != null) {
+                getProject().setNewProperty(errorProperty, "true");
+            }
+            if (failOnError) {
             throw new BuildException(ERROR_TESTS_FAILED
                     + failures + " failure" + (failures != 1 ? "s" : "")
                     + " and "
                     + errors + " error" + (errors != 1 ? "s" : ""));
+            }
         }
     }
 
