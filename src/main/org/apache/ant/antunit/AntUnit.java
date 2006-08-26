@@ -164,10 +164,12 @@ public class AntUnit extends Task {
                 getProject().setNewProperty(errorProperty, "true");
             }
             if (failOnError) {
-            throw new BuildException(ERROR_TESTS_FAILED
-                    + failures + " failure" + (failures != 1 ? "s" : "")
-                    + " and "
-                    + errors + " error" + (errors != 1 ? "s" : ""));
+                throw new BuildException(ERROR_TESTS_FAILED
+                                         + failures + " failure" 
+                                         + (failures != 1 ? "s" : "")
+                                         + " and "
+                                         + errors + " error"
+                                         + (errors != 1 ? "s" : ""));
             }
         }
     }
