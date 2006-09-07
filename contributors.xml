@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE contributors
+[
+<!ELEMENT name (first?, middle?, last)>
+<!ELEMENT contributors (introduction, name+)>
+<!ELEMENT first (#PCDATA)>
+<!ELEMENT introduction (#PCDATA)>
+<!ELEMENT middle (#PCDATA)>
+<!ELEMENT last (#PCDATA)>
+]
+>
+
+<contributors>
+  <introduction>
+  These are some of the many people who have helped with this Ant Library.
+  </introduction>
+  <name>
+    <first>Kevin</first>
+    <last>Jackson</last>
+  </name>
+  <name>
+    <first>Stefan</first>
+    <last>Bodewig</last>
+  </name>
+  <name>
+    <first>Steve</first>
+    <last>Loughran</last>
+  </name>
+</contributors>
