@@ -131,6 +131,7 @@ public class AntUnit extends Task {
      */
     public void add(AntUnitListener al) {
         listeners.add(al);
+        al.setParentTask(this);
     }
 
     /**
@@ -250,6 +251,12 @@ public class AntUnit extends Task {
                             fireError(name, e);
                         }
                     } finally {
+                        // fire endTest her instead of the endTarget
+                        // event, otherwise an error would be
+                        // registered after the endTest event -
+                        // endTarget is called before out catch block
+                        // is reached.
+                        fireEndTest(name);
                         // clean up
                         if (tearDown != null) {
                             newProject.executeTarget(TEARDOWN);
@@ -391,6 +398,17 @@ public class AntUnit extends Task {
     }
 
     /**
+     * invokes endTest on all registered test listeners.
+     */
+    private void fireEndTest(String targetName) {
+        Iterator it = listeners.iterator();
+        while (it.hasNext()) {
+            AntUnitListener al = (AntUnitListener) it.next();
+            al.endTest(targetName);
+        }
+    }
+
+    /**
      * Adapts AntUnitListener to BuildListener.
      */
     private class BuildToAntUnitListener implements BuildListener {
@@ -415,10 +433,6 @@ public class AntUnit extends Task {
             }
         }
         public void targetFinished(BuildEvent event) {
-            String tName = event.getTarget().getName();
-            if (tName.startsWith(TEST)) {
-                a.endTest(tName);
-            }
         }
         public void taskStarted(BuildEvent event) {}
         public void taskFinished(BuildEvent event) {}

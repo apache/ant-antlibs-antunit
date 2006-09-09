@@ -21,11 +21,18 @@
 package org.apache.ant.antunit;
 
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
 
 /**
  * A test listener for &lt;antunit&gt;.
  */
 public interface AntUnitListener {
+    /**
+     * Set a reference to the AntUnit task executing the tests, this
+     * provides access to the containing project, target or Ant's
+     * logging system.
+     */
+    void setParentTask(Task t);
     /**
      * Invoked once per build file, before any targets get executed.
      */

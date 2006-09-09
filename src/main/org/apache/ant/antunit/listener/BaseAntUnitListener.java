@@ -32,8 +32,9 @@ import org.apache.ant.antunit.AntUnitListener;
 import org.apache.ant.antunit.AssertionFailedException;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.ProjectComponent;
+import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.apache.tools.ant.util.FileUtils;
@@ -43,7 +44,7 @@ import org.apache.tools.ant.util.TeeOutputStream;
  * A test listener for &lt;antunit&gt; modeled aftern the Plain JUnit
  * test listener that is part of Ant.
  */
-public abstract class BaseAntUnitListener extends ProjectComponent
+public abstract class BaseAntUnitListener
     implements AntUnitListener {
 
     protected BaseAntUnitListener(SendLogTo defaultReportTarget,
@@ -87,6 +88,19 @@ public abstract class BaseAntUnitListener extends ProjectComponent
     private SendLogTo logTo;
 
     /**
+     * Where to send the test report.
+     */
+    protected void setSendLogTo(SendLogTo logTo) {
+        this.logTo = logTo;
+    }
+
+    private Task parentTask;
+
+    public void setParentTask(Task t) {
+        parentTask = t;
+    }
+
+    /**
      * keeps track of the numer of executed targets, the failures an errors.
      */
     protected int runCount, failureCount, errorCount;
@@ -94,13 +108,6 @@ public abstract class BaseAntUnitListener extends ProjectComponent
      * time for the starts of the current test-suite and test-target.
      */
     protected long start, testStart;
-
-    /**
-     * Where to send the test report.
-     */
-    protected void setSendLogTo(SendLogTo logTo) {
-        this.logTo = logTo;
-    }
 
     public void startTestSuite(Project testProject, String buildFile) {
         start = System.currentTimeMillis();
@@ -129,7 +136,11 @@ public abstract class BaseAntUnitListener extends ProjectComponent
         l = f = null;
         if (logTo.getValue().equals(SendLogTo.ANT_LOG)
             || logTo.getValue().equals(SendLogTo.BOTH)) {
-            l = new LogOutputStream(this, Project.MSG_INFO);
+            if (parentTask != null) {
+                l = new LogOutputStream(parentTask, Project.MSG_INFO);
+            } else {
+                l = System.out;
+            }
             if (logTo.getValue().equals(SendLogTo.ANT_LOG)) {
                 return l;
             }
@@ -139,7 +150,9 @@ public abstract class BaseAntUnitListener extends ProjectComponent
 
             String fileName = "TEST-" + normalize(buildFile) + "." + extension;
             File file = toDir == null
-                ? getProject().resolveFile(fileName)
+                ? (parentTask != null 
+                   ? parentTask.getProject().resolveFile(fileName)
+                   : new File(fileName))
                 : new File(toDir, fileName);
             try {
                 f = new FileOutputStream(file);
@@ -159,9 +172,11 @@ public abstract class BaseAntUnitListener extends ProjectComponent
      * junitreport.
      */
     protected final String normalize(String buildFile) {
+        File base = parentTask != null
+            ? parentTask.getProject().getBaseDir()
+            : new File(System.getProperty("user.dir"));
         buildFile = FileUtils.getFileUtils()
-            .removeLeadingPath(getProject().getBaseDir(),
-                               new File(buildFile));
+            .removeLeadingPath(base, new File(buildFile));
         if (buildFile.length() > 0
             && buildFile.charAt(0) == File.separatorChar) {
             buildFile = buildFile.substring(1);
@@ -169,6 +184,17 @@ public abstract class BaseAntUnitListener extends ProjectComponent
 
         return buildFile.replace('.', '_').replace(':', '_')
             .replace(File.separatorChar, '.');
+    }
+
+    protected final Location getLocation(Throwable t) {
+        Location l = Location.UNKNOWN_LOCATION;
+        if (t instanceof BuildException) {
+            Location l2 = ((BuildException) t).getLocation();
+            if (l2 != null) {
+                l = l2;
+            }
+        }
+        return l;
     }
 
     public static class SendLogTo extends EnumeratedAttribute {
