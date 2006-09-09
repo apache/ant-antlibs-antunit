@@ -31,6 +31,7 @@ import java.util.Date;
 import org.apache.ant.antunit.AssertionFailedException;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.util.DateUtils;
 import org.apache.tools.ant.util.DOMElementWriter;
@@ -157,6 +158,15 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
     private void formatError(String type, Throwable t) {
         try {
             Element e = DOMUtils.createChildElement(currentTest, type);
+            Location l = getLocation(t);
+            if (l.getLineNumber() != 0) {
+                e.setAttribute(XMLConstants.ATTR_LINE,
+                               String.valueOf(l.getLineNumber()));
+            }
+            if (l.getColumnNumber() != 0) {
+                e.setAttribute(XMLConstants.ATTR_COLUMN,
+                               String.valueOf(l.getColumnNumber()));
+            }
             String message = t.getMessage();
             if (message != null && message.length() > 0) {
                 e.setAttribute(XMLConstants.ATTR_MESSAGE, t.getMessage());

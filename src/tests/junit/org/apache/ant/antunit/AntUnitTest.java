@@ -53,7 +53,7 @@ public class AntUnitTest extends BuildFileTest {
         assertTrue("test5", log.indexOf("test5", index) > -1);
         assertTrue("testLogCaptureActive",
                    log.indexOf("testLogCaptureActive", index) > -1);
-        int index2 = log.indexOf("Caused an ERROR", index);
+        int index2 = log.indexOf("caused an ERROR", index);
         assertTrue("test5 error", index2 > -1
                    && log.indexOf("test5 exits with error", index2) > -1);
         assertTrue("Only one error", log.indexOf("ERROR", index2 + 11) == -1);

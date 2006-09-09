@@ -28,6 +28,7 @@ import java.io.StringWriter;
 import org.apache.ant.antunit.AssertionFailedException;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;
 
 /**
@@ -101,24 +102,37 @@ public class PlainAntUnitListener extends BaseAntUnitListener {
         }
     }
 
+    public void startTest(String target) {
+        super.startTest(target);
+        wri.print("Target: " + target + " ");
+    }
+
     public void endTest(String target) {
-        wri.print("Target: " + target);
         double seconds = (System.currentTimeMillis() - testStart) / 1000.0;
-        wri.println(" took " + nf.format(seconds) + " sec");
+        wri.println("took " + nf.format(seconds) + " sec");
     }
 
     public void addFailure(String target, AssertionFailedException ae) {
         super.addFailure(target, ae);
-        formatError("\tFAILED", ae);
+        formatError(" FAILED", ae);
     }
     public void addError(String target, Throwable ae) {
         super.addError(target, ae);
-        formatError("\tCaused an ERROR", ae);
+        formatError(" caused an ERROR", ae);
     }
 
     private void formatError(String type, Throwable t) {
         wri.println(type);
-        wri.println(t.getMessage());
+        Location l = getLocation(t);
+        if (l.getLineNumber() != 0) {
+            wri.print("\tat line " + l.getLineNumber());
+            if (l.getColumnNumber() != 0) {
+                wri.print(", column " + l.getColumnNumber());
+            }
+            wri.println();
+        }
+        wri.println("\tMessage: " + t.getMessage());
+        wri.print("\t");
     }
 
 }

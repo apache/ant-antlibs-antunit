@@ -92,6 +92,12 @@ public interface XMLConstants {
     /** id attribute */
     String ATTR_ID = "id";
 
+    /** linenumber attribute */
+    String ATTR_LINE = "linenumber";
+
+    /** columnnumber attribute */
+    String ATTR_COLUMN = "columnnumber";
+
     /**
      * timestamp of test cases
      */
