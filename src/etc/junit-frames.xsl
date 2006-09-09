@@ -694,7 +694,7 @@ h6 {
     <table width="100%">
     <tr>
         <td align="left"></td>
-        <td align="right">Designed for use with AntUnit and <a href="http://ant.apache.org/">Ant</a>.</td>
+        <td align="right">Designed for use with <a href="http://ant.apache.org/antlibs/antunit/">AntUnit</a> and <a href="http://ant.apache.org/">Ant</a>.</td>
     </tr>
     </table>
     <hr size="1"/>
@@ -739,7 +739,7 @@ h6 {
             </xsl:choose>
         </xsl:attribute>
         <td><a title="Display all tests" href="{@id}_{@name}.html"><xsl:value-of select="@name"/></a></td>
-        <td><a title="Display all tests" href="{@id}_{@name}.html"><xsl:apply-templates select="@tests"/></a></td>
+        <td><a title="Display all tests" href="{@id}_{@name}.html"><xsl:apply-templates select="tests/text()"/></a></td>
         <td>
 	    <xsl:choose>
 		<xsl:when test="errors/text() != 0">
@@ -827,6 +827,15 @@ h6 {
 
 <xsl:template match="error">
     <xsl:call-template name="display-failures"/>
+    <!-- display the stacktrace -->
+    <br/><br/>
+    <code>
+        <xsl:call-template name="br-replace">
+            <xsl:with-param name="word" select="."/>
+        </xsl:call-template>
+    </code>
+    <!-- the latter is better but might be problematic for non-21" monitors... -->
+    <!--pre><xsl:value-of select="."/></pre-->
 </xsl:template>
 
 <!-- Style for the error and failure in the testcase template -->
@@ -837,15 +846,17 @@ h6 {
             <xsl:value-of select="@message"/>
         </xsl:otherwise>
     </xsl:choose>
-    <!-- display the stacktrace -->
-    <br/><br/>
-    <code>
-        <xsl:call-template name="br-replace">
-            <xsl:with-param name="word" select="."/>
-        </xsl:call-template>
-    </code>
-    <!-- the latter is better but might be problematic for non-21" monitors... -->
-    <!--pre><xsl:value-of select="."/></pre-->
+    <xsl:choose>
+        <xsl:when test="@linenumber">
+            <br></br>
+            at line <xsl:value-of select="@linenumber"/>
+            <xsl:choose>
+                <xsl:when test="@columnnumber">
+                    , column <xsl:value-of select="@columnnumber"/>
+                </xsl:when>
+            </xsl:choose>
+        </xsl:when>
+    </xsl:choose>
 </xsl:template>
 
 <xsl:template name="JS-escape">

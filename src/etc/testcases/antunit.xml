@@ -78,10 +78,16 @@ under the License.
   </target>
 
   <target name="report" depends="antunit-dir">
+    <sleep seconds="1"/>
     <mkdir dir="${reportsdir}-frames"/>
     <junitreport>
       <fileset dir="${reportsdir}" includes="*.xml"/>
       <report format="frames" styledir=".." todir="${reportsdir}-frames"/>
+    </junitreport>
+    <mkdir dir="${reportsdir}-noframes"/>
+    <junitreport>
+      <fileset dir="${reportsdir}" includes="*.xml"/>
+      <report format="noframes" styledir=".." todir="${reportsdir}-noframes"/>
     </junitreport>
     <fail if="antunit-failure">At least one test has failed</fail>
   </target>
