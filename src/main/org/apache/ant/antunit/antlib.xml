@@ -39,7 +39,7 @@ under the License.
   <typedef name="logcontains"
     classname="org.apache.ant.antunit.LogContains"/>
 
-  <macrodef name="assertFalse">
+  <macrodef name="assertFalse" backtrace="false">
     <attribute name="message" default="Assertion failed"/>
     <element name="assertion" implicit="true"/>
     <sequential>
@@ -51,7 +51,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertEquals">
+  <macrodef name="assertEquals" backtrace="false">
     <attribute name="expected"/>
     <attribute name="actual"/>
     <attribute name="casesensitive" default="true"/>
@@ -65,7 +65,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertPropertySet">
+  <macrodef name="assertPropertySet" backtrace="false">
     <attribute name="name"/>
     <attribute name="message"
       default="Expected property '@{name}'"/>
@@ -76,7 +76,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertPropertyEquals">
+  <macrodef name="assertPropertyEquals" backtrace="false">
     <attribute name="name"/>
     <attribute name="value"/>
     <attribute name="casesensitive" default="true"/>
@@ -89,7 +89,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertPropertyContains">
+  <macrodef name="assertPropertyContains" backtrace="false">
     <attribute name="name"/>
     <attribute name="value"/>
     <attribute name="casesensitive" default="true"/>
@@ -103,7 +103,7 @@ under the License.
     </sequential>
   </macrodef>
   
-  <macrodef name="assertFileExists">
+  <macrodef name="assertFileExists" backtrace="false">
     <attribute name="file"/>
     <attribute name="message"
       default="Expected file '@{file}' to exist"/>
@@ -114,7 +114,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertFileDoesntExist">
+  <macrodef name="assertFileDoesntExist" backtrace="false">
     <attribute name="file"/>
     <attribute name="message"
       default="Didn't expect file '@{file}' to exist"/>
@@ -125,7 +125,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertDestIsUptodate">
+  <macrodef name="assertDestIsUptodate" backtrace="false">
     <attribute name="src"/>
     <attribute name="dest"/>
     <attribute name="message"
@@ -137,7 +137,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertDestIsOutofdate">
+  <macrodef name="assertDestIsOutofdate" backtrace="false">
     <attribute name="src"/>
     <attribute name="dest"/>
     <attribute name="message"
@@ -149,7 +149,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertFilesMatch">
+  <macrodef name="assertFilesMatch" backtrace="false">
     <attribute name="expected"/>
     <attribute name="actual"/>
     <attribute name="message"
@@ -161,7 +161,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertFilesDiffer">
+  <macrodef name="assertFilesDiffer" backtrace="false">
     <attribute name="expected"/>
     <attribute name="actual"/>
     <attribute name="message"
@@ -173,7 +173,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertReferenceSet">
+  <macrodef name="assertReferenceSet" backtrace="false">
     <attribute name="refid"/>
     <attribute name="message"
       default="Expected reference '@{refid}'"/>
@@ -184,7 +184,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertReferenceIsType">
+  <macrodef name="assertReferenceIsType" backtrace="false">
     <attribute name="refid"/>
     <attribute name="type"/>
     <attribute name="message"
@@ -197,7 +197,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertLogContains">
+  <macrodef name="assertLogContains" backtrace="false">
     <attribute name="text"/>
     <attribute name="level" default="info"/>
     <attribute name="message"
@@ -209,7 +209,7 @@ under the License.
     </sequential>
   </macrodef>
 
-  <macrodef name="assertLogDoesntContain">
+  <macrodef name="assertLogDoesntContain" backtrace="false">
     <attribute name="text"/>
     <attribute name="level" default="info"/>
     <attribute name="message"
