@@ -254,7 +254,7 @@ public class AntUnit extends Task {
                         // fire endTest here instead of the endTarget
                         // event, otherwise an error would be
                         // registered after the endTest event -
-                        // endTarget is called before out catch block
+                        // endTarget is called before this method's catch block
                         // is reached.
                         fireEndTest(name);
                         // clean up
