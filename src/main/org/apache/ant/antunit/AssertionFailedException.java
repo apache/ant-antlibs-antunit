@@ -21,6 +21,7 @@
 package org.apache.ant.antunit;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Location;
 
 /**
  * Specialized BuildException thrown by the AssertTask task.
@@ -31,5 +32,9 @@ public class AssertionFailedException extends BuildException {
 
     public AssertionFailedException(String message) {
         super(message);
+    }
+
+    public AssertionFailedException(String message, Location loc) {
+        super(message, loc);
     }
 }
