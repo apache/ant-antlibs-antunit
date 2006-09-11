@@ -8,7 +8,7 @@
  * with the License.  You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -166,7 +166,7 @@ public class AntUnit extends Task {
             }
             if (failOnError) {
                 throw new BuildException(ERROR_TESTS_FAILED
-                                         + failures + " failure" 
+                                         + failures + " failure"
                                          + (failures != 1 ? "s" : "")
                                          + " and "
                                          + errors + " error"
@@ -251,7 +251,7 @@ public class AntUnit extends Task {
                             fireError(name, e);
                         }
                     } finally {
-                        // fire endTest her instead of the endTarget
+                        // fire endTest here instead of the endTarget
                         // event, otherwise an error would be
                         // registered after the endTest event -
                         // endTarget is called before out catch block
@@ -271,7 +271,7 @@ public class AntUnit extends Task {
             newProject = null;
         }
     }
-        
+
     /**
      * Redirect output to new project instance.
      */
