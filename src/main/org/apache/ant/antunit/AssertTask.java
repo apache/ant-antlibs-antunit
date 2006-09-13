@@ -66,13 +66,14 @@ public class AssertTask extends ConditionBase {
         int count = countConditions();
         if (count > 1) {
             throw new BuildException("You must not specify more than one "
-                                     + "condition");
+                                     + "condition", getLocation());
         }
         if (count < 1) {
-            throw new BuildException("You must specify a condition");
+            throw new BuildException("You must specify a condition",
+                                     getLocation());
         }
         if (!((Condition) getConditions().nextElement()).eval()) {
-            throw new AssertionFailedException(message);
+            throw new AssertionFailedException(message, getLocation());
         }
     }
 
