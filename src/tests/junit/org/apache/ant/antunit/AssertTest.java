@@ -152,20 +152,9 @@ public class AssertTest extends BuildFileTest {
             fail("Expected failed assetion");
         } catch (AssertionFailedException e) {
             assertEquals(message, e.getMessage());
-        } catch (BuildException e) {
-            // depending on the number of macrodef indirections, this
-            // can become arbitrarily deep
-            while (true) {
-                Throwable t = e.getCause();
-                assertNotNull(t);
-                assertTrue("nested is a BuildException",
-                           t instanceof BuildException);
-                if (t instanceof AssertionFailedException) {
-                    assertEquals(message, e.getMessage());
-                    break;
-                }
-                e = (BuildException) t;
-            }
+        } catch (Throwable t) {
+            fail("Unexpected exception of type " + t.getClass()
+                 + ", message '" + t.getMessage() + "'");
         } // end of try-catch
     }
 }
