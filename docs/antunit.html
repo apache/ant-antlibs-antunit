@@ -43,7 +43,7 @@ under the License.
     cases.  If a test build file contains a target named setUp, this
     gets executed before each test target.  If it contains a target
     named tearDown this gets executed after each test target.  Each
-    test target is run in a fresh ant project.</p>
+    test target is run in a fresh Ant project.</p>
 
     <p>So in a build file with targets setUp, tearDown, test1 and
     test2, antunit will run two Ant builds.  One will run the targets
@@ -53,8 +53,8 @@ under the License.
 
     <p>&lt;antunit&gt; also supports AntUnitListeners, i.e. classes
     that receive notifications on test runs, failures and so one.
-    Currently only a single implementation of this interface is
-    provided with this ant library.</p>
+    Currently two implementations of this interface are
+    provided with this Ant library.</p>
 
     <p>Log output during each antunit test case is captured by an
     instance of the LogCapturer class that is available via a project
