@@ -32,6 +32,12 @@ under the License.
     information that appears as attributes for the JUnit formatter has
     been turned into elements to allow streaming of the report.</p>
 
+    <p>The AntUnit distribution comes with two XSLT stylesheets (in
+    the etc subdirectory of the binary or the src/etc directory of the
+    source release) that can be used together with Ant's
+    &lt;junitreport&gt; task to create reports about your AntUnit
+    tests.</p>
+
     <h3>Parameters</h3>
     <table border="1" cellpadding="2" cellspacing="0">
       <tr>
@@ -42,11 +48,33 @@ under the License.
       <tr>
         <td valign="top">toDir</td>
         <td valign="top">Directory where testreports will be written
-            to.  Default's to the project's basedir.</td>
+            to.  Defaults to the project's basedir.</td>
         <td align="center">No.</td>
       </tr>
     </table>
 
+    <h3>Examples</h3>
+
+<pre>
+    &lt;au:antunit failonerror="false" errorproperty="antunit-failure">
+      &lt;fileset dir="${tests}" includes="*.xml"/>
+      &lt;au:xmllistener toDir="${reportsdir}"/>
+    &lt;/au:antunit>
+    &lt;junitreport>
+      &lt;fileset dir="${reportsdir}" includes="*.xml"/>
+      &lt;report format="frames" styledir="${antunit-styles}"
+              todir="${reportsdir}-frames"/>
+    &lt;/junitreport>
+    &lt;fail if="antunit-failure">At least one test has failed&lt;/fail>
+</pre>
+
+    <p>Runs AntUnit on all XML files in the directory
+    <code>${test}</code> writing XML reports to the directory
+    <code>${reportsdir}</code> (which must exist upfront).  Based on
+    the XML reports a consolidated HTML frame report is created in
+    <code>${reportsdir}-frames</code> using the stylesheets mentioned
+    above.  <code>${antunit-styles}</code> must point to the directory
+    containing the stylesheets.</p>
 
   </body>
 </html>

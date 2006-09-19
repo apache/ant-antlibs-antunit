@@ -39,11 +39,12 @@ under the License.
     <p>Tests are specified via ResourceCollections.</p>
 
     <p>All targets whose name starts with "test" (but not if the name
-    is "test" exactly) are considered test
-    cases.  If a test build file contains a target named setUp, this
-    gets executed before each test target.  If it contains a target
-    named tearDown this gets executed after each test target.  Each
-    test target is run in a fresh Ant project.</p>
+    is "test" exactly) are considered test cases.  If a test build
+    file contains a target named setUp, this gets executed before each
+    test target.  If it contains a target named tearDown this gets
+    executed after each test target.  Each test target is run in a
+    fresh Ant project, i.e. each test target has a fresh set of
+    properties and references.</p>
 
     <p>So in a build file with targets setUp, tearDown, test1 and
     test2, antunit will run two Ant builds.  One will run the targets
@@ -190,6 +191,14 @@ public class LogCapturer {
     &lt;fail message="test5 exits with error"/>
   &lt;/target>
 
+  &lt;target name="testLogCaptureActive">
+    &lt;au:assertReferenceSet refid="ant.antunit.log"/>
+  &lt;/target>
+
+  &lt;target name="test">
+    &lt;fail>should be ignored&lt;/fail>
+  &lt;/target>
+
   &lt;target name="tearDown">
     &lt;echo>tearDown&lt;/echo>
   &lt;/target>
@@ -208,15 +217,18 @@ public class LogCapturer {
 
 <pre>
 [au:antunit] Build File: .../src/etc/testcases/antunit/base.xml
-[au:antunit] Tests run: 4, Failures: 1, Errors: 1, Time elapsed: 0,187 sec
-[au:antunit] Target: test5 took 0,016 sec
-[au:antunit]    Caused an ERROR
-[au:antunit] test5 exits with error
-[au:antunit] Target: test4 took 0,129 sec
-[au:antunit]    FAILED
-[au:antunit] test4 fails
-[au:antunit] Target: test2 took 0 sec
-[au:antunit] Target: test1 took 0 sec
+[au:antunit] Tests run: 5, Failures: 1, Errors: 1, Time elapsed: 0.216 sec
+[au:antunit] Target: test2 took 0.001 sec
+[au:antunit] Target: test1 took 0.001 sec
+[au:antunit] Target: testLogCaptureActive took 0.128 sec
+[au:antunit] Target: test5  caused an ERROR
+[au:antunit]    at line 56, column 45
+[au:antunit]    Message: test5 exits with error
+[au:antunit]    took 0.01 sec
+[au:antunit] Target: test4  FAILED
+[au:antunit]    at line 50, column 42
+[au:antunit]    Message: test4 fails
+[au:antunit]    took 0.003 sec
 </pre>
   </body>
 </html>

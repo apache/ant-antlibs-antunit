@@ -1,0 +1,32 @@
+What's this?
+============
+
+This library contains tasks that enables Ant task developers to test
+their tasks with Ant and without JUnit.  It contains a few assertion
+tasks and an antunit task that runs build files instead of test
+classes and is modelled after the JUnit task.
+
+Learn more
+==========
+
+The documentation is included in the docs subdirectory of this
+distribution.  The home of this library is
+<http://ant.apache.org/antlibs/antunit/index.html>.
+
+Building
+========
+
+This Ant Library requires Ant 1.7.0beta2 or later to build, some of
+the test use JUnit 3 (3.8.2 recommended).
+
+It should work with any Java(TM) Runtime (and compile with any Java(TM)
+Developer Kit) starting with version 1.2.
+
+Using
+=====
+
+You use this Ant library like any other Ant library 8-)
+
+In short you can make it available to Ant in a variety of ways, please
+see the Ant manual or the index.html file in the docs subdirectory of
+this distribtion for details.
