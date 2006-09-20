@@ -68,7 +68,7 @@ public class AntUnit extends Task {
     /**
      * The build files to process.
      */
-    private Union buildFiles = new Union();
+    private Union buildFiles;
 
     /**
      * project instance for the build file currently under test.
@@ -123,6 +123,9 @@ public class AntUnit extends Task {
      * adds build files to run as tests.
      */
     public void add(ResourceCollection rc) {
+        if (buildFiles == null) {
+            buildFiles = new Union();
+        }
         buildFiles.add(rc);
     }
 
@@ -156,7 +159,7 @@ public class AntUnit extends Task {
     }
 
     public void execute() {
-        if (buildFiles.size() == 0) {
+        if (buildFiles == null) {
             throw new BuildException(ERROR_NO_TESTS);
         }
         doResourceCollection(buildFiles);
@@ -179,12 +182,13 @@ public class AntUnit extends Task {
      * Processes a ResourceCollection.
      */
     private void doResourceCollection(ResourceCollection rc) {
+        //should relax this restriction if/when Ant core allows non-files
         if (!rc.isFilesystemOnly()) {
             throw new BuildException(ERROR_NON_FILES);
         }
 
         Iterator i = rc.iterator();
-        while(i.hasNext()) {
+        while (i.hasNext()) {
             FileResource r = (FileResource) i.next();
             if (r.isExists()) {
                 doFile(r.getFile());
