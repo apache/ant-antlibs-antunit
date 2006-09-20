@@ -68,6 +68,10 @@ public class AntUnitTest extends BuildFileTest {
                                      AntUnit.ERROR_NO_TESTS);
     }
 
+    public void testEmptyTests() {
+        executeTarget("emptyTests");
+    }
+
     public void testNonFile() {
         expectSpecificBuildException("nonFile",
                                      "URL has been specified",

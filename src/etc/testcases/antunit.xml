@@ -35,6 +35,12 @@ under the License.
     <au:antunit/>
   </target>
 
+  <target name="emptyTests">
+    <au:antunit>
+      <resources />
+    </au:antunit>
+  </target>
+
   <target name="nonFile">
     <au:antunit>
       <url url="http://ant.apache.org/"/>
