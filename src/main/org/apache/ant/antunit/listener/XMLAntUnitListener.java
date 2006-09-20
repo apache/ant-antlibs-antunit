@@ -61,7 +61,8 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
     public void startTestSuite(Project testProject, String buildFile) {
         try {
             super.startTestSuite(testProject, buildFile);
-            wri = new OutputStreamWriter(getOut(buildFile), "UTF8");
+            out = getOut(buildFile);
+            wri = new OutputStreamWriter(out, "UTF8");
             doc = DOMUtils.newDocument();
             root = doc.createElement(XMLConstants.TESTSUITE);
             // if we want to (ab)use <junitreport> name needs to
