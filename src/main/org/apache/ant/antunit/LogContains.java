@@ -57,7 +57,7 @@ public class LogContains extends ProjectComponent implements Condition {
             throw new BuildException("the text attribute is required");
         }
         Object o = getProject().getReference(LogCapturer.REFERENCE_ID);
-        if (o != null && o instanceof LogCapturer) {
+        if (o instanceof LogCapturer) {
             LogCapturer c = (LogCapturer) o;
             String log;
             switch (logLevel) {
@@ -81,8 +81,7 @@ public class LogContains extends ProjectComponent implements Condition {
                 throw new BuildException("Unknown logLevel: " + logLevel);
             }
             return log.indexOf(text) > -1;
-        } else {
-            return false;
         }
+        return false;
     }
 }
