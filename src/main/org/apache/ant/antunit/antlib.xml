@@ -39,6 +39,9 @@ under the License.
   <typedef name="logcontains"
     classname="org.apache.ant.antunit.LogContains"/>
 
+  <typedef name="logcontent"
+    classname="org.apache.ant.antunit.LogContent" />
+
   <macrodef name="assertFalse" backtrace="false">
     <attribute name="message" default="Assertion failed"/>
     <element name="assertion" implicit="true"/>
