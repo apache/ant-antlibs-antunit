@@ -337,7 +337,7 @@ public class AntUnit extends Task {
     private Project createProjectForFile(File f) {
         Project p = new Project();
         p.setDefaultInputStream(getProject().getDefaultInputStream());
-        p.setJavaVersionProperty();
+        p.initProperties();
         p.setInputHandler(getProject().getInputHandler());
         getProject().initSubProject(p);
         for (Iterator outer = propertySets.iterator(); outer.hasNext(); ) {
