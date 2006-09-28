@@ -184,4 +184,10 @@ under the License.
     <path id="foo5"/>
     <au:assertReferenceIsType refid="foo5" type="fileset"/>
   </target>
+
+  <target name="assertMatches">
+    <au:assertMatches string="this is AbC"
+                      pattern="abc"
+                      casesensitive="false"/>
+  </target>
 </project>

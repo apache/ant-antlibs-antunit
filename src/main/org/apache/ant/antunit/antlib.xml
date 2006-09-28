@@ -224,4 +224,22 @@ under the License.
     </sequential>
   </macrodef>
 
+  <macrodef name="assertMatches" backtrace="false">
+    <attribute name="string"/>
+    <attribute name="pattern"/>
+    <attribute name="casesensitive" default="false"/>
+    <attribute name="singleline" default="false"/>
+    <attribute name="multiline" default="false"/>
+    <attribute name="message"
+      default="Expected '@{string}' to match pattern '@{pattern}'"/>
+    <sequential>
+      <au:assertTrue message="@{message}">
+	<matches string="@{string}" pattern="@{pattern}"
+                 casesensitive="@{casesensitive}"
+                 singleline="@{singleline}"
+                 multiline="@{multiline}"/>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
 </antlib>

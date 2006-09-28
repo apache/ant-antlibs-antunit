@@ -61,7 +61,18 @@ public class ExpectFailureTest extends BuildFileTest {
             executeTarget(target);
             fail("Expected an exception");
         } catch (AssertionFailedException e) {
-            assertEquals(message, e.getMessage());
-        }
+             assertEquals(message, e.getMessage());
+        } catch (Throwable t) {
+           if (t.getClass().getName().equals(
+                    AssertionFailedException.class.getName())) {
+                // Some classloader issue!
+                assertEquals(message, t.getMessage());
+            } else {
+                fail("Unexpected exception of type " + t.getClass()
+                     + ", message '" + t.getMessage() + "'"
+                     + "\nexpected exception of type "
+                     + AssertionFailedException.class);
+            }
+         }
     }
 }

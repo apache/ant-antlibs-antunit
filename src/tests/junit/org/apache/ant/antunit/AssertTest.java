@@ -138,6 +138,10 @@ public class AssertTest extends BuildFileTest {
                  "Expected reference 'foo5' to be a 'fileset'");
     }
 
+    public void testMatches() {
+        executeTarget("assertMatches");
+    }
+
     private void testPass(String target) {
         executeTarget(target);
     }
@@ -153,8 +157,16 @@ public class AssertTest extends BuildFileTest {
         } catch (AssertionFailedException e) {
             assertEquals(message, e.getMessage());
         } catch (Throwable t) {
-            fail("Unexpected exception of type " + t.getClass()
-                 + ", message '" + t.getMessage() + "'");
+            if (t.getClass().getName().equals(
+                    AssertionFailedException.class.getName())) {
+                // Some classloader issue!
+                assertEquals(message, t.getMessage());
+            } else {
+                fail("Unexpected exception of type " + t.getClass()
+                     + ", message '" + t.getMessage() + "'"
+                     + "\nexpected exception of type "
+                     + AssertionFailedException.class);
+            }
         } // end of try-catch
     }
 }
