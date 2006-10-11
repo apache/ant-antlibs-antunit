@@ -42,24 +42,44 @@ import org.apache.tools.ant.types.resources.FileResource;
 import org.apache.tools.ant.types.resources.Union;
 
 /**
- * Run all targets in a given build file who's name starts with "test".
+ * Run every target whose name starts with "test" in a set of build files.
  *
  * <p>Run the "setUp" target before each of them if present, same for
- * "tearDown" after each "test" target.  If a target throws an
- * AssertionFailedException, the test has failed, any other exception
- * is counted as an error (although BuildException will be scanned
- * recursively for nested AssertionFailedExceptions).</p>
+ * "tearDown" after each "test*" target (targets named just "test" are
+ * ignored).  If a target throws an AssertionFailedException, the test
+ * has failed; any other exception is considered an error (although
+ * BuildException will be scanned recursively for nested
+ * AssertionFailedExceptions).</p>
  */
 public class AntUnit extends Task {
+
+    /**
+     * Message to print if an error or failure occured.
+     */
+    public static final String ERROR_TESTS_FAILED = "Tests failed with ";
+
+    /**
+     * Message if no tests have been specified.
+     */
+    public static final String ERROR_NO_TESTS =
+        "You must specify build files to test.";
+
+    /**
+     * Message if non-File resources have been specified.
+     */
+    public static final String ERROR_NON_FILES =
+        "Only file system resources are supported.";
 
     /**
      * name of the magic setUp target.
      */
     private static final String SETUP = "setUp";
+
     /**
      * prefix that identifies test targets.
      */
     private static final String TEST = "test";
+
     /**
      * name of the magic tearDown target.
      */
@@ -88,39 +108,26 @@ public class AntUnit extends Task {
     /**
      * has a failure occured?
      */
-    private int failures=0;
+    private int failures = 0;
+
     /**
      * has an error occured?
      */
-    private int errors=0;
+    private int errors = 0;
+
     /**
      * stop testing if an error or failure occurs?
      */
-    private boolean failOnError=true;
+    private boolean failOnError = true;
+
     /**
      * Name of a property to set in case of an error.
      */
     private String errorProperty = null;
 
     /**
-     * Message to print if an error or failure occured.
-     */
-    public static final String ERROR_TESTS_FAILED = "Tests failed with ";
-
-    /**
-     * Message if no tests have been specified.
-     */
-    public static final String ERROR_NO_TESTS =
-        "You must specify build files to test.";
-
-    /**
-     * Message if non-File resources have been specified.
-     */
-    public static final String ERROR_NON_FILES =
-        "Only file system resources are supported.";
-
-    /**
-     * adds build files to run as tests.
+     * Add build files to run as tests.
+     * @param rc the ResourceCollection to add.
      */
     public void add(ResourceCollection rc) {
         if (buildFiles == null) {
@@ -130,7 +137,8 @@ public class AntUnit extends Task {
     }
 
     /**
-     * Adds a test listener.
+     * Add a test listener.
+     * @param al the AntUnitListener to add.
      */
     public void add(AntUnitListener al) {
         listeners.add(al);
@@ -138,26 +146,32 @@ public class AntUnit extends Task {
     }
 
     /**
-     * Adds a PropertySet.
+     * Add a PropertySet.
+     * @param ps the PropertySet to add.
      */
     public void addPropertySet(PropertySet ps) {
         propertySets.add(ps);
     }
 
     /**
-     * Sets the name of a property to set if an error or failure occurs.
+     * Set the name of a property to set if an error or failure occurs.
+     * @param s the name of the error property.
      */
     public void setErrorProperty(String s) {
         errorProperty = s;
     }
 
     /**
-     * stop testing if an error or failure occurs?
+     * Set whether to stop testing if an error or failure occurs?
+     * @param failOnError default <code>true</code>
      */
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;
     }
 
+    /**
+     * Execute the tests.
+     */
     public void execute() {
         if (buildFiles == null) {
             throw new BuildException(ERROR_NO_TESTS);
@@ -208,16 +222,14 @@ public class AntUnit extends Task {
         // setup project instance
         newProject = createProjectForFile(f);
 
-        // read build file
-        ProjectHelper.configureProject(newProject, f);
-
         // find targets
         Map targets = newProject.getTargets();
-        Target setUp = (Target) targets.get(SETUP);
-        Target tearDown = (Target) targets.get(TEARDOWN);
+        boolean setUp = targets.containsKey(SETUP);
+        boolean tearDown = targets.containsKey(TEARDOWN);
 
         // start test
         newProject.fireBuildStarted();
+
         Throwable caught = null;
         try {
             Iterator iter = targets.keySet().iterator();
@@ -225,7 +237,7 @@ public class AntUnit extends Task {
                 String name = (String) iter.next();
                 if (name.startsWith(TEST) && !name.equals(TEST)) {
                     Vector v = new Vector();
-                    if (setUp != null) {
+                    if (setUp) {
                         v.add(SETUP);
                     }
                     v.add(name);
@@ -262,8 +274,11 @@ public class AntUnit extends Task {
                         // is reached.
                         fireEndTest(name);
                         // clean up
-                        if (tearDown != null) {
+                        if (tearDown) {
                             newProject.executeTarget(TEARDOWN);
+                        }
+                        if (iter.hasNext()) {
+                            newProject = createProjectForFile(f);
                         }
                     }
                 }
@@ -278,6 +293,7 @@ public class AntUnit extends Task {
 
     /**
      * Redirect output to new project instance.
+     * @param outputToHandle the output to handle.
      */
     public void handleOutput(String outputToHandle) {
         if (newProject != null) {
@@ -289,6 +305,9 @@ public class AntUnit extends Task {
 
     /**
      * Redirect input to new project instance.
+     * @param buffer the buffer containing the input.
+     * @param offset the offset into <code>buffer</code>.
+     * @param length the length of the data.
      */
     public int handleInput(byte[] buffer, int offset, int length)
         throws IOException {
@@ -300,6 +319,7 @@ public class AntUnit extends Task {
 
     /**
      * Redirect flush to new project instance.
+     * @param toFlush the output String to flush.
      */
     public void handleFlush(String toFlush) {
         if (newProject != null) {
@@ -311,6 +331,7 @@ public class AntUnit extends Task {
 
     /**
      * Redirect error output to new project instance.
+     * @param errorOutputToHandle the error output to handle.
      */
     public void handleErrorOutput(String errorOutputToHandle) {
         if (newProject != null) {
@@ -322,6 +343,7 @@ public class AntUnit extends Task {
 
     /**
      * Redirect error flush to new project instance.
+     * @param errorOutputToFlush the error output to flush.
      */
     public void handleErrorFlush(String errorOutputToFlush) {
         if (newProject != null) {
@@ -333,6 +355,7 @@ public class AntUnit extends Task {
 
     /**
      * Creates a new project instance and configures it.
+     * @param f the File for which to create a Project.
      */
     private Project createProjectForFile(File f) {
         Project p = new Project();
@@ -350,7 +373,6 @@ public class AntUnit extends Task {
                     || MagicNames.ANT_FILE.equals(key)) {
                     continue;
                 }
-
                 Object value = props.get(key);
                 if (value != null && value instanceof String
                     && p.getProperty(key) == null) {
@@ -360,12 +382,18 @@ public class AntUnit extends Task {
         }
         p.setUserProperty(MagicNames.ANT_FILE, f.getAbsolutePath());
         attachListeners(f, p);
+
+        // read build file
+        ProjectHelper.configureProject(p, f);
+
         return p;
     }
 
     /**
      * Wraps all registered test listeners in BuildListeners and
      * attaches them to the new project instance.
+     * @param buildFile a build file.
+     * @param p the Project to attach to.
      */
     private void attachListeners(File buildFile, Project p) {
         Iterator it = listeners.iterator();
@@ -379,6 +407,8 @@ public class AntUnit extends Task {
 
     /**
      * invokes addFailure on all registered test listeners.
+     * @param targetName the name of the failed target.
+     * @param ae the associated AssertionFailedException.
      */
     private void fireFail(String targetName, AssertionFailedException ae) {
         failures++;
@@ -391,6 +421,8 @@ public class AntUnit extends Task {
 
     /**
      * invokes addError on all registered test listeners.
+     * @param targetName the name of the failed target.
+     * @param t the associated Throwable.
      */
     private void fireError(String targetName, Throwable t) {
         errors++;
@@ -403,6 +435,7 @@ public class AntUnit extends Task {
 
     /**
      * invokes endTest on all registered test listeners.
+     * @param targetName the name of the current target.
      */
     private void fireEndTest(String targetName) {
         Iterator it = listeners.iterator();
