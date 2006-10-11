@@ -22,5 +22,8 @@ under the License.
   <!-- easy way to override properties -->
   <property file="build.properties"/>
 
+  <!-- don't fork junit; regexp classes not available -->
+  <property name="junit.fork" value="false" />
+
   <import file="common/build.xml"/>
 </project>
