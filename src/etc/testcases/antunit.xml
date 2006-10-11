@@ -73,6 +73,13 @@ under the License.
     </au:antunit>
   </target>
 
+  <target name="testNewProject">
+    <au:antunit>
+      <file file="antunit/property.xml" />
+      <au:plainlistener />
+    </au:antunit>
+  </target>
+
   <property name="reportsdir" location="../../../build/reports"/>
   <target name="antunit-dir">
     <mkdir dir="${reportsdir}"/>

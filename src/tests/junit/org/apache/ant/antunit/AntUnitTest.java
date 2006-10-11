@@ -84,4 +84,8 @@ public class AntUnitTest extends BuildFileTest {
                                  + "I don't exist.xml since it doesn't exist");
     }
 
+    public void testNewProject() {
+        executeTarget("testNewProject");
+    }
+
 }
