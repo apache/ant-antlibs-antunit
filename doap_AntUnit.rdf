@@ -38,9 +38,9 @@
     <category rdf:resource="http://projects.apache.org/category/testing"/>
     <release>
       <Version>
-        <name>Apache AntUnit 1.0 Beta 1</name>
-        <created>2006-09-22</created>
-        <revision>1.0Beta1</revision>
+        <name>Apache AntUnit 1.0 Beta 2</name>
+        <created>2006-10-29</created>
+        <revision>1.0Beta2</revision>
       </Version>
     </release>
     <repository>
