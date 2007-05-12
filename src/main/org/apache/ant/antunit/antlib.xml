@@ -128,6 +128,20 @@ under the License.
     </sequential>
   </macrodef>
 
+  <macrodef name="assertResourceContains">
+	<attribute name="resource"/>
+	<attribute name="value"/>
+	<attribute name="casesensitive" default="true"/>
+	<attribute name="message"
+	  default="Expected resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
+    <sequential>
+	  <au:assertFileExists file="@{resource}"/>
+	  <au:assertTrue message="@{message}">
+	    <resourcecontains resource="@{resource}" substring="@{value}"/>
+	  </au:assertTrue>
+	</sequential>
+  </macrodef>
+
   <macrodef name="assertDestIsUptodate" backtrace="false">
     <attribute name="src"/>
     <attribute name="dest"/>
