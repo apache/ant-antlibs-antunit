@@ -135,7 +135,6 @@ under the License.
 	<attribute name="message"
 	  default="Expected resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
     <sequential>
-	  <au:assertFileExists file="@{resource}"/>
 	  <au:assertTrue message="@{message}">
 	    <resourcecontains resource="@{resource}" substring="@{value}"/>
 	  </au:assertTrue>
