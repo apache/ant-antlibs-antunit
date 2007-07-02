@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE document
+[
+<!ELEMENT document (properties?, release+)>
+<!ELEMENT properties (title)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT release (action*)>
+<!ELEMENT action (#PCDATA)>
+<!ATTLIST release
+          version CDATA #REQUIRED
+          date CDATA #REQUIRED
+          description CDATA #IMPLIED>
+<!ATTLIST action
+          issue CDATA #IMPLIED
+          type (add|fix|remove|update) #REQUIRED
+          breaks-bwc (true|false) #IMPLIED>
+]
+>
+<document>
+  <properties>
+    <title>Apache AntUnit</title>
+  </properties>
+
+  <release version="SVN trunk" date="unpublished">
+    <action type="fix" issue="42745">
+      assertFileExists example wrong, should use @file instead of @name
+    </action>
+  </release>
+
+</document>
