@@ -243,6 +243,7 @@ public class AntUnit extends Task {
                     v.add(name);
                     LogCapturer lc = new LogCapturer(newProject);
                     try {
+                        fireStartTest(name);
                         newProject.executeTargets(v);
                     } catch (AssertionFailedException e) {
                         fireFail(name, e);
@@ -406,6 +407,18 @@ public class AntUnit extends Task {
     }
 
     /**
+     * invokes start on all registered test listeners.
+     * @param targetName the name of the target.
+     */
+    private void fireStartTest(String targetName) {
+        Iterator it = listeners.iterator();
+        while (it.hasNext()) {
+            AntUnitListener al = (AntUnitListener) it.next();
+            al.startTest(targetName);
+        }
+    }
+
+    /**
      * invokes addFailure on all registered test listeners.
      * @param targetName the name of the failed target.
      * @param ae the associated AssertionFailedException.
@@ -464,10 +477,6 @@ public class AntUnit extends Task {
             a.endTestSuite(event.getProject(), buildFile);
         }
         public void targetStarted(BuildEvent event) {
-            String tName = event.getTarget().getName();
-            if (tName.startsWith(TEST)) {
-                a.startTest(tName);
-            }
         }
         public void targetFinished(BuildEvent event) {
         }
