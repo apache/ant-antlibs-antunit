@@ -33,9 +33,7 @@ import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.MagicNames;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
-import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.taskdefs.LogOutputStream;
 import org.apache.tools.ant.types.PropertySet;
 import org.apache.tools.ant.types.ResourceCollection;
 import org.apache.tools.ant.types.resources.FileResource;
@@ -241,6 +239,7 @@ public class AntUnit extends Task {
                         v.add(SETUP);
                     }
                     v.add(name);
+                    // create an register a logcapturer on the newProject
                     LogCapturer lc = new LogCapturer(newProject);
                     try {
                         fireStartTest(name);
@@ -248,11 +247,10 @@ public class AntUnit extends Task {
                     } catch (AssertionFailedException e) {
                         fireFail(name, e);
                     } catch (BuildException e) {
-                        BuildException orig = e;
                         boolean failed = false;
 
                         // try to see whether the BuildException masks
-                        // an AssertionFailedException.  if so, treat
+                        // an AssertionFailedException. If so, treat
                         // it as failure instead of error.
                         Throwable t = e.getCause();
                         while (t != null && t instanceof BuildException) {

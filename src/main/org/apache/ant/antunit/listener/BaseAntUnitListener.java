@@ -20,17 +20,14 @@
 
 package org.apache.ant.antunit.listener;
 
-import java.io.IOException;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.text.NumberFormat;
 
 import org.apache.ant.antunit.AntUnitListener;
 import org.apache.ant.antunit.AssertionFailedException;
-
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;

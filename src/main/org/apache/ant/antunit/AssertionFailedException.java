@@ -28,6 +28,7 @@ import org.apache.tools.ant.Location;
  */
 public class AssertionFailedException extends BuildException {
 
+    private static final long serialVersionUID = -1193299712860263327L;
     public static final String DEFAULT_MESSAGE = "Assertion failed";
 
     public AssertionFailedException(String message) {
