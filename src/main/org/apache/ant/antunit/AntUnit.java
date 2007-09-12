@@ -239,7 +239,7 @@ public class AntUnit extends Task {
                         v.add(SETUP);
                     }
                     v.add(name);
-                    // create an register a logcapturer on the newProject
+                    // create and register a logcapturer on the newProject
                     LogCapturer lc = new LogCapturer(newProject);
                     try {
                         fireStartTest(name);
