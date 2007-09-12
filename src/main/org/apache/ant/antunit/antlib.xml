@@ -33,6 +33,9 @@ under the License.
   <typedef name="xmllistener"
     classname="org.apache.ant.antunit.listener.XMLAntUnitListener"/>
 
+  <typedef name="failurelistener"
+    classname="org.apache.ant.antunit.listener.FailureAntUnitListener"/>
+
   <typedef name="logcapturer"
            classname="org.apache.ant.antunit.LogCapturer"/>
 
