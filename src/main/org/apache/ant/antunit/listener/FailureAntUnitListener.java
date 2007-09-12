@@ -64,6 +64,10 @@ public class FailureAntUnitListener extends BaseAntUnitListener {
         super(new BaseAntUnitListener.SendLogTo(SendLogTo.ANT_LOG), "txt");
     }
 
+    public void setFile(File file) {
+        failureBuildfile = file;
+    }
+
     public void startTestSuite(Project testProject, String buildFile) {
         super.startTestSuite(testProject, buildFile);
         currentTestProject = testProject;
@@ -197,12 +201,6 @@ public class FailureAntUnitListener extends BaseAntUnitListener {
                 return this.toString().compareTo(that.toString());   
             }
         }
-    }
-
-
-
-    public void setFile(File file) {
-        this.failureBuildfile = file;
     }
 
 }
