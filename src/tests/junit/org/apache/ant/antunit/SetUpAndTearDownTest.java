@@ -56,5 +56,4 @@ public class SetUpAndTearDownTest extends BuildFileTest {
     public void testFailedTeardown() {
         executeTarget("testFailedTeardown");
     }
-
 }
