@@ -274,7 +274,30 @@ public class AntUnit extends Task {
                         fireEndTest(name);
                         // clean up
                         if (tearDown) {
-                            newProject.executeTarget(TEARDOWN);
+                            try {
+                                newProject.executeTarget(TEARDOWN);
+                            } catch (final AssertionFailedException e) {
+                                fireFail(name, e);
+                            } catch (final BuildException e) {
+                                boolean failed = false;
+
+                                // try to see whether the BuildException masks
+                                // an AssertionFailedException. If so, treat
+                                // it as failure instead of error.
+                                Throwable t = e.getCause();
+                                while (t != null && t instanceof BuildException) {
+                                    if (t instanceof AssertionFailedException) {
+                                        failed = true;
+                                        fireFail(name, (AssertionFailedException) t);
+                                        break;
+                                    }
+                                    t = ((BuildException) t).getCause();
+                                }
+
+                                if (!failed) {
+                                    fireError(name, e);
+                                }
+                            }
                         }
                         if (iter.hasNext()) {
                             newProject = createProjectForFile(f);
