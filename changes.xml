@@ -25,6 +25,9 @@
     <action type="fix" issue="42745">
       assertFileExists example wrong, should use @file instead of @name
     </action>
+    <action type="fix" issue="43466">
+      Failure in tearDown doesn't result in failed test run
+    </action>
   </release>
 
 </document>
