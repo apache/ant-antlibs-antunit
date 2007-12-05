@@ -522,6 +522,65 @@
       &lt;assertMatches string="${abc}" pattern="abc" 
                      casesensitive="false"/></pre>
 
+
+    <h2><a name="assertDoesntMatch">assertDoesntMatch</a></h2>
+
+    <p>Asserts that a string doesn't match a given regular expression.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">string</td>
+          <td valign="top">The string to test.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">pattern</td>
+          <td valign="top">The pattern to test the string against.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">casesensitive</td>
+          <td valign="top">
+            Perform a case sensitive match.
+            Default is true.
+          </td>
+          <td align="center">No.</td>
+        </tr>
+        <tr>
+          <td valign="top">multiline</td>
+          <td valign="top">
+          Perform a multi line match.
+          Default is false.
+          </td>
+          <td align="center">No.</td>
+        </tr>
+        <tr>
+          <td valign="top">singleline</td>
+          <td valign="top">
+            This allows '.' to match new lines.
+            SingleLine is not to be confused with multiline,
+            SingleLine is a perl
+            regex term, it corresponds to dotall in java regex.
+            Default is false.
+          </td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the property abc contains
+      "abc" regardless of case:
+    </p>
+    <pre>
+      &lt;assertDoesntMatch string="${abc}" pattern="abc" 
+                     casesensitive="false"/></pre>
+
     <h2><a name="assertLogContains">assertLogContains</a></h2>
 
     <p>Asserts that the build log contains a given message.</p>

@@ -258,4 +258,24 @@ under the License.
     </sequential>
   </macrodef>
 
+  <macrodef name="assertDoesntMatch" backtrace="false">
+    <attribute name="string"/>
+    <attribute name="pattern"/>
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="singleline" default="false"/>
+    <attribute name="multiline" default="false"/>
+    <attribute name="message"
+      default="Expected '@{string}' to not match pattern '@{pattern}'"/>
+    <sequential>
+      <au:assertTrue message="@{message}">
+        <not>
+          <matches string="@{string}" pattern="@{pattern}"
+                   casesensitive="@{casesensitive}"
+                   singleline="@{singleline}"
+                   multiline="@{multiline}"/>
+        </not>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
 </antlib>

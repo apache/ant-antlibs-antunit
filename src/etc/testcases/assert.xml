@@ -197,4 +197,10 @@ under the License.
                         pattern="abc"/>
     </au:expectfailure>
   </target>
+
+  <target name="assertDoesntMatch">
+    <au:assertDoesntMatch string="this is AbC"
+                          pattern="abcd"
+                          casesensitive="false"/>
+  </target>
 </project>

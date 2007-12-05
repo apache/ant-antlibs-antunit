@@ -32,6 +32,9 @@
       assertMatches' casesensitive attribute didn't default to true as
       documented
     </action>
+    <action type="add" issue="43639">
+      added a new assertDoesntMatch assertion
+    </action>
   </release>
 
 </document>
