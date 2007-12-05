@@ -190,4 +190,11 @@ under the License.
                       pattern="abc"
                       casesensitive="false"/>
   </target>
+
+  <target name="assertMatchesDefaultCaseSensitivity">
+    <au:expectfailure>
+      <au:assertMatches string="this is AbC"
+                        pattern="abc"/>
+    </au:expectfailure>
+  </target>
 </project>

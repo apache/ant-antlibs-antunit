@@ -141,6 +141,10 @@ public class AssertTest extends BuildFileTest {
         executeTarget("assertMatches");
     }
 
+    public void testMatchesDefaultCaseSensitivity() {
+        executeTarget("assertMatchesDefaultCaseSensitivity");
+    }
+
     private void testPass(String target) {
         executeTarget(target);
     }

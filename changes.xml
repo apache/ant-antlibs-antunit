@@ -28,6 +28,10 @@
     <action type="fix" issue="43466">
       Failure in tearDown doesn't result in failed test run
     </action>
+    <action type="fix" issue="43639">
+      assertMatches' casesensitive attribute didn't default to true as
+      documented
+    </action>
   </release>
 
 </document>
