@@ -194,6 +194,16 @@ public abstract class BaseAntUnitListener
         return l;
     }
 
+    private Project currentTest;
+
+    public void setCurrentTestProject(Project p) {
+        currentTest = p;
+    }
+
+    protected Project getCurrentTestProject() {
+        return currentTest;
+    }
+
     public static class SendLogTo extends EnumeratedAttribute {
         public static final String ANT_LOG = "ant";
         public static final String FILE = "file";

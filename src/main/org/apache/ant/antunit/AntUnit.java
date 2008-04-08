@@ -424,6 +424,7 @@ public class AntUnit extends Task {
             p.addBuildListener(new BuildToAntUnitListener(buildFile
                                                           .getAbsolutePath(),
                                                           al));
+            al.setCurrentTestProject(p);
         }
     }
 

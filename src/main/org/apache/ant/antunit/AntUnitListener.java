@@ -34,6 +34,15 @@ public interface AntUnitListener {
      */
     void setParentTask(Task t);
     /**
+     * Set a reference to the Project instance currently executing the
+     * test target.
+     *
+     * <p>This provides access to the logging system or the properties
+     * of the project under test.  Note that different test targets
+     * will be executed in different Ant Project instances.</p>
+     */
+    void setCurrentTestProject(Project p);
+    /**
      * Invoked once per build file, before any targets get executed.
      */
     void startTestSuite(Project testProject, String buildFile);
