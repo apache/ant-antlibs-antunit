@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project name="plainlistener-test"
+      default="all"
+         xmlns:au="antlib:org.apache.ant.antunit">
+
+
+  <target name="showdefault">
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:plainlistener />
+    </au:antunit>
+  </target>
+  
+  <target name="showerror">
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:plainlistener logLevel="error" />
+    </au:antunit>
+  </target>
+  
+  <target name="showwarning">
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:plainlistener logLevel="warning" />
+    </au:antunit>
+  </target>
+  
+  <target name="showinfo">
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:plainlistener logLevel="info" />
+    </au:antunit>
+  </target>
+  
+  <target name="showverbose">
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:plainlistener logLevel="verbose" />
+    </au:antunit>
+  </target>
+  
+  <target name="showdebug">
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:plainlistener logLevel="debug" />
+    </au:antunit>
+  </target>
+  
+  <target name="shownone">
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:plainlistener logLevel="none" />
+    </au:antunit>
+  </target>
+  
+
+  <target name="suiteSetUp">
+    <echo>suiteSetUp</echo>
+  </target>
+  
+  <target name="suiteTearDown">
+    <echo>suiteTearDown</echo>
+  </target>
+  
+  <target name="setUp">
+    <echo>setUp</echo>
+  </target>
+  
+  <target name="tearDown">
+    <echo>tearDown</echo>
+  </target>
+  
+  <target name="testEcho">
+    <echo level="debug">debugmessage</echo>
+    <echo level="verbose">verbosemessage</echo>
+    <echo level="info">infomessage</echo>
+    <echo level="warning">warningmessage</echo>
+    <echo level="error">errormessage</echo>
+  </target>
+  
+  <target name="test2">
+    <echo>test2</echo>
+  </target>
+         
+</project>

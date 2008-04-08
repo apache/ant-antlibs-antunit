@@ -27,6 +27,7 @@ import java.io.StringWriter;
 
 import org.apache.ant.antunit.AssertionFailedException;
 
+import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;
@@ -45,6 +46,12 @@ public class PlainAntUnitListener extends BaseAntUnitListener {
      * Convenience layer on top of {@link #inner inner}.
      */
     private PrintWriter wri;
+    /**
+     * Collects log messages.
+     */
+    private StringBuffer log = new StringBuffer();
+
+    private static final String NEW_LINE = System.getProperty("line.separator");
 
     public PlainAntUnitListener() {
         super(new BaseAntUnitListener.SendLogTo(SendLogTo.ANT_LOG), "txt");
@@ -62,10 +69,9 @@ public class PlainAntUnitListener extends BaseAntUnitListener {
         inner = new StringWriter();
         wri = new PrintWriter(inner);
         out = getOut(buildFile);
-        String newLine = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer("Build File: ");
         sb.append(buildFile);
-        sb.append(newLine);
+        sb.append(NEW_LINE);
         try {
             out.write(sb.toString().getBytes());
             out.flush();
@@ -76,7 +82,6 @@ public class PlainAntUnitListener extends BaseAntUnitListener {
 
     public void endTestSuite(Project testProject, String buildFile) {
         long runTime = System.currentTimeMillis() - start;
-        String newLine = System.getProperty("line.separator");
         StringBuffer sb = new StringBuffer("Tests run: ");
         sb.append(runCount);
         sb.append(", Failures: ");
@@ -86,7 +91,16 @@ public class PlainAntUnitListener extends BaseAntUnitListener {
         sb.append(", Time elapsed: ");
         sb.append(nf.format(runTime/ 1000.0));
         sb.append(" sec");
-        sb.append(newLine);
+        sb.append(NEW_LINE);
+
+        if (log.length() > 0) {
+            sb.append("------------- Log Output       ---------------");
+            sb.append(NEW_LINE);
+            sb.append(log.toString());
+            log.setLength(0);
+            sb.append("------------- ---------------- ---------------");
+            sb.append(NEW_LINE);
+        }
 
         if (out != null) {
             try {
@@ -133,6 +147,11 @@ public class PlainAntUnitListener extends BaseAntUnitListener {
         }
         wri.println("\tMessage: " + t.getMessage());
         wri.print("\t");
+    }
+
+    protected void messageLogged(BuildEvent event) {
+        log.append(event.getMessage());
+        log.append(NEW_LINE);
     }
 
 }
