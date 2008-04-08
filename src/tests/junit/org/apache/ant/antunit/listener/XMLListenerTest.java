@@ -74,4 +74,7 @@ public class XMLListenerTest extends BuildFileTest {
         executeTarget("badcharacters");
     }
     
+    public void testProperties() {
+        executeTarget("properties");
+    }
 }

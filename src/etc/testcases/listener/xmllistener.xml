@@ -301,4 +301,45 @@ under the License.
     <echo>bad characters: ]]&gt;</echo>
   </target>
          
+  <property name="propertiesstart" value="&lt;properties&gt;" />
+  <property name="propertiesend" value="&lt;/properties&gt;" />
+  <macrodef name="assertPropertyElement">
+    <attribute name="name" description="Name of the property to look for" />
+    <attribute name="value" description="Expected property value (as a regular expression)" />
+    <sequential>
+      <au:assertMatches string="${reportxml}" pattern='${propertiesstart}.*&lt;property name="@{name}" value="@{value}" /&gt;.*${propertiesend}' singleline="true" 
+          message="Element for property @{name} not present." />
+    </sequential>
+  </macrodef>  
+
+  <target name="properties">
+    <clean/>
+    <property name="thisIsTheProperty" value="thisIsTheValue" />
+    <property name="badCharacters" value="&amp;&lt;&gt;&quot;&apos;" />
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:xmllistener />
+      <propertyset>
+        <propertyref name="thisIsTheProperty" />
+        <propertyref name="badCharacters" />
+      </propertyset>
+    </au:antunit>
+    <loadfile property="reportxml" srcFile="${reportfile}" />
+    <au:assertMatches string="${reportxml}" pattern="${propertiesstart}.*${propertiesend}" singleline="true" 
+        message="Properties element not present" />
+    <au:assertMatches string="${reportxml}" pattern="&lt;testsuite.*${propertiesstart}.*${propertiesend}.*&lt;/testsuite" singleline="true"
+        message="Properties element should be child of testsuite" />
+    <au:assertMatches string="${reportxml}" pattern="${propertiesend}.*&lt;testcase" singleline="true" 
+        message="Properties element should be before testcases" />
+    <assertDoesntMatch string="${reportxml}" pattern="&lt;/testcase&gt;.*${propertiesstart}" singleline="true" 
+        message="Properties element should not be after testcases" />
+    <assertDoesntMatch string="${reportxml}" pattern="&lt;property.*${propertiesstart}" singleline="true" 
+        message="Property element should only be inside properties" />
+    <assertDoesntMatch string="${reportxml}" pattern="${propertiesend}.*&lt;property.*" singleline="true" 
+        message="Property element should only be inside properties" />
+    <assertPropertyElement name="thisIsTheProperty" value="${thisIsTheProperty}" />
+    <assertPropertyElement name="java.version" value="${java.version}" />
+    <assertPropertyElement name="badCharacters" value="&amp;amp;&amp;lt;&amp;gt;&amp;quot;&amp;apos;" />
+    <clean/>
+  </target>
 </project>

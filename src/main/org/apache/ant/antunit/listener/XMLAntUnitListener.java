@@ -27,6 +27,9 @@ import java.io.Writer;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.ant.antunit.AssertionFailedException;
 
@@ -90,6 +93,21 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
             domWri.writeXMLDeclaration(wri);
             domWri.openElement(root, wri, 0, INDENT, true);
             wri.write(StringUtils.LINE_SEP);
+
+            Element propertiesElement =
+                DOMUtils.createChildElement(root, XMLConstants.PROPERTIES);
+            Hashtable propertiesMap = testProject.getProperties();
+            for (final Iterator iterator = propertiesMap.entrySet().iterator(); 
+                 iterator.hasNext();) {
+                final Map.Entry property = (Map.Entry) iterator.next();
+                Element e = DOMUtils.createChildElement(propertiesElement,
+                                                        XMLConstants.PROPERTY);
+                e.setAttribute(XMLConstants.ATTR_NAME,
+                               property.getKey().toString());
+                e.setAttribute(XMLConstants.ATTR_VALUE,
+                               property.getValue().toString());
+            }
+            domWri.write(propertiesElement, wri, 1, INDENT);
         } catch (IOException ex) {
             throw new BuildException(ex);
         }

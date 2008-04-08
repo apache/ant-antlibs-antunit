@@ -58,6 +58,10 @@
       plainlistener and xmllistener can now optionally contain the
       test's log output in their reports
     </action>
+    <action type="add" issue="43614">
+      xmllistener will now log the properties of the project under
+      test
+    </action>
   </release>
 
 </document>
