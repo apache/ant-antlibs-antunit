@@ -42,9 +42,16 @@ under the License.
     is "test" exactly) are considered test cases.  If a test build
     file contains a target named setUp, this gets executed before each
     test target.  If it contains a target named tearDown this gets
-    executed after each test target.  Each test target is run in a
-    fresh Ant project, i.e. each test target has a fresh set of
-    properties and references.</p>
+    executed after each test target.</p>
+
+    <p>If the test build file contains a target named suiteSetUp, this
+    gets executed before te very first test target (or before the
+    setUp target is executed for the first time).  If it contains a
+    target named suiteTearDown this gets executed after the last test
+    target (or tearDown has been executed the last time).</p>
+
+    <p>Each test target is run in a fresh Ant project, i.e. each test
+    target has a fresh set of properties and references.</p>
 
     <p>So in a build file with targets setUp, tearDown, test1 and
     test2, antunit will run two Ant builds.  One will run the targets
