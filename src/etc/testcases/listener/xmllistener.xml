@@ -1,0 +1,304 @@
+<?xml version="1.0"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project name="xmllistener-test"
+      default="all"
+         xmlns:au="antlib:org.apache.ant.antunit">
+
+  <macrodef name="assertFileContains">
+    <attribute name="file" description="File to compare" />
+    <attribute name="value" description="Text to look for in the file" />
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="message"
+               default="Expected file '@{file}' to contain value '@{value}'."/>
+    <sequential>
+      <au:assertTrue message="@{message}">
+        <isfileselected file="@{file}">
+          <contains text="@{value}" casesensitive="@{casesensitive}" />
+        </isfileselected>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertFileDoesntContain">
+    <attribute name="file" description="File to compare" />
+    <attribute name="value" description="Text to look for in the file" />
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="message"
+               default="Expected file '@{file}' to not contain value '@{value}'."/>
+    <sequential>
+      <au:assertTrue message="@{message}">
+        <not>
+          <isfileselected file="@{file}">
+            <contains text="@{value}" casesensitive="@{casesensitive}" />
+          </isfileselected>
+        </not>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertFileContainsRegExp">
+    <attribute name="file" description="File to compare" />
+    <attribute name="value" description="Regular expression to look for in the file" />
+    <attribute name="message"
+               default="Expected file '@{file}' to contain the regular expression '@{value}'."/>
+    <sequential>
+      <au:assertTrue message="@{message}">
+        <isfileselected file="@{file}">
+          <containsregexp expression="@{value}" />
+        </isfileselected>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertFileDoesntContainRegExp">
+    <attribute name="file" description="File to compare" />
+    <attribute name="value" description="Regular expression to look for in the file" />
+    <attribute name="message"
+               default="Expected file '@{file}' to not contain the regular expression '@{value}'."/>
+    <sequential>
+      <au:assertTrue message="@{message}">
+        <not>
+          <isfileselected file="@{file}">
+            <containsregexp expression="@{value}" />
+          </isfileselected>
+        </not>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertDoesntMatch" backtrace="false">
+    <attribute name="string"/>
+    <attribute name="pattern"/>
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="singleline" default="false"/>
+    <attribute name="multiline" default="false"/>
+    <attribute name="message"
+      default="Expected '@{string}' to match pattern '@{pattern}'"/>
+    <sequential>
+      <au:assertTrue message="@{message}">
+        <not>
+            <matches string="@{string}" pattern="@{pattern}"
+                         casesensitive="@{casesensitive}"
+                         singleline="@{singleline}"
+                         multiline="@{multiline}"/>
+        </not>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="clean">
+    <sequential>
+      <delete file="${reportfile}" quiet="true" />
+    </sequential>
+  </macrodef>
+  
+         
+  <!-- This is the name of the report the XML listener generates -->
+  <property name="reportfile" value="TEST-xmllistener_xml.xml" />
+
+  <target name="showdefault">
+    <clean/>
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:xmllistener />
+    </au:antunit>
+    <assertFileDoesntContain file="${reportfile}" value="errormessage" message="Should not have shown error message" />
+    <assertFileDoesntContain file="${reportfile}" value="warningmessage" message="Should not have shown warning message" />
+    <assertFileDoesntContain file="${reportfile}" value="infomessage" message="Should not have shown info message" />
+    <assertFileDoesntContain file="${reportfile}" value="verbosemessage" message="Should not have shown verbose message" />
+    <assertFileDoesntContain file="${reportfile}" value="debugmessage" message="Should not have shown debug message" />
+    <clean/>
+  </target>
+  
+  <target name="showerror">
+    <clean/>
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:xmllistener logLevel="error" />
+    </au:antunit>
+    <assertFileContains file="${reportfile}" value="errormessage" message="Should have shown error message" />
+    <assertFileDoesntContain file="${reportfile}" value="warningmessage" message="Should not have shown warning message" />
+    <assertFileDoesntContain file="${reportfile}" value="infomessage" message="Should not have shown info message" />
+    <assertFileDoesntContain file="${reportfile}" value="verbosemessage" message="Should not have shown verbose message" />
+    <assertFileDoesntContain file="${reportfile}" value="debugmessage" message="Should not have shown debug message" />
+    <clean/>
+  </target>
+  
+  <target name="showwarning">
+    <clean/>
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:xmllistener logLevel="warning" />
+    </au:antunit>
+    <assertFileContains file="${reportfile}" value="errormessage" message="Should have shown error message" />
+    <assertFileContains file="${reportfile}" value="warningmessage" message="Should have shown warning message" />
+    <assertFileDoesntContain file="${reportfile}" value="infomessage" message="Should not have shown info message" />
+    <assertFileDoesntContain file="${reportfile}" value="verbosemessage" message="Should not have shown verbose message" />
+    <assertFileDoesntContain file="${reportfile}" value="debugmessage" message="Should not have shown debug message" />
+    <clean/>
+  </target>
+  
+  <target name="showinfo">
+    <clean/>
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:xmllistener logLevel="info" />
+    </au:antunit>
+    <assertFileContains file="${reportfile}" value="errormessage" message="Should have shown error message" />
+    <assertFileContains file="${reportfile}" value="warningmessage" message="Should have shown warning message" />
+    <assertFileContains file="${reportfile}" value="infomessage" message="Should have shown info message" />
+    <assertFileDoesntContain file="${reportfile}" value="verbosemessage" message="Should not have shown verbose message" />
+    <assertFileDoesntContain file="${reportfile}" value="debugmessage" message="Should not have shown debug message" />
+    <clean/>
+  </target>
+  
+  <target name="showverbose">
+    <clean/>
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:xmllistener logLevel="verbose" />
+    </au:antunit>
+    <assertFileContains file="${reportfile}" value="errormessage" message="Should have shown error message" />
+    <assertFileContains file="${reportfile}" value="warningmessage" message="Should have shown warning message" />
+    <assertFileContains file="${reportfile}" value="infomessage" message="Should have shown info message" />
+    <assertFileContains file="${reportfile}" value="verbosemessage" message="Should have shown verbose message" />
+    <assertFileDoesntContain file="${reportfile}" value="debugmessage" message="Should not have shown debug message" />
+    <clean/>
+  </target>
+  
+  <target name="showdebug">
+    <clean/>
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:xmllistener logLevel="debug" />
+    </au:antunit>
+    <assertFileContains file="${reportfile}" value="errormessage" message="Should have shown error message" />
+    <assertFileContains file="${reportfile}" value="warningmessage" message="Should have shown warning message" />
+    <assertFileContains file="${reportfile}" value="infomessage" message="Should have shown info message" />
+    <assertFileContains file="${reportfile}" value="verbosemessage" message="Should have shown verbose message" />
+    <assertFileContains file="${reportfile}" value="debugmessage" message="Should have shown debug message" />
+    <clean/>
+  </target>
+  
+  <target name="shownone">
+    <clean/>
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:xmllistener logLevel="none" />
+    </au:antunit>
+    <assertFileDoesntContain file="${reportfile}" value="errormessage" message="Should not have shown error message" />
+    <assertFileDoesntContain file="${reportfile}" value="warningmessage" message="Should not have shown warning message" />
+    <assertFileDoesntContain file="${reportfile}" value="infomessage" message="Should not have shown info message" />
+    <assertFileDoesntContain file="${reportfile}" value="verbosemessage" message="Should not have shown verbose message" />
+    <assertFileDoesntContain file="${reportfile}" value="debugmessage" message="Should not have shown debug message" />
+    <clean/>
+  </target>
+  
+  <target name="-createreport">
+    <clean/>
+    <au:antunit failOnError="false">
+      <file file="${ant.file}" />
+      <au:xmllistener logLevel="info"/>
+    </au:antunit>
+  </target>
+  
+  <property name="systemoutstart" value="&lt;system-out&gt;&lt;!\[CDATA\[" />
+  <property name="systemoutend" value="\]\]&gt;&lt;/system-out&gt;" />
+  
+  <target name="stdoutplacement" depends="-createreport">
+    <loadfile property="reportxml" srcFile="${reportfile}" />
+    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*${systemoutend}" singleline="true" 
+        message="Standard output element not present" />
+    <assertDoesntMatch string="${reportxml}" pattern="${systemoutstart}.*&lt;testcase" singleline="true"
+        message="Standard output element should be after all testcase elements" />
+    <au:assertMatches string="${reportxml}" pattern="${systemoutend}.*&lt;tests" singleline="true"
+        message="Standard output element should be before tests element" />
+    <clean/>
+  </target>
+  
+  <target name="setupteardown" depends="-createreport">
+    <loadfile property="reportxml" srcFile="${reportfile}" />
+    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*setUp.*${systemoutend}" singleline="true"
+        message="setUp message not present" />
+    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*setUp.*setUp.*${systemoutend}" singleline="true"
+        message="Two setUp messages not present" />
+    <assertDoesntMatch string="${reportxml}" pattern="${systemoutstart}.*setUp.*setUp.*setUp.*${systemoutend}" singleline="true"
+        message="Too many setUp messages present" />
+    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*tearDown.*${systemoutend}" singleline="true"
+        message="tearDown message not present" />
+    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*tearDown.*tearDown.*${systemoutend}" singleline="true"
+        message="Two tearDown messages not present" />
+    <assertDoesntMatch string="${reportxml}" pattern="${systemoutstart}.*tearDown.*tearDown.*tearDown.*${systemoutend}" singleline="true"
+        message="Too many tearDown messages present" />
+    <clean/>
+  </target>
+
+  <target name="suitesetupteardown" depends="-createreport">
+    <loadfile property="reportxml" srcFile="${reportfile}" />
+    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*suiteSetUp.*${systemoutend}" singleline="true"
+        message="suiteSetUp message not present" />
+    <assertDoesntMatch string="${reportxml}" pattern="${systemoutstart}.*suiteSetUp.*suiteSetUp.*${systemoutend}" singleline="true"
+        message="Too many suiteSetUp messages present" />
+    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*suiteTearDown.*${systemoutend}" singleline="true"
+        message="suiteTearDown message not present" />
+    <assertDoesntMatch string="${reportxml}" pattern="${systemoutstart}.*suiteTearDown.*suiteTearDown.*${systemoutend}" singleline="true"
+        message="Too many suiteTearDown messages present" />
+    <clean/>
+  </target>
+  
+  <target name="badcharacters" depends="-createreport">
+    <loadfile property="reportxml" srcFile="${reportfile}" />
+    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*&amp;#x5d;&amp;#x5d;&amp;gt;.*${systemoutend}" singleline="true"
+        message="Bad characters not escaped" />
+    <clean/>
+  </target>
+  
+
+  <target name="suiteSetUp">
+    <echo>suiteSetUp</echo>
+  </target>
+  
+  <target name="suiteTearDown">
+    <echo>suiteTearDown</echo>
+  </target>
+  
+  <target name="setUp">
+    <echo>setUp</echo>
+  </target>
+  
+  <target name="tearDown">
+    <echo>tearDown</echo>
+  </target>
+  
+  <target name="testEcho">
+    <echo level="debug">debugmessage</echo>
+    <echo level="verbose">verbosemessage</echo>
+    <echo level="info">infomessage</echo>
+    <echo level="warning">warningmessage</echo>
+    <echo level="error">errormessage</echo>
+  </target>
+  
+  <target name="test2">
+    <echo>test2</echo>
+    <echo>bad characters: ]]&gt;</echo>
+  </target>
+         
+</project>

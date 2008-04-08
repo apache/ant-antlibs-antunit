@@ -30,6 +30,7 @@ import java.util.Date;
 
 import org.apache.ant.antunit.AssertionFailedException;
 
+import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;
@@ -53,6 +54,10 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
     private Document doc;
     private Element root;
     private Element currentTest;
+    /**
+     * Collects log messages.
+     */
+    private StringBuffer log = new StringBuffer();
 
     public XMLAntUnitListener() {
         super(new BaseAntUnitListener.SendLogTo(SendLogTo.FILE), "xml");
@@ -92,8 +97,14 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
 
     public void endTestSuite(Project testProject, String buildFile) {
         try {
-            Element e = DOMUtils.createChildElement(root,
-                                                    XMLConstants.ATTR_TESTS);
+            Element e;
+            if (log.length() > 0) {
+                e = DOMUtils.createChildElement(root, XMLConstants.SYSTEM_OUT);
+                DOMUtils.appendCDATA(e, log.toString());
+                log.setLength(0);
+                domWri.write(e, wri, 1, INDENT);
+            }
+            e = DOMUtils.createChildElement(root, XMLConstants.ATTR_TESTS); 
             DOMUtils.appendText(e, String.valueOf(runCount));
             domWri.write(e, wri, 1, INDENT);
             e = DOMUtils.createChildElement(root, XMLConstants.ATTR_FAILURES);
@@ -178,6 +189,11 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
         } catch (IOException ex) {
             throw new BuildException(ex);
         }
+    }
+
+    protected void messageLogged(BuildEvent event) {
+        log.append(event.getMessage());
+        log.append(System.getProperty("line.separator"));
     }
 
     /**
