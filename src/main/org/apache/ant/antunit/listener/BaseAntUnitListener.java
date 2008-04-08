@@ -28,12 +28,15 @@ import java.text.NumberFormat;
 
 import org.apache.ant.antunit.AntUnitListener;
 import org.apache.ant.antunit.AssertionFailedException;
+import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
 import org.apache.tools.ant.types.EnumeratedAttribute;
+import org.apache.tools.ant.types.LogLevel;
 import org.apache.tools.ant.util.FileUtils;
 import org.apache.tools.ant.util.TeeOutputStream;
 
@@ -48,6 +51,7 @@ public abstract class BaseAntUnitListener
                                   String extension) {
         logTo = defaultReportTarget;
         this.extension = extension;
+        logLevel = BaseAntUnitListener.AntUnitLogLevel.NONE;
     }
 
     /**
@@ -198,11 +202,35 @@ public abstract class BaseAntUnitListener
 
     public void setCurrentTestProject(Project p) {
         currentTest = p;
+        p.addBuildListener(new LogGrabber());
     }
 
     protected Project getCurrentTestProject() {
         return currentTest;
     }
+
+    /**
+     * The minimum level a log message must be logged at to be
+     * included in the output.
+     */
+    private AntUnitLogLevel logLevel;
+
+    /**
+     * Sets the minimum level a log message must be logged at to be
+     * included in the output.
+     */
+    public void setLogLevel(AntUnitLogLevel l) {
+        logLevel = l;
+    }
+
+    /**
+     * Gets messages from the project running the test target if their
+     * level is at least of the level specified with {@link
+     * #setLoglevel setLogLevel}.
+     *
+     * <p>This implementation is empty.</p>
+     */
+    protected void messageLogged(BuildEvent event) {}
 
     public static class SendLogTo extends EnumeratedAttribute {
         public static final String ANT_LOG = "ant";
@@ -217,6 +245,60 @@ public abstract class BaseAntUnitListener
 
         public String[] getValues() {
             return new String[] {ANT_LOG, FILE, BOTH};
+        }
+    }
+
+    public static class AntUnitLogLevel extends EnumeratedAttribute {
+        public static final AntUnitLogLevel NONE = new AntUnitLogLevel("none");
+
+        public AntUnitLogLevel() {
+            super();
+        }
+
+        private AntUnitLogLevel(String value) {
+            super();
+            setValue(value);
+        }
+
+        public String[] getValues() {
+            return new String[] {
+                "none",
+                "error",
+                "warn",
+                "warning",
+                "info",
+                "verbose",
+                "debug"};
+        }
+
+        private static int[] levels = {
+            Project.MSG_ERR - 1,
+            Project.MSG_ERR,
+            Project.MSG_WARN,
+            Project.MSG_WARN,
+            Project.MSG_INFO,
+            Project.MSG_VERBOSE,
+            Project.MSG_DEBUG
+        };
+
+        public int getLevel() {
+            return levels[getIndex()];
+        }
+    }
+
+    public class LogGrabber implements BuildListener {
+        public void buildStarted(BuildEvent event) {}
+        public void buildFinished(BuildEvent event) {}
+        public void targetStarted(BuildEvent event) {}
+        public void targetFinished(BuildEvent event) {}
+        public void taskStarted(BuildEvent event) {}
+        public void taskFinished(BuildEvent event) {}
+        public void messageLogged(BuildEvent event) {
+            int priority = event.getPriority();
+            // Filter out messages based on priority
+            if (priority <= logLevel.getLevel()) {
+                BaseAntUnitListener.this.messageLogged(event);
+            }
         }
     }
 }
