@@ -51,6 +51,13 @@
     <action type="add" issue="43639">
       added a new assertDoesntMatch assertion
     </action>
+    <action type="add" issue="43475">
+      added suiteSetUp and suiteTearDown targets
+    </action>
+    <action type="add" issue="43604">
+      plainlistener and xmllistener can now optionally contain the
+      test's log output in their reports
+    </action>
   </release>
 
 </document>
