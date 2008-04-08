@@ -82,6 +82,16 @@ public class AntUnit extends Task {
      * name of the magic tearDown target.
      */
     private static final String TEARDOWN = "tearDown";
+    
+    /**
+     * name of the magic suiteSetUp target.
+     */
+    private static final String SUITESETUP = "suiteSetUp";
+    
+    /**
+     * name of the magic suiteTearDown target.
+     */
+    private static final String SUITETEARDOWN = "suiteTearDown";
 
     /**
      * The build files to process.
@@ -224,12 +234,47 @@ public class AntUnit extends Task {
         Map targets = newProject.getTargets();
         boolean setUp = targets.containsKey(SETUP);
         boolean tearDown = targets.containsKey(TEARDOWN);
+        boolean suiteSetUp = targets.containsKey(SUITESETUP);
+        boolean suiteTearDown = targets.containsKey(SUITETEARDOWN);
 
         // start test
         newProject.fireBuildStarted();
 
         Throwable caught = null;
         try {
+            if (suiteSetUp) {
+                boolean success = false;
+                try {
+                    newProject.executeTarget(SUITESETUP);
+                    success = true;
+                } catch (AssertionFailedException e) {
+                    fireStartTest(SUITESETUP);
+                    fireFail(SUITESETUP, e);
+                } catch (BuildException e) {
+                    boolean failed = false;
+                    fireStartTest(SUITESETUP);
+
+                    // try to see whether the BuildException masks
+                    // an AssertionFailedException. If so, treat
+                    // it as failure instead of error.
+                    Throwable t = e.getCause();
+                    while (t != null && t instanceof BuildException) {
+                        if (t instanceof AssertionFailedException) {
+                            failed = true;
+                            fireFail(SUITESETUP, (AssertionFailedException) t);
+                            break;
+                        }
+                        t = ((BuildException) t).getCause();
+                    }
+
+                    if (!failed) {
+                        fireError(SUITESETUP, e);
+                    }
+                }
+                if (!success) {
+                    return;
+                }
+            }
             Iterator iter = targets.keySet().iterator();
             while (iter.hasNext()) {
                 String name = (String) iter.next();
@@ -308,6 +353,35 @@ public class AntUnit extends Task {
         } catch (Throwable e) {
             caught = e;
         } finally {
+            if (suiteTearDown) {
+                try {
+                    newProject.executeTarget(SUITETEARDOWN);
+                } catch (AssertionFailedException e) {
+                    fireStartTest(SUITETEARDOWN);
+                    fireFail(SUITETEARDOWN, e);
+                } catch (BuildException e) {
+                    boolean failed = false;
+                    fireStartTest(SUITETEARDOWN);
+
+                    // try to see whether the BuildException masks
+                    // an AssertionFailedException. If so, treat
+                    // it as failure instead of error.
+                    Throwable t = e.getCause();
+                    while (t != null && t instanceof BuildException) {
+                        if (t instanceof AssertionFailedException) {
+                            failed = true;
+                            fireFail(SUITETEARDOWN, (AssertionFailedException) t);
+                            break;
+                        }
+                        t = ((BuildException) t).getCause();
+                    }
+
+                    if (!failed) {
+                        fireError(SUITETEARDOWN, e);
+                    }
+                }
+            }
+
             newProject.fireBuildFinished(caught);
             newProject = null;
         }

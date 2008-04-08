@@ -131,7 +131,6 @@ public class PlainListenerTest extends BuildFileTest {
         assertTrue("Second tearDown not present", index > -1);
     }
     
-    /*
     public void testSuiteSetUpTearDown() {
         executeTarget("showinfo");
         String log = getLog();
@@ -144,5 +143,4 @@ public class PlainListenerTest extends BuildFileTest {
         index = log.indexOf("suiteTearDown", index + 1);
         assertTrue("suiteTearDown present more than once", index == -1);
     }
-    */
 }

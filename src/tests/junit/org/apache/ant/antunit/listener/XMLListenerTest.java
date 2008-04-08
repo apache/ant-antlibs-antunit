@@ -66,11 +66,9 @@ public class XMLListenerTest extends BuildFileTest {
         executeTarget("setupteardown");
     }
     
-    /*
     public void testSuiteSetUpTearDown() {
         executeTarget("suitesetupteardown");
     }
-    */
     
     public void testBadCharacters() {
         executeTarget("badcharacters");

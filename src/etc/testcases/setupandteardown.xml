@@ -21,7 +21,10 @@ under the License.
 <project name="setupandteardown-test"
       default="all"
          xmlns:au="antlib:org.apache.ant.antunit">
-
+         
+<typedef name="reportlistener"
+    classname="org.apache.ant.antunit.SetUpAndTearDownTest$TestReportListener"/>
+    
   <target name="all">
     <au:antunit>
       <file file="${ant.file}" />
@@ -87,10 +90,11 @@ under the License.
   </target>
   
   <!-- Tests a failure in setup -->
-  <target name="testFailedSetup">
+  <target name="testFailureSetup">
     <tempfile property="outputfile" deleteonexit="true" />
     <au:antunit failOnError="false" errorProperty="failure">
-      <file file="antunit/setupandteardown/failedsetup.xml" />
+      <file file="antunit/setupandteardown/failuresetup.xml" />
+      <au:plainlistener/>
       <propertyset>
         <propertyref name="outputfile" />
       </propertyset>
@@ -98,14 +102,31 @@ under the License.
     <fail unless="failure" message="Test should have failed." />
     <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
     <loadfile property="output" srcFile="${outputfile}" />
-    <au:assertEquals expected="ST" actual="${output}" />
+    <au:assertEquals expected="STSTST" actual="${output}" />
+  </target>
+  
+  <!-- Tests an error in setup -->
+  <target name="testErrorSetup">
+    <tempfile property="outputfile" deleteonexit="true" />
+    <au:antunit failOnError="false" errorProperty="failure">
+      <file file="antunit/setupandteardown/errorsetup.xml" />
+      <au:plainlistener/>
+      <propertyset>
+        <propertyref name="outputfile" />
+      </propertyset>
+    </au:antunit>
+    <fail unless="failure" message="Test should have failed." />
+    <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
+    <loadfile property="output" srcFile="${outputfile}" />
+    <au:assertEquals expected="STSTST" actual="${output}" />
   </target>
   
   <!-- Tests a failure in teardown -->
-  <target name="testFailedTeardown">
+  <target name="testFailureTeardown">
     <tempfile property="outputfile" deleteonexit="true" />
     <au:antunit failOnError="false" errorProperty="failure">
-      <file file="antunit/setupandteardown/failedteardown.xml" />
+      <file file="antunit/setupandteardown/failureteardown.xml" />
+      <au:plainlistener/>
       <propertyset>
         <propertyref name="outputfile" />
       </propertyset>
@@ -113,7 +134,148 @@ under the License.
     <fail unless="failure" message="Test should have failed." />
     <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
     <loadfile property="output" srcFile="${outputfile}" />
-    <au:assertEquals expected="SET" actual="${output}" />
+    <au:assertEquals expected="SETSETSET" actual="${output}" />
+  </target>
+  
+  <!-- Tests a error in teardown -->
+  <target name="testErrorTeardown">
+    <tempfile property="outputfile" deleteonexit="true" />
+    <au:antunit failOnError="false" errorProperty="failure">
+      <file file="antunit/setupandteardown/errorteardown.xml" />
+      <au:plainlistener/>
+      <propertyset>
+        <propertyref name="outputfile" />
+      </propertyset>
+    </au:antunit>
+    <fail unless="failure" message="Test should have failed." />
+    <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
+    <loadfile property="output" srcFile="${outputfile}" />
+    <au:assertEquals expected="SETSETSET" actual="${output}" />
+  </target>
+
+  <!-- Verifies that both suiteSetUp and suiteTearDown are called for the whole test script -->
+  <target name="testBothSuite">
+    <tempfile property="outputfile" deleteonexit="true" />
+    <au:antunit>
+      <file file="antunit/setupandteardown/bothsuite.xml" />
+      <propertyset>
+        <propertyref name="outputfile" />
+      </propertyset>
+    </au:antunit>
+    <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
+    <loadfile property="output" srcFile="${outputfile}" />
+    <au:assertEquals expected="ASETSETSETSETB" actual="${output}" />
+  </target>
+  
+  <!-- Tests no suiteSetUp -->
+  <target name="testNoSuiteSetUp">
+    <tempfile property="outputfile" deleteonexit="true" />
+    <au:antunit>
+      <file file="antunit/setupandteardown/nosuitesetup.xml" />
+      <propertyset>
+        <propertyref name="outputfile" />
+      </propertyset>
+    </au:antunit>
+    <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
+    <loadfile property="output" srcFile="${outputfile}" />
+    <au:assertEquals expected="EEEEB" actual="${output}" />
+  </target>
+  
+  <!-- Tests no suiteTearDown -->
+  <target name="testNoSuiteTearDown">
+    <tempfile property="outputfile" deleteonexit="true" />
+    <au:antunit>
+      <file file="antunit/setupandteardown/nosuiteteardown.xml" />
+      <propertyset>
+        <propertyref name="outputfile" />
+      </propertyset>
+    </au:antunit>
+    <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
+    <loadfile property="output" srcFile="${outputfile}" />
+    <au:assertEquals expected="AEEEE" actual="${output}" />
+  </target>
+  
+  <!-- Verifies suite teardown is called for a failed test -->
+  <target name="testFailedTestSuite">
+    <tempfile property="outputfile" deleteonexit="true" />
+    <au:antunit failOnError="false" errorProperty="failure">
+      <file file="antunit/setupandteardown/failedtestsuite.xml" />
+      <propertyset>
+        <propertyref name="outputfile" />
+      </propertyset>
+    </au:antunit>
+    <fail unless="failure" message="Test should have failed." />
+    <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
+    <loadfile property="output" srcFile="${outputfile}" />
+    <au:assertEquals expected="ASETB" actual="${output}" />
+  </target>
+
+  <!-- Tests a failure in suiteSetUp -->
+  <target name="testFailureSuiteSetUp">
+    <tempfile property="outputfile" deleteonexit="true" />
+    <au:antunit failOnError="false" errorProperty="failure">
+      <file file="antunit/setupandteardown/failuresuitesetup.xml" />
+      <au:plainlistener/>
+      <reportlistener/>
+      <propertyset>
+        <propertyref name="outputfile" />
+      </propertyset>
+    </au:antunit>
+    <fail unless="failure" message="Test should have failed." />
+    <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
+    <loadfile property="output" srcFile="${outputfile}" />
+    <au:assertEquals expected="AB" actual="${output}" />
+  </target>
+
+  <!-- Tests an error in suiteSetUp -->
+  <target name="testErrorSuiteSetUp">
+    <tempfile property="outputfile" deleteonexit="true" />
+    <au:antunit failOnError="false" errorProperty="failure">
+      <file file="antunit/setupandteardown/errorsuitesetup.xml" />
+      <au:plainlistener/>
+      <reportlistener/>
+      <propertyset>
+        <propertyref name="outputfile" />
+      </propertyset>
+    </au:antunit>
+    <fail unless="failure" message="Test should have failed." />
+    <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
+    <loadfile property="output" srcFile="${outputfile}" />
+    <au:assertEquals expected="AB" actual="${output}" />
+  </target>
+  
+  <!-- Tests a failure in suiteTearDown -->
+  <target name="testFailureSuiteTearDown">
+    <tempfile property="outputfile" deleteonexit="true" />
+    <au:antunit failOnError="false" errorProperty="failure">
+      <file file="antunit/setupandteardown/failuresuiteteardown.xml" />
+      <au:plainlistener/>
+      <reportlistener/>
+      <propertyset>
+        <propertyref name="outputfile" />
+      </propertyset>
+    </au:antunit>
+    <fail unless="failure" message="Test should have failed." />
+    <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
+    <loadfile property="output" srcFile="${outputfile}" />
+    <au:assertEquals expected="ASETSETSETSETB" actual="${output}" />
+  </target>
+  
+  <!-- Tests an error in suiteTearDown -->
+  <target name="testErrorSuiteTearDown">
+    <tempfile property="outputfile" deleteonexit="true" />
+    <au:antunit failOnError="false" errorProperty="failure">
+      <file file="antunit/setupandteardown/errorsuiteteardown.xml" />
+      <au:plainlistener/>
+      <reportlistener/>
+      <propertyset>
+        <propertyref name="outputfile" />
+      </propertyset>
+    </au:antunit>
+    <fail unless="failure" message="Test should have failed." />
+    <au:assertFileExists file="${outputfile}" message="Output file doesn't exist" />
+    <loadfile property="output" srcFile="${outputfile}" />
+    <au:assertEquals expected="ASETSETSETSETB" actual="${output}" />
   </target>
 
 </project>
