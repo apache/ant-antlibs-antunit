@@ -62,6 +62,10 @@
       xmllistener will now log the properties of the project under
       test
     </action>
+    <action type="add">
+      added new assertResourceContains and assertResourceDoesntContain
+      assertion
+    </action>
   </release>
 
 </document>
