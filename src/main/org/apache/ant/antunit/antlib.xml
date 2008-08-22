@@ -132,16 +132,29 @@ under the License.
   </macrodef>
 
   <macrodef name="assertResourceContains">
-	<attribute name="resource"/>
-	<attribute name="value"/>
-	<attribute name="casesensitive" default="true"/>
-	<attribute name="message"
-	  default="Expected resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
+    <attribute name="resource"/>
+    <attribute name="value"/>
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="message"
+	       default="Expected resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
     <sequential>
-	  <au:assertTrue message="@{message}">
-	    <resourcecontains resource="@{resource}" substring="@{value}"/>
-	  </au:assertTrue>
-	</sequential>
+      <au:assertTrue message="@{message}">
+	<resourcecontains resource="@{resource}" substring="@{value}"/>
+      </au:assertTrue>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertResourceDoesntContain">
+    <attribute name="resource"/>
+    <attribute name="value"/>
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="message"
+	       default="Didn't expect resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
+    <sequential>
+      <au:assertFalse message="@{message}">
+	<resourcecontains resource="@{resource}" substring="@{value}"/>
+      </au:assertFalse>
+    </sequential>
   </macrodef>
 
   <macrodef name="assertDestIsUptodate" backtrace="false">

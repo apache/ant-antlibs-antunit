@@ -633,6 +633,44 @@
         </tr>
     </table>
 
+    <h2><a name="assertResourceContains">assertResourceContains</a></h2>
+
+    <p>Asserts that a resource's content includes a given string.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <td valign="top"><b>Attribute</b></td>
+        <td valign="top"><b>Description</b></td>
+        <td align="center" valign="top"><b>Required</b></td>
+      </tr>
+      <tr>
+        <td valign="top">resource</td>
+        <td valign="top">Location of the resource to load.</td>
+        <td valign="top" align="center">Yes</td>
+      </tr>
+      <tr>
+        <td valign="top">value</td>
+        <td valign="top">The text to search for.</td>
+        <td valign="top" align="center">Yes</td>
+      </tr>
+        <tr>
+          <td valign="top">casesensitive</td>
+          <td valign="top">
+            Perform a case sensitive match.
+            Default is true.
+          </td>
+          <td align="center">No.</td>
+        </tr>
+      <tr>
+        <td valign="top">message</td>
+        <td valign="top">Message for the exception if the condition
+          doesn't hold true.  Defaults to "Expected resource
+          '<em>resource</em>' to contain value '<em>value</em>' but
+          was '<em>content of resource</em>'".</td>
+        <td align="center">No.</td>
+      </tr>
+    </table>
+
     <hr/>
   </body>
 </html>
