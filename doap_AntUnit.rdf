@@ -38,6 +38,13 @@
     <category rdf:resource="http://projects.apache.org/category/testing"/>
     <release>
       <Version>
+        <name>Apache AntUnit 1.1</name>
+        <created>2008-09-26</created>
+        <revision>1.1</revision>
+      </Version>
+    </release>
+    <release>
+      <Version>
         <name>Apache AntUnit 1.0</name>
         <created>2007-01-08</created>
         <revision>1.0</revision>
