@@ -38,4 +38,8 @@ public class AssertionFailedException extends BuildException {
     public AssertionFailedException(String message, Location loc) {
         super(message, loc);
     }
+
+    public AssertionFailedException(String message, BuildException e) {
+        super(message , e);
+    }
 }

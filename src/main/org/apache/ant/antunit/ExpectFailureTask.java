@@ -66,9 +66,9 @@ public class ExpectFailureTask extends Sequential {
                                     + "with message '"
                                     + expectedMessage
                                     + "' but was '"
-                                    + caughtMessage + "'");
+                                    + caughtMessage + "'" , e);
                 } else {
-                    throw new AssertionFailedException(message);
+                    throw new AssertionFailedException(message, e);
                 }
             }
         }
