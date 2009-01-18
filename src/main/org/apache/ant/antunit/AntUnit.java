@@ -221,6 +221,8 @@ public class AntUnit extends Task {
         }
     }
 
+
+    
     /**
      * Processes a single build file.
      */
@@ -251,25 +253,8 @@ public class AntUnit extends Task {
                     fireStartTest(SUITESETUP);
                     fireFail(SUITESETUP, e);
                 } catch (BuildException e) {
-                    boolean failed = false;
                     fireStartTest(SUITESETUP);
-
-                    // try to see whether the BuildException masks
-                    // an AssertionFailedException. If so, treat
-                    // it as failure instead of error.
-                    Throwable t = e.getCause();
-                    while (t != null && t instanceof BuildException) {
-                        if (t instanceof AssertionFailedException) {
-                            failed = true;
-                            fireFail(SUITESETUP, (AssertionFailedException) t);
-                            break;
-                        }
-                        t = ((BuildException) t).getCause();
-                    }
-
-                    if (!failed) {
-                        fireError(SUITESETUP, e);
-                    }
+                    fireFailOrError(SUITESETUP, e);
                 }
                 if (!success) {
                     return;
@@ -292,24 +277,7 @@ public class AntUnit extends Task {
                     } catch (AssertionFailedException e) {
                         fireFail(name, e);
                     } catch (BuildException e) {
-                        boolean failed = false;
-
-                        // try to see whether the BuildException masks
-                        // an AssertionFailedException. If so, treat
-                        // it as failure instead of error.
-                        Throwable t = e.getCause();
-                        while (t != null && t instanceof BuildException) {
-                            if (t instanceof AssertionFailedException) {
-                                failed = true;
-                                fireFail(name, (AssertionFailedException) t);
-                                break;
-                            }
-                            t = ((BuildException) t).getCause();
-                        }
-
-                        if (!failed) {
-                            fireError(name, e);
-                        }
+                        fireFailOrError(name, e);
                     } finally {
                         // fire endTest here instead of the endTarget
                         // event, otherwise an error would be
@@ -324,24 +292,7 @@ public class AntUnit extends Task {
                             } catch (final AssertionFailedException e) {
                                 fireFail(name, e);
                             } catch (final BuildException e) {
-                                boolean failed = false;
-
-                                // try to see whether the BuildException masks
-                                // an AssertionFailedException. If so, treat
-                                // it as failure instead of error.
-                                Throwable t = e.getCause();
-                                while (t != null && t instanceof BuildException) {
-                                    if (t instanceof AssertionFailedException) {
-                                        failed = true;
-                                        fireFail(name, (AssertionFailedException) t);
-                                        break;
-                                    }
-                                    t = ((BuildException) t).getCause();
-                                }
-
-                                if (!failed) {
-                                    fireError(name, e);
-                                }
+                                fireFailOrError(name, e);
                             }
                         }
                         if (iter.hasNext()) {
@@ -360,25 +311,8 @@ public class AntUnit extends Task {
                     fireStartTest(SUITETEARDOWN);
                     fireFail(SUITETEARDOWN, e);
                 } catch (BuildException e) {
-                    boolean failed = false;
-                    fireStartTest(SUITETEARDOWN);
-
-                    // try to see whether the BuildException masks
-                    // an AssertionFailedException. If so, treat
-                    // it as failure instead of error.
-                    Throwable t = e.getCause();
-                    while (t != null && t instanceof BuildException) {
-                        if (t instanceof AssertionFailedException) {
-                            failed = true;
-                            fireFail(SUITETEARDOWN, (AssertionFailedException) t);
-                            break;
-                        }
-                        t = ((BuildException) t).getCause();
-                    }
-
-                    if (!failed) {
-                        fireError(SUITETEARDOWN, e);
-                    }
+                	fireStartTest(SUITETEARDOWN);
+                	fireFailOrError(SUITETEARDOWN, e);
                 }
             }
 
@@ -386,6 +320,28 @@ public class AntUnit extends Task {
             newProject = null;
         }
     }
+
+	
+    /** Report a failure or an exception for the test target name */
+    private void fireFailOrError(String name, BuildException e) {
+		boolean failed = false;
+		// try to see whether the BuildException masks
+		// an AssertionFailedException. If so, treat
+		// it as failure instead of error.
+		Throwable t = e.getCause();
+		while (t != null && t instanceof BuildException) {
+		    if (t instanceof AssertionFailedException) {
+		        failed = true;
+		        fireFail(name, (AssertionFailedException) t);
+		        break;
+		    }
+		    t = ((BuildException) t).getCause();
+		}
+
+		if (!failed) {
+		    fireError(name, e);
+		}
+	}
 
     /**
      * Redirect output to new project instance.
