@@ -223,8 +223,34 @@ public class AntUnit extends Task {
         }
     }
 
+    private class AntUnitScriptRunner {
+        private boolean setUp;
+        private boolean tearDown;
+        private boolean suiteSetUp;
+        private boolean suiteTearDown;
+        
+        public List scanFile(File f) {
+            // setup project instance
+            newProject = createProjectForFile(f);
 
-    private boolean startSuite(boolean suiteSetUp) {
+            // find targets
+            Map targets = newProject.getTargets();
+            setUp = targets.containsKey(SETUP);
+            tearDown = targets.containsKey(TEARDOWN);
+            suiteSetUp = targets.containsKey(SUITESETUP);
+            suiteTearDown = targets.containsKey(SUITETEARDOWN);
+            List testTargets = new LinkedList();
+            Iterator it = targets.keySet().iterator();
+            while (it.hasNext()) {
+                String name = (String) it.next();
+                if (name.startsWith(TEST) && !name.equals(TEST)) {
+                    testTargets.add(name);
+                }
+            }
+            return testTargets;
+        }
+
+    public boolean startSuite() {
         newProject.fireBuildStarted();
         if (suiteSetUp) {
             try {
@@ -242,7 +268,7 @@ public class AntUnit extends Task {
         return true;
     }
 
-    private void runTarget(boolean setUp, boolean tearDown, String name) {
+    public void runTarget(String name) {
         Vector v = new Vector();
         if (setUp) {
             v.add(SETUP);
@@ -277,7 +303,7 @@ public class AntUnit extends Task {
         }
     }
 
-    private void endSuite(boolean suiteTearDown, Throwable caught) {
+    public void endSuite(Throwable caught) {
         if (suiteTearDown) {
             try {
                 newProject.executeTarget(SUITETEARDOWN);
@@ -291,41 +317,26 @@ public class AntUnit extends Task {
         }
         newProject.fireBuildFinished(caught);
     }    
+    }
     
     /**
      * Processes a single build file.
      */
     private void doFile(File f) {
         log("Running tests in build file " + f, Project.MSG_DEBUG);
-
-        // setup project instance
-        newProject = createProjectForFile(f);
-
-        // find targets
-        Map targets = newProject.getTargets();
-        boolean setUp = targets.containsKey(SETUP);
-        boolean tearDown = targets.containsKey(TEARDOWN);
-        boolean suiteSetUp = targets.containsKey(SUITESETUP);
-        boolean suiteTearDown = targets.containsKey(SUITETEARDOWN);
-        List testTargets = new LinkedList();
-        Iterator it = targets.keySet().iterator();
-        while (it.hasNext()) {
-            String name = (String) it.next();
-            if (name.startsWith(TEST) && !name.equals(TEST)) {
-                testTargets.add(name);
-            }
-        }
+        AntUnitScriptRunner scriptRunner = new AntUnitScriptRunner();
+        List testTargets = scriptRunner.scanFile(f);
 
         // start test
         Throwable caught = null;
         try {
-            if (!startSuite(suiteSetUp)) {
+            if (!scriptRunner.startSuite()) {
                 return;
             }
             Iterator iter = testTargets.iterator();
             while (iter.hasNext()) {
                 String name = (String) iter.next();
-                runTarget(setUp, tearDown, name);
+                scriptRunner.runTarget(name);
                 if (iter.hasNext()) {
                     newProject = createProjectForFile(f);
                 }
@@ -333,7 +344,7 @@ public class AntUnit extends Task {
         } catch (Throwable e) {
             caught = e;
         } finally {
-            endSuite(suiteTearDown, caught);            
+            scriptRunner.endSuite(caught);            
             newProject = null;
         }
     }
