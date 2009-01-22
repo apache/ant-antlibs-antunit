@@ -71,31 +71,6 @@ public class AntUnit extends Task {
         "Only file system resources are supported.";
 
     /**
-     * name of the magic setUp target.
-     */
-    private static final String SETUP = "setUp";
-
-    /**
-     * prefix that identifies test targets.
-     */
-    private static final String TEST = "test";
-
-    /**
-     * name of the magic tearDown target.
-     */
-    private static final String TEARDOWN = "tearDown";
-    
-    /**
-     * name of the magic suiteSetUp target.
-     */
-    private static final String SUITESETUP = "suiteSetUp";
-    
-    /**
-     * name of the magic suiteTearDown target.
-     */
-    private static final String SUITETEARDOWN = "suiteTearDown";
-
-    /**
      * The build files to process.
      */
     private Union buildFiles;
@@ -224,6 +199,31 @@ public class AntUnit extends Task {
     }
 
     private class AntUnitScriptRunner {
+        /**
+         * name of the magic setUp target.
+         */
+        private static final String SETUP = "setUp";
+
+        /**
+         * prefix that identifies test targets.
+         */
+        private static final String TEST = "test";
+
+        /**
+         * name of the magic tearDown target.
+         */
+        private static final String TEARDOWN = "tearDown";
+        
+        /**
+         * name of the magic suiteSetUp target.
+         */
+        private static final String SUITESETUP = "suiteSetUp";
+        
+        /**
+         * name of the magic suiteTearDown target.
+         */
+        private static final String SUITETEARDOWN = "suiteTearDown";
+
         private boolean setUp;
         private boolean tearDown;
         private boolean suiteSetUp;
@@ -316,7 +316,29 @@ public class AntUnit extends Task {
                 }
             }
             newProject.fireBuildFinished(caught);
-        }    
+        }
+        
+        /** Report a failure or an exception for the test target name */
+        private void fireFailOrError(String name, BuildException e) {
+            boolean failed = false;
+            // try to see whether the BuildException masks
+            // an AssertionFailedException. If so, treat
+            // it as failure instead of error.
+            Throwable t = e.getCause();
+            while (t != null && t instanceof BuildException) {
+                if (t instanceof AssertionFailedException) {
+                    failed = true;
+                    fireFail(name, (AssertionFailedException) t);
+                    break;
+                }
+                t = ((BuildException) t).getCause();
+            }
+
+            if (!failed) {
+                fireError(name, e);
+            }
+        }
+
     }
     
     /**
@@ -349,27 +371,6 @@ public class AntUnit extends Task {
         }
     }
 
-	
-    /** Report a failure or an exception for the test target name */
-    private void fireFailOrError(String name, BuildException e) {
-		boolean failed = false;
-		// try to see whether the BuildException masks
-		// an AssertionFailedException. If so, treat
-		// it as failure instead of error.
-		Throwable t = e.getCause();
-		while (t != null && t instanceof BuildException) {
-		    if (t instanceof AssertionFailedException) {
-		        failed = true;
-		        fireFail(name, (AssertionFailedException) t);
-		        break;
-		    }
-		    t = ((BuildException) t).getCause();
-		}
-
-		if (!failed) {
-		    fireError(name, e);
-		}
-	}
 
     /**
      * Redirect output to new project instance.
