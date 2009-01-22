@@ -224,6 +224,71 @@ public class AntUnit extends Task {
     }
 
 
+    private boolean runSuiteSetup(boolean suiteSetUp) {
+        if (suiteSetUp) {
+            try {
+                newProject.executeTarget(SUITESETUP);
+            } catch (AssertionFailedException e) {
+                fireStartTest(SUITESETUP);
+                fireFail(SUITESETUP, e);
+                return false;
+            } catch (BuildException e) {
+                fireStartTest(SUITESETUP);
+                fireFailOrError(SUITESETUP, e);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void runTarget(boolean setUp, boolean tearDown, String name) {
+        Vector v = new Vector();
+        if (setUp) {
+            v.add(SETUP);
+        }
+        v.add(name);
+        // create and register a logcapturer on the newProject
+        LogCapturer lc = new LogCapturer(newProject);
+        try {
+            fireStartTest(name);
+            newProject.executeTargets(v);
+        } catch (AssertionFailedException e) {
+            fireFail(name, e);
+        } catch (BuildException e) {
+            fireFailOrError(name, e);
+        } finally {
+            // fire endTest here instead of the endTarget
+            // event, otherwise an error would be
+            // registered after the endTest event -
+            // endTarget is called before this method's catch block
+            // is reached.
+            fireEndTest(name);
+            // clean up
+            if (tearDown) {
+                try {
+                    newProject.executeTarget(TEARDOWN);
+                } catch (final AssertionFailedException e) {
+                    fireFail(name, e);
+                } catch (final BuildException e) {
+                    fireFailOrError(name, e);
+                }
+            }
+        }
+    }
+
+    private void runSuiteTearDown(boolean suiteTearDown) {
+        if (suiteTearDown) {
+            try {
+                newProject.executeTarget(SUITETEARDOWN);
+            } catch (AssertionFailedException e) {
+                fireStartTest(SUITETEARDOWN);
+                fireFail(SUITETEARDOWN, e);
+            } catch (BuildException e) {
+                fireStartTest(SUITETEARDOWN);
+                fireFailOrError(SUITETEARDOWN, e);
+            }
+        }
+    }    
     
     /**
      * Processes a single build file.
@@ -254,76 +319,21 @@ public class AntUnit extends Task {
 
         Throwable caught = null;
         try {
-            if (suiteSetUp) {
-                boolean success = false;
-                try {
-                    newProject.executeTarget(SUITESETUP);
-                    success = true;
-                } catch (AssertionFailedException e) {
-                    fireStartTest(SUITESETUP);
-                    fireFail(SUITESETUP, e);
-                } catch (BuildException e) {
-                    fireStartTest(SUITESETUP);
-                    fireFailOrError(SUITESETUP, e);
-                }
-                if (!success) {
-                    return;
-                }
+            if (!runSuiteSetup(suiteSetUp)) {
+                return;
             }
             Iterator iter = testTargets.iterator();
             while (iter.hasNext()) {
                 String name = (String) iter.next();
-                    Vector v = new Vector();
-                    if (setUp) {
-                        v.add(SETUP);
-                    }
-                    v.add(name);
-                    // create and register a logcapturer on the newProject
-                    LogCapturer lc = new LogCapturer(newProject);
-                    try {
-                        fireStartTest(name);
-                        newProject.executeTargets(v);
-                    } catch (AssertionFailedException e) {
-                        fireFail(name, e);
-                    } catch (BuildException e) {
-                        fireFailOrError(name, e);
-                    } finally {
-                        // fire endTest here instead of the endTarget
-                        // event, otherwise an error would be
-                        // registered after the endTest event -
-                        // endTarget is called before this method's catch block
-                        // is reached.
-                        fireEndTest(name);
-                        // clean up
-                        if (tearDown) {
-                            try {
-                                newProject.executeTarget(TEARDOWN);
-                            } catch (final AssertionFailedException e) {
-                                fireFail(name, e);
-                            } catch (final BuildException e) {
-                                fireFailOrError(name, e);
-                            }
-                        }
-                        if (iter.hasNext()) {
-                            newProject = createProjectForFile(f);
-                        }
-                    }
+                runTarget(setUp, tearDown, name);
+                if (iter.hasNext()) {
+                    newProject = createProjectForFile(f);
+                }
             }
         } catch (Throwable e) {
             caught = e;
         } finally {
-            if (suiteTearDown) {
-                try {
-                    newProject.executeTarget(SUITETEARDOWN);
-                } catch (AssertionFailedException e) {
-                    fireStartTest(SUITETEARDOWN);
-                    fireFail(SUITETEARDOWN, e);
-                } catch (BuildException e) {
-                	fireStartTest(SUITETEARDOWN);
-                	fireFailOrError(SUITETEARDOWN, e);
-                }
-            }
-
+            runSuiteTearDown(suiteTearDown);
             newProject.fireBuildFinished(caught);
             newProject = null;
         }
