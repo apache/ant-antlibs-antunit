@@ -224,7 +224,8 @@ public class AntUnit extends Task {
     }
 
 
-    private boolean runSuiteSetup(boolean suiteSetUp) {
+    private boolean startSuite(boolean suiteSetUp) {
+        newProject.fireBuildStarted();
         if (suiteSetUp) {
             try {
                 newProject.executeTarget(SUITESETUP);
@@ -276,7 +277,7 @@ public class AntUnit extends Task {
         }
     }
 
-    private void runSuiteTearDown(boolean suiteTearDown) {
+    private void endSuite(boolean suiteTearDown, Throwable caught) {
         if (suiteTearDown) {
             try {
                 newProject.executeTarget(SUITETEARDOWN);
@@ -288,6 +289,7 @@ public class AntUnit extends Task {
                 fireFailOrError(SUITETEARDOWN, e);
             }
         }
+        newProject.fireBuildFinished(caught);
     }    
     
     /**
@@ -315,11 +317,9 @@ public class AntUnit extends Task {
         }
 
         // start test
-        newProject.fireBuildStarted();
-
         Throwable caught = null;
         try {
-            if (!runSuiteSetup(suiteSetUp)) {
+            if (!startSuite(suiteSetUp)) {
                 return;
             }
             Iterator iter = testTargets.iterator();
@@ -333,8 +333,7 @@ public class AntUnit extends Task {
         } catch (Throwable e) {
             caught = e;
         } finally {
-            runSuiteTearDown(suiteTearDown);
-            newProject.fireBuildFinished(caught);
+            endSuite(suiteTearDown, caught);            
             newProject = null;
         }
     }
