@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -238,6 +240,14 @@ public class AntUnit extends Task {
         boolean tearDown = targets.containsKey(TEARDOWN);
         boolean suiteSetUp = targets.containsKey(SUITESETUP);
         boolean suiteTearDown = targets.containsKey(SUITETEARDOWN);
+        List testTargets = new LinkedList();
+        Iterator it = targets.keySet().iterator();
+        while (it.hasNext()) {
+            String name = (String) it.next();
+            if (name.startsWith(TEST) && !name.equals(TEST)) {
+                testTargets.add(name);
+            }
+        }
 
         // start test
         newProject.fireBuildStarted();
@@ -260,10 +270,9 @@ public class AntUnit extends Task {
                     return;
                 }
             }
-            Iterator iter = targets.keySet().iterator();
+            Iterator iter = testTargets.iterator();
             while (iter.hasNext()) {
                 String name = (String) iter.next();
-                if (name.startsWith(TEST) && !name.equals(TEST)) {
                     Vector v = new Vector();
                     if (setUp) {
                         v.add(SETUP);
@@ -299,7 +308,6 @@ public class AntUnit extends Task {
                             newProject = createProjectForFile(f);
                         }
                     }
-                }
             }
         } catch (Throwable e) {
             caught = e;
