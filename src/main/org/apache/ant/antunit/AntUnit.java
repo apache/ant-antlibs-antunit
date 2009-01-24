@@ -78,7 +78,7 @@ public class AntUnit extends Task {
     /**
      * project instance for the build file currently under test.
      */
-    private Project newProject;
+    private ProjectHandler currentProject = new ProjectHandler();
 
     /**
      * listeners.
@@ -198,6 +198,69 @@ public class AntUnit extends Task {
         }
     }
 
+    /** Manage the project reference in order to minimize the number of project creation
+     * while allowing every test to run in isolation.  
+     */ 
+    private class ProjectHandler {
+        
+        /** ant script currently under testing */
+        private File scriptFile;
+        
+        /** The project currently used. */
+        private Project project = null;
+        
+        /** Indicates if a target has already be executed using this project. 
+         * Value is undefined when project is null.
+         */
+        private boolean projectIsDirty;
+        
+        /** Set the ant script to use. */
+        public void activate(File f) {
+            scriptFile = f;
+            project = null;
+        }
+
+        /** Declare that the current ant script doesn't need to be used anymore. */
+        public void deactivate() {
+            scriptFile = null;
+            project = null;
+        }
+
+        /** Indicates if there is a project currently under test. */
+        public boolean isActif() {
+            return scriptFile!=null;
+        }
+
+        /**
+         * Get the project currently in use.  The caller is not allowed to invoke a target or
+         * do anything that would break the isolation of the test targets.
+         * @pre isActif()
+         */
+        public Project get() {
+            if (!isActif()) throw new AssertionError("scriptFile==null");
+            if (project==null) {
+                project = createProjectForFile(scriptFile);
+                projectIsDirty = false;
+            }
+            return project;
+        }
+        
+        /**
+         * Get a project that has not yet been used in order to execute a target on it.
+         * @pre isActif()
+         */
+        public Project getRenewed() {
+            if (!isActif()) throw new AssertionError("scriptFile==null");
+            if (project==null || projectIsDirty) {
+                project = createProjectForFile(scriptFile);
+            }
+            //we already set isDirty to true in order to make sure we didn't reuse
+            //this project next time getRenewed is called.  
+            projectIsDirty = true;
+            return project;
+        }
+    }
+
     private class AntUnitScriptRunner {
         /**
          * name of the magic setUp target.
@@ -229,12 +292,9 @@ public class AntUnit extends Task {
         private boolean suiteSetUp;
         private boolean suiteTearDown;
         
-        public List scanFile(File f) {
-            // setup project instance
-            newProject = createProjectForFile(f);
-
-            // find targets
-            Map targets = newProject.getTargets();
+        public List scanFile() {
+            Project newProject = currentProject.get();
+            Map targets = newProject.getTargets();            
             setUp = targets.containsKey(SETUP);
             tearDown = targets.containsKey(TEARDOWN);
             suiteSetUp = targets.containsKey(SUITESETUP);
@@ -251,9 +311,10 @@ public class AntUnit extends Task {
         }
 
         public boolean startSuite() {
-            newProject.fireBuildStarted();
+            currentProject.get().fireBuildStarted();
             if (suiteSetUp) {
                 try {
+                    Project newProject = currentProject.getRenewed();
                     newProject.executeTarget(SUITESETUP);
                 } catch (AssertionFailedException e) {
                     fireStartTest(SUITESETUP);
@@ -269,6 +330,7 @@ public class AntUnit extends Task {
         }
 
         public void runTarget(String name) {
+            Project newProject = currentProject.getRenewed();
             Vector v = new Vector();
             if (setUp) {
                 v.add(SETUP);
@@ -306,6 +368,7 @@ public class AntUnit extends Task {
         public void endSuite(Throwable caught) {
             if (suiteTearDown) {
                 try {
+                    Project newProject = currentProject.getRenewed();
                     newProject.executeTarget(SUITETEARDOWN);
                 } catch (AssertionFailedException e) {
                     fireStartTest(SUITETEARDOWN);
@@ -315,7 +378,7 @@ public class AntUnit extends Task {
                     fireFailOrError(SUITETEARDOWN, e);
                 }
             }
-            newProject.fireBuildFinished(caught);
+            currentProject.get().fireBuildFinished(caught);
         }
         
         /** Report a failure or an exception for the test target name */
@@ -346,8 +409,9 @@ public class AntUnit extends Task {
      */
     private void doFile(File f) {
         log("Running tests in build file " + f, Project.MSG_DEBUG);
+        currentProject.activate(f);
         AntUnitScriptRunner scriptRunner = new AntUnitScriptRunner();
-        List testTargets = scriptRunner.scanFile(f);
+        List testTargets = scriptRunner.scanFile();
 
         // start test
         Throwable caught = null;
@@ -359,15 +423,12 @@ public class AntUnit extends Task {
             while (iter.hasNext()) {
                 String name = (String) iter.next();
                 scriptRunner.runTarget(name);
-                if (iter.hasNext()) {
-                    newProject = createProjectForFile(f);
-                }
             }
         } catch (Throwable e) {
             caught = e;
         } finally {
             scriptRunner.endSuite(caught);            
-            newProject = null;
+            currentProject.deactivate();
         }
     }
 
@@ -377,8 +438,8 @@ public class AntUnit extends Task {
      * @param outputToHandle the output to handle.
      */
     public void handleOutput(String outputToHandle) {
-        if (newProject != null) {
-            newProject.demuxOutput(outputToHandle, false);
+        if (currentProject.isActif()) {
+            currentProject.get().demuxOutput(outputToHandle, false);
         } else {
             super.handleOutput(outputToHandle);
         }
@@ -392,8 +453,8 @@ public class AntUnit extends Task {
      */
     public int handleInput(byte[] buffer, int offset, int length)
         throws IOException {
-        if (newProject != null) {
-            return newProject.demuxInput(buffer, offset, length);
+        if (currentProject.isActif()) {
+            return currentProject.get().demuxInput(buffer, offset, length);
         }
         return super.handleInput(buffer, offset, length);
     }
@@ -403,8 +464,8 @@ public class AntUnit extends Task {
      * @param toFlush the output String to flush.
      */
     public void handleFlush(String toFlush) {
-        if (newProject != null) {
-            newProject.demuxFlush(toFlush, false);
+        if (currentProject.isActif()) {
+            currentProject.get().demuxFlush(toFlush, false);
         } else {
             super.handleFlush(toFlush);
         }
@@ -415,8 +476,8 @@ public class AntUnit extends Task {
      * @param errorOutputToHandle the error output to handle.
      */
     public void handleErrorOutput(String errorOutputToHandle) {
-        if (newProject != null) {
-            newProject.demuxOutput(errorOutputToHandle, true);
+        if (currentProject.isActif()) {
+            currentProject.get().demuxOutput(errorOutputToHandle, true);
         } else {
             super.handleErrorOutput(errorOutputToHandle);
         }
@@ -427,8 +488,8 @@ public class AntUnit extends Task {
      * @param errorOutputToFlush the error output to flush.
      */
     public void handleErrorFlush(String errorOutputToFlush) {
-        if (newProject != null) {
-            newProject.demuxFlush(errorOutputToFlush, true);
+        if (currentProject.isActif()) {
+            currentProject.get().demuxFlush(errorOutputToFlush, true);
         } else {
             super.handleErrorFlush(errorOutputToFlush);
         }
