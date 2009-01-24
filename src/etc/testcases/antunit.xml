@@ -80,6 +80,13 @@ under the License.
     </au:antunit>
   </target>
 
+  <target name="testSystemIoHandling">
+    <au:antunit>
+      <file file="antunit/java-io.xml" />
+      <au:plainlistener />
+    </au:antunit>  	
+  </target>
+ 
   <property name="reportsdir" location="../../../build/reports"/>
   <target name="antunit-dir">
     <mkdir dir="${reportsdir}"/>

@@ -19,7 +19,10 @@
  */
 package org.apache.ant.antunit;
 
+import java.io.PrintStream;
+
 import org.apache.tools.ant.BuildFileTest;
+import org.apache.tools.ant.DemuxOutputStream;
 
 public class AntUnitTest extends BuildFileTest {
 
@@ -88,4 +91,26 @@ public class AntUnitTest extends BuildFileTest {
         executeTarget("testNewProject");
     }
 
+    public void testSystemIoHandling() {
+        PrintStream savedErr = System.err;
+        PrintStream savedOut = System.out;
+        try {
+            savedErr.flush();
+            savedOut.flush();
+            System.setOut(new PrintStream(new DemuxOutputStream(project, false)));
+            System.setErr(new PrintStream(new DemuxOutputStream(project, true)));
+            
+            project.executeTarget("testSystemIoHandling");
+            
+        } finally {
+            System.setOut(savedOut);
+            System.setErr(savedErr);
+        }
+    }
+    
+    public static class HelloWorld {
+        public static void main(String[] args) {
+            System.out.println("HelloWorld");
+        }
+    }
 }
