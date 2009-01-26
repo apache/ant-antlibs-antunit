@@ -227,8 +227,8 @@ public class AntUnit extends Task {
         }
 
         /** Indicates if there is a project currently under test. */
-        public boolean isActif() {
-            return scriptFile!=null;
+        public boolean isActive() {
+            return scriptFile != null;
         }
 
         /**
@@ -237,8 +237,10 @@ public class AntUnit extends Task {
          * @pre isActif()
          */
         public Project get() {
-            if (!isActif()) throw new AssertionError("scriptFile==null");
-            if (project==null) {
+            if (!isActive()) {
+                throw new AssertionError("scriptFile==null");
+            }
+            if (project == null) {
                 project = createProjectForFile(scriptFile);
                 projectIsDirty = false;
             }
@@ -247,11 +249,13 @@ public class AntUnit extends Task {
         
         /**
          * Get a project that has not yet been used in order to execute a target on it.
-         * @pre isActif()
+         * @pre isActive()
          */
         public Project getRenewed() {
-            if (!isActif()) throw new AssertionError("scriptFile==null");
-            if (project==null || projectIsDirty) {
+            if (!isActive()) {
+                throw new AssertionError("scriptFile==null");
+            }
+            if (project == null || projectIsDirty) {
                 project = createProjectForFile(scriptFile);
             }
             //we already set isDirty to true in order to make sure we didn't reuse
@@ -438,7 +442,7 @@ public class AntUnit extends Task {
      * @param outputToHandle the output to handle.
      */
     public void handleOutput(String outputToHandle) {
-        if (currentProject.isActif()) {
+        if (currentProject.isActive()) {
             currentProject.get().demuxOutput(outputToHandle, false);
         } else {
             super.handleOutput(outputToHandle);
@@ -453,7 +457,7 @@ public class AntUnit extends Task {
      */
     public int handleInput(byte[] buffer, int offset, int length)
         throws IOException {
-        if (currentProject.isActif()) {
+        if (currentProject.isActive()) {
             return currentProject.get().demuxInput(buffer, offset, length);
         }
         return super.handleInput(buffer, offset, length);
@@ -464,7 +468,7 @@ public class AntUnit extends Task {
      * @param toFlush the output String to flush.
      */
     public void handleFlush(String toFlush) {
-        if (currentProject.isActif()) {
+        if (currentProject.isActive()) {
             currentProject.get().demuxFlush(toFlush, false);
         } else {
             super.handleFlush(toFlush);
@@ -476,7 +480,7 @@ public class AntUnit extends Task {
      * @param errorOutputToHandle the error output to handle.
      */
     public void handleErrorOutput(String errorOutputToHandle) {
-        if (currentProject.isActif()) {
+        if (currentProject.isActive()) {
             currentProject.get().demuxOutput(errorOutputToHandle, true);
         } else {
             super.handleErrorOutput(errorOutputToHandle);
@@ -488,7 +492,7 @@ public class AntUnit extends Task {
      * @param errorOutputToFlush the error output to flush.
      */
     public void handleErrorFlush(String errorOutputToFlush) {
-        if (currentProject.isActif()) {
+        if (currentProject.isActive()) {
             currentProject.get().demuxFlush(errorOutputToFlush, true);
         } else {
             super.handleErrorFlush(errorOutputToFlush);
