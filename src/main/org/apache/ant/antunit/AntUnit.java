@@ -75,12 +75,36 @@ public class AntUnit extends Task {
      */
     private Union buildFiles;
 
+    
+    private AntUnitExecutionPlatform myExecutionPlatform = new AntUnitExecutionPlatform() {
+
+        public Project createProjectForFile(File f) {
+            return AntUnit.this.createProjectForFile(f);
+        }
+
+        public void fireEndTest(String targetName) {
+            AntUnit.this.fireEndTest(targetName);
+        }
+
+        public void fireError(String targetName, Throwable t) {
+            AntUnit.this.fireError(targetName, t);
+        }
+
+        public void fireFail(String targetName, AssertionFailedException ae) {
+            AntUnit.this.fireFail(targetName, ae);
+        }
+
+        public void fireStartTest(String targetName) {
+            AntUnit.this.fireStartTest(targetName);
+        }
+    };
+    
     /**
      * The object responsible for the execution of the unit test.
      * scriptRunner is invoked to executes the targets and keep the
      * reference to the project.
      */
-    private AntUnitScriptRunner scriptRunner = new AntUnitScriptRunner();
+    private AntUnitScriptRunner scriptRunner = new AntUnitScriptRunner(myExecutionPlatform);
 
     /**
      * listeners.
@@ -203,7 +227,7 @@ public class AntUnit extends Task {
     /** Manage the project reference in order to minimize the number of project creation
      * while allowing every test to run in isolation.  
      */ 
-    private class AntUnitScriptRunner {
+    private static class AntUnitScriptRunner {
         
         /** ant script currently under testing */
         private File scriptFile;
@@ -215,6 +239,19 @@ public class AntUnit extends Task {
          * Value is undefined when project is null.
          */
         private boolean projectIsDirty;
+
+        /**
+         * The environment that creates the project and receive execution notification.
+         */
+        private final AntUnitExecutionPlatform env;
+        
+        
+        public AntUnitScriptRunner(AntUnitExecutionPlatform env) {
+            if (env==null) {
+                throw new AssertionError();
+            }
+            this.env = env;
+        }
         
         /** Set the ant script to use. */
         public void activate(File f) {
@@ -243,7 +280,7 @@ public class AntUnit extends Task {
                 throw new AssertionError("scriptFile==null");
             }
             if (project == null) {
-                project = createProjectForFile(scriptFile);
+                project = env.createProjectForFile(scriptFile);
                 projectIsDirty = false;
             }
             return project;
@@ -258,7 +295,7 @@ public class AntUnit extends Task {
                 throw new AssertionError("scriptFile==null");
             }
             if (project == null || projectIsDirty) {
-                project = createProjectForFile(scriptFile);
+                project = env.createProjectForFile(scriptFile);
             }
             //we already set isDirty to true in order to make sure we didn't reuse
             //this project next time getRenewed is called.  
@@ -321,11 +358,11 @@ public class AntUnit extends Task {
                     Project newProject = getCleanProject();
                     newProject.executeTarget(SUITESETUP);
                 } catch (AssertionFailedException e) {
-                    fireStartTest(SUITESETUP);
-                    fireFail(SUITESETUP, e);
+                    env.fireStartTest(SUITESETUP);
+                    env.fireFail(SUITESETUP, e);
                     return false;
                 } catch (BuildException e) {
-                    fireStartTest(SUITESETUP);
+                    env.fireStartTest(SUITESETUP);
                     fireFailOrError(SUITESETUP, e);
                     return false;
                 }
@@ -343,10 +380,10 @@ public class AntUnit extends Task {
             // create and register a logcapturer on the newProject
             LogCapturer lc = new LogCapturer(newProject);
             try {
-                fireStartTest(name);
+                env.fireStartTest(name);
                 newProject.executeTargets(v);
             } catch (AssertionFailedException e) {
-                fireFail(name, e);
+                env.fireFail(name, e);
             } catch (BuildException e) {
                 fireFailOrError(name, e);
             } finally {
@@ -355,13 +392,13 @@ public class AntUnit extends Task {
                 // registered after the endTest event -
                 // endTarget is called before this method's catch block
                 // is reached.
-                fireEndTest(name);
+                env.fireEndTest(name);
                 // clean up
                 if (tearDown) {
                     try {
                         newProject.executeTarget(TEARDOWN);
                     } catch (final AssertionFailedException e) {
-                        fireFail(name, e);
+                        env.fireFail(name, e);
                     } catch (final BuildException e) {
                         fireFailOrError(name, e);
                     }
@@ -375,10 +412,10 @@ public class AntUnit extends Task {
                     Project newProject = getCleanProject();
                     newProject.executeTarget(SUITETEARDOWN);
                 } catch (AssertionFailedException e) {
-                    fireStartTest(SUITETEARDOWN);
-                    fireFail(SUITETEARDOWN, e);
+                    env.fireStartTest(SUITETEARDOWN);
+                    env.fireFail(SUITETEARDOWN, e);
                 } catch (BuildException e) {
-                    fireStartTest(SUITETEARDOWN);
+                    env.fireStartTest(SUITETEARDOWN);
                     fireFailOrError(SUITETEARDOWN, e);
                 }
             }
@@ -395,14 +432,14 @@ public class AntUnit extends Task {
             while (t != null && t instanceof BuildException) {
                 if (t instanceof AssertionFailedException) {
                     failed = true;
-                    fireFail(name, (AssertionFailedException) t);
+                    env.fireFail(name, (AssertionFailedException) t);
                     break;
                 }
                 t = ((BuildException) t).getCause();
             }
 
             if (!failed) {
-                fireError(name, e);
+                env.fireError(name, e);
             }
         }
 
