@@ -76,9 +76,11 @@ public class AntUnit extends Task {
     private Union buildFiles;
 
     /**
-     * project instance for the build file currently under test.
+     * The object responsible for the execution of the unit test.
+     * scriptRunner is invoked to executes the targets and keep the
+     * reference to the project.
      */
-    private ProjectHandler currentProject = new ProjectHandler();
+    private AntUnitScriptRunner scriptRunner = new AntUnitScriptRunner();
 
     /**
      * listeners.
@@ -201,7 +203,7 @@ public class AntUnit extends Task {
     /** Manage the project reference in order to minimize the number of project creation
      * while allowing every test to run in isolation.  
      */ 
-    private class ProjectHandler {
+    private class AntUnitScriptRunner {
         
         /** ant script currently under testing */
         private File scriptFile;
@@ -236,7 +238,7 @@ public class AntUnit extends Task {
          * do anything that would break the isolation of the test targets.
          * @pre isActif()
          */
-        public Project get() {
+        public Project getCurrentProject() {
             if (!isActive()) {
                 throw new AssertionError("scriptFile==null");
             }
@@ -251,7 +253,7 @@ public class AntUnit extends Task {
          * Get a project that has not yet been used in order to execute a target on it.
          * @pre isActive()
          */
-        public Project getRenewed() {
+        private Project getCleanProject() {
             if (!isActive()) {
                 throw new AssertionError("scriptFile==null");
             }
@@ -263,9 +265,7 @@ public class AntUnit extends Task {
             projectIsDirty = true;
             return project;
         }
-    }
-
-    private class AntUnitScriptRunner {
+        
         /**
          * name of the magic setUp target.
          */
@@ -297,7 +297,7 @@ public class AntUnit extends Task {
         private boolean suiteTearDown;
         
         public List scanFile() {
-            Project newProject = currentProject.get();
+            Project newProject = getCurrentProject();
             Map targets = newProject.getTargets();            
             setUp = targets.containsKey(SETUP);
             tearDown = targets.containsKey(TEARDOWN);
@@ -315,10 +315,10 @@ public class AntUnit extends Task {
         }
 
         public boolean startSuite() {
-            currentProject.get().fireBuildStarted();
+            getCurrentProject().fireBuildStarted();
             if (suiteSetUp) {
                 try {
-                    Project newProject = currentProject.getRenewed();
+                    Project newProject = getCleanProject();
                     newProject.executeTarget(SUITESETUP);
                 } catch (AssertionFailedException e) {
                     fireStartTest(SUITESETUP);
@@ -334,7 +334,7 @@ public class AntUnit extends Task {
         }
 
         public void runTarget(String name) {
-            Project newProject = currentProject.getRenewed();
+            Project newProject = getCleanProject();
             Vector v = new Vector();
             if (setUp) {
                 v.add(SETUP);
@@ -372,7 +372,7 @@ public class AntUnit extends Task {
         public void endSuite(Throwable caught) {
             if (suiteTearDown) {
                 try {
-                    Project newProject = currentProject.getRenewed();
+                    Project newProject = getCleanProject();
                     newProject.executeTarget(SUITETEARDOWN);
                 } catch (AssertionFailedException e) {
                     fireStartTest(SUITETEARDOWN);
@@ -382,7 +382,7 @@ public class AntUnit extends Task {
                     fireFailOrError(SUITETEARDOWN, e);
                 }
             }
-            currentProject.get().fireBuildFinished(caught);
+            getCurrentProject().fireBuildFinished(caught);
         }
         
         /** Report a failure or an exception for the test target name */
@@ -413,8 +413,7 @@ public class AntUnit extends Task {
      */
     private void doFile(File f) {
         log("Running tests in build file " + f, Project.MSG_DEBUG);
-        currentProject.activate(f);
-        AntUnitScriptRunner scriptRunner = new AntUnitScriptRunner();
+        scriptRunner.activate(f);
         List testTargets = scriptRunner.scanFile();
 
         // start test
@@ -432,7 +431,7 @@ public class AntUnit extends Task {
             caught = e;
         } finally {
             scriptRunner.endSuite(caught);            
-            currentProject.deactivate();
+            scriptRunner.deactivate();
         }
     }
 
@@ -442,8 +441,8 @@ public class AntUnit extends Task {
      * @param outputToHandle the output to handle.
      */
     public void handleOutput(String outputToHandle) {
-        if (currentProject.isActive()) {
-            currentProject.get().demuxOutput(outputToHandle, false);
+        if (scriptRunner.isActive()) {
+            scriptRunner.getCurrentProject().demuxOutput(outputToHandle, false);
         } else {
             super.handleOutput(outputToHandle);
         }
@@ -457,8 +456,8 @@ public class AntUnit extends Task {
      */
     public int handleInput(byte[] buffer, int offset, int length)
         throws IOException {
-        if (currentProject.isActive()) {
-            return currentProject.get().demuxInput(buffer, offset, length);
+        if (scriptRunner.isActive()) {
+            return scriptRunner.getCurrentProject().demuxInput(buffer, offset, length);
         }
         return super.handleInput(buffer, offset, length);
     }
@@ -468,8 +467,8 @@ public class AntUnit extends Task {
      * @param toFlush the output String to flush.
      */
     public void handleFlush(String toFlush) {
-        if (currentProject.isActive()) {
-            currentProject.get().demuxFlush(toFlush, false);
+        if (scriptRunner.isActive()) {
+            scriptRunner.getCurrentProject().demuxFlush(toFlush, false);
         } else {
             super.handleFlush(toFlush);
         }
@@ -480,8 +479,8 @@ public class AntUnit extends Task {
      * @param errorOutputToHandle the error output to handle.
      */
     public void handleErrorOutput(String errorOutputToHandle) {
-        if (currentProject.isActive()) {
-            currentProject.get().demuxOutput(errorOutputToHandle, true);
+        if (scriptRunner.isActive()) {
+            scriptRunner.getCurrentProject().demuxOutput(errorOutputToHandle, true);
         } else {
             super.handleErrorOutput(errorOutputToHandle);
         }
@@ -492,8 +491,8 @@ public class AntUnit extends Task {
      * @param errorOutputToFlush the error output to flush.
      */
     public void handleErrorFlush(String errorOutputToFlush) {
-        if (currentProject.isActive()) {
-            currentProject.get().demuxFlush(errorOutputToFlush, true);
+        if (scriptRunner.isActive()) {
+            scriptRunner.getCurrentProject().demuxFlush(errorOutputToFlush, true);
         } else {
             super.handleErrorFlush(errorOutputToFlush);
         }
