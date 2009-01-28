@@ -140,7 +140,8 @@ under the License.
 	       default="Expected resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
     <sequential>
       <au:assertTrue message="@{message}">
-	<resourcecontains resource="@{resource}" substring="@{value}"/>
+	<resourcecontains resource="@{resource}" substring="@{value}"
+                          casesensitive="@{casesensitive}"/>
       </au:assertTrue>
     </sequential>
   </macrodef>
@@ -153,7 +154,8 @@ under the License.
 	       default="Didn't expect resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
     <sequential>
       <au:assertFalse message="@{message}">
-	<resourcecontains resource="@{resource}" substring="@{value}"/>
+	<resourcecontains resource="@{resource}" substring="@{value}"
+                          casesensitive="@{casesensitive}"/>
       </au:assertFalse>
     </sequential>
   </macrodef>
