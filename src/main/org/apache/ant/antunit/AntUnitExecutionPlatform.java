@@ -25,41 +25,41 @@ import java.io.File;
 import org.apache.tools.ant.Project;
 
 /** 
- * Provides methods that allow the AntUnitScriptRunner to interact with the environment
- * in which it executes.
+ * Provides methods that allow the AntUnitScriptRunner to interact
+ * with the environment in which it executes.
  */
 public interface AntUnitExecutionPlatform {
 
-	/**
-	 * Creates a new project instance and configures it.
-	 * @param f the File for which to create a Project.
-	 */
-	public Project createProjectForFile(File f);
+    /**
+     * Creates a new project instance and configures it.
+     * @param f the File for which to create a Project.
+     */
+    public Project createProjectForFile(File f);
 
-	/**
-	 * invokes start on all registered test listeners.
-	 * @param targetName the name of the target.
-	 */
-	public void fireStartTest(String targetName);
+    /**
+     * invokes start on all registered test listeners.
+     * @param targetName the name of the target.
+     */
+    public void fireStartTest(String targetName);
 
-	/**
-	 * invokes addFailure on all registered test listeners.
-	 * @param targetName the name of the failed target.
-	 * @param ae the associated AssertionFailedException.
-	 */
-	public void fireFail(String targetName, AssertionFailedException ae);
+    /**
+     * invokes addFailure on all registered test listeners.
+     * @param targetName the name of the failed target.
+     * @param ae the associated AssertionFailedException.
+     */
+    public void fireFail(String targetName, AssertionFailedException ae);
 
-	/**
-	 * invokes addError on all registered test listeners.
-	 * @param targetName the name of the failed target.
-	 * @param t the associated Throwable.
-	 */
-	public void fireError(String targetName, Throwable t);
+    /**
+     * invokes addError on all registered test listeners.
+     * @param targetName the name of the failed target.
+     * @param t the associated Throwable.
+     */
+    public void fireError(String targetName, Throwable t);
 
-	/**
-	 * invokes endTest on all registered test listeners.
-	 * @param targetName the name of the current target.
-	 */
-	public void fireEndTest(String targetName);
+    /**
+     * invokes endTest on all registered test listeners.
+     * @param targetName the name of the current target.
+     */
+    public void fireEndTest(String targetName);
 
 }
