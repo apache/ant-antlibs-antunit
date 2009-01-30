@@ -179,7 +179,7 @@ public class AntUnitScriptRunner {
     }
 
     /**
-     * Provide the list of test targets of the active antunit script.
+     * Provides the list of test targets of the active antunit script.
      * @pre isActive()
      * @return List<String> List of test target names
      */
@@ -219,10 +219,6 @@ public class AntUnitScriptRunner {
             try {
                 Project newProject = getCleanProject();
                 newProject.executeTarget(SUITESETUP);
-            } catch (AssertionFailedException e) {
-                env.fireStartTest(SUITESETUP);
-                env.fireFail(SUITESETUP, e);
-                return false;
             } catch (BuildException e) {
                 env.fireStartTest(SUITESETUP);
                 fireFailOrError(SUITESETUP, e);
@@ -253,8 +249,6 @@ public class AntUnitScriptRunner {
         try {
             env.fireStartTest(name);
             newProject.executeTargets(v);
-        } catch (AssertionFailedException e) {
-            env.fireFail(name, e);
         } catch (BuildException e) {
             fireFailOrError(name, e);
         } finally {
@@ -268,8 +262,6 @@ public class AntUnitScriptRunner {
             if (hasTearDown) {
                 try {
                     newProject.executeTarget(TEARDOWN);
-                } catch (final AssertionFailedException e) {
-                    env.fireFail(name, e);
                 } catch (final BuildException e) {
                     fireFailOrError(name, e);
                 }
@@ -290,9 +282,6 @@ public class AntUnitScriptRunner {
             try {
                 Project newProject = getCleanProject();
                 newProject.executeTarget(SUITETEARDOWN);
-            } catch (AssertionFailedException e) {
-                env.fireStartTest(SUITETEARDOWN);
-                env.fireFail(SUITETEARDOWN, e);
             } catch (BuildException e) {
                 env.fireStartTest(SUITETEARDOWN);
                 fireFailOrError(SUITETEARDOWN, e);
@@ -302,24 +291,25 @@ public class AntUnitScriptRunner {
         isSuiteStarted = false;
     }
 
-    /** Report a failure or an exception for the test target name */
-    private void fireFailOrError(String name, BuildException e) {
+    /**
+     * Try to see whether the BuildException e is an AssertionFailedException
+     * or is caused by an AssertionFailedException. If so, fire a failure for 
+     * given targetName.  Otherwise fire an error.
+     */
+    private void fireFailOrError(String targetName, BuildException e) {
         boolean failed = false;
-        // try to see whether the BuildException masks
-        // an AssertionFailedException. If so, treat
-        // it as failure instead of error.
-        Throwable t = e.getCause();
+        Throwable t = e;
         while (t != null && t instanceof BuildException) {
             if (t instanceof AssertionFailedException) {
                 failed = true;
-                env.fireFail(name, (AssertionFailedException) t);
+                env.fireFail(targetName, (AssertionFailedException) t);
                 break;
             }
             t = ((BuildException) t).getCause();
         }
 
         if (!failed) {
-            env.fireError(name, e);
+            env.fireError(targetName, e);
         }
     }
 
