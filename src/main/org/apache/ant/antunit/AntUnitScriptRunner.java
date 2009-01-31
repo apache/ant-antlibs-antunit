@@ -206,6 +206,17 @@ public class AntUnitScriptRunner {
     }
 
     /**
+     * Provides the name of the active script.
+     * @pre isAvtive()
+     */
+    public String getName() {
+        if (!isActive()) {
+            throw new AssertionError();
+        }
+        return getCurrentProject().getName();
+    }
+
+    /**
      * Executes the suiteSetUp target if presents and report any execution error.
      * Note that if the method return false, you are not allowed to run targets.
      * @return false in case of execution failure.  true in case of success. 
