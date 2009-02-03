@@ -74,11 +74,7 @@ public class AntUnit extends Task {
     private Union buildFiles;
 
     
-    private AntUnitExecutionPlatform myExecutionPlatform = new AntUnitExecutionPlatform() {
-
-        public Project createProjectForFile(File f) {
-            return AntUnit.this.createProjectForFile(f);
-        }
+    private AntUnitExecutionNotifier notifier = new AntUnitExecutionNotifier() {
 
         public void fireEndTest(String targetName) {
             AntUnit.this.fireEndTest(targetName);
@@ -100,9 +96,10 @@ public class AntUnit extends Task {
     /**
      * The object responsible for the execution of the unit test.
      * scriptRunner is invoked to executes the targets and keep the
-     * reference to the project.
+     * reference to the project.  scriptRunner is defined only when the
+     * antunit script is running. 
      */
-    private AntUnitScriptRunner scriptRunner = new AntUnitScriptRunner(myExecutionPlatform);
+    private AntUnitScriptRunner scriptRunner;
 
     /**
      * listeners.
@@ -225,27 +222,19 @@ public class AntUnit extends Task {
     /**
      * Processes a single build file.
      */
-    private void doFile(File f) {
+    private void doFile(final File f) {
         log("Running tests in build file " + f, Project.MSG_DEBUG);
-        scriptRunner.activate(f);
-        List testTargets = scriptRunner.scanFile();
-
-        // start test
-        Throwable caught = null;
+        ProjectFactory prjFactory = new ProjectFactory() {
+            public Project createProject() {
+                return createProjectForFile(f);
+            }            
+        };
         try {
-            if (!scriptRunner.startSuite()) {
-                return;
-            }
-            Iterator iter = testTargets.iterator();
-            while (iter.hasNext()) {
-                String name = (String) iter.next();
-                scriptRunner.runTarget(name);
-            }
-        } catch (Throwable e) {
-            caught = e;
+            scriptRunner = new AntUnitScriptRunner(prjFactory);
+            List testTargets = scriptRunner.getTestTartgets();
+            scriptRunner.runSuite(testTargets, notifier);
         } finally {
-            scriptRunner.endSuite(caught);            
-            scriptRunner.deactivate();
+            scriptRunner=null;
         }
     }
 
@@ -255,7 +244,7 @@ public class AntUnit extends Task {
      * @param outputToHandle the output to handle.
      */
     public void handleOutput(String outputToHandle) {
-        if (scriptRunner.isActive()) {
+        if (scriptRunner!=null) {
             scriptRunner.getCurrentProject().demuxOutput(outputToHandle, false);
         } else {
             super.handleOutput(outputToHandle);
@@ -270,7 +259,7 @@ public class AntUnit extends Task {
      */
     public int handleInput(byte[] buffer, int offset, int length)
         throws IOException {
-        if (scriptRunner.isActive()) {
+        if (scriptRunner!=null) {
             return scriptRunner.getCurrentProject().demuxInput(buffer, offset, length);
         }
         return super.handleInput(buffer, offset, length);
@@ -281,7 +270,7 @@ public class AntUnit extends Task {
      * @param toFlush the output String to flush.
      */
     public void handleFlush(String toFlush) {
-        if (scriptRunner.isActive()) {
+        if (scriptRunner!=null) {
             scriptRunner.getCurrentProject().demuxFlush(toFlush, false);
         } else {
             super.handleFlush(toFlush);
@@ -293,7 +282,7 @@ public class AntUnit extends Task {
      * @param errorOutputToHandle the error output to handle.
      */
     public void handleErrorOutput(String errorOutputToHandle) {
-        if (scriptRunner.isActive()) {
+        if (scriptRunner!=null) {
             scriptRunner.getCurrentProject().demuxOutput(errorOutputToHandle, true);
         } else {
             super.handleErrorOutput(errorOutputToHandle);
@@ -305,7 +294,7 @@ public class AntUnit extends Task {
      * @param errorOutputToFlush the error output to flush.
      */
     public void handleErrorFlush(String errorOutputToFlush) {
-        if (scriptRunner.isActive()) {
+        if (scriptRunner!=null) {
             scriptRunner.getCurrentProject().demuxFlush(errorOutputToFlush, true);
         } else {
             super.handleErrorFlush(errorOutputToFlush);

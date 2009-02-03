@@ -25,16 +25,10 @@ import java.io.File;
 import org.apache.tools.ant.Project;
 
 /** 
- * Provides methods that allow the AntUnitScriptRunner to interact
- * with the environment in which it executes.
+ * Provides methods that allow the AntUnitScriptRunner to notify the test progress.
+ * @since 1.2
  */
-public interface AntUnitExecutionPlatform {
-
-    /**
-     * Creates a new project instance and configures it.
-     * @param f the File for which to create a Project.
-     */
-    public Project createProjectForFile(File f);
+public interface AntUnitExecutionNotifier {
 
     /**
      * invokes start on all registered test listeners.

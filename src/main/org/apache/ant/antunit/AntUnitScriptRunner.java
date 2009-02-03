@@ -1,6 +1,5 @@
 package org.apache.ant.antunit;
 
-import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,17 +10,13 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 /** 
- * Run antunit tests.  The lifecycle of this object is :
- * <ol>
- * <li> activate(file) : Indicates the runner that the given file should be used.</li>
- * <li> scanFile() : Provides you the list of targets.</li>
- * <li> startSuite() : Start the suite</li>
- * <li> runTarget(targetName) : Executed one or more time</li>
- * <li> endSuite() : End the suite</li>
- * <li> deactivate() Indicates to the runner that the test is finished and all 
- *      resources can be freed </li>
- * </ol>
- * Every step is mandatory. 
+ * Run antunit tests suites.  This AntUnitScriptRunner is responsible for the 
+ * management of the ant project and the correct invocation the target (taking 
+ * into account properly the [case]setUp and [case]tearDown targets).
+ * The user can however provide the order of the test targets and or can filter
+ * the list of test targets to execute.
+ * The user must also provide its ProjectFactory and an AntUnitExecutionNotifier.
+ * @since 1.2 
  */
 public class AntUnitScriptRunner {
 
@@ -51,23 +46,10 @@ public class AntUnitScriptRunner {
     private static final String SUITETEARDOWN = "suiteTearDown";
 
     /**
-     * Object used to interact with the environment (for example an ant task or a junit runner)
+     * Object used to create projects in order to support test isolation.
      */
-    private final AntUnitExecutionPlatform env;
-
-    /**
-     * Ant script file currently under testing.  The file is set at activation, and used
-     * during all execution every time we want have to create a new project.</br>
-     * It is only defined when the project isActive()
-     */
-    private File scriptFile;
+    private final ProjectFactory prjFactory;
     
-    /**
-     * Indicates if the active project is already scanned and if the value the fields
-     * hasSuiteSetUp, hasSetUp, hasTearDown, hasSuiteTearDown are defined. 
-     */
-    private boolean isScanned;
-
     /**
      * Indicates if the startSuite method has been invoked.  Use to fail fast if the
      * the caller forget to call the startSuite method
@@ -77,22 +59,27 @@ public class AntUnitScriptRunner {
     /**
      * Does that script have a setUp target (defined when scanning the script)
      */
-    private boolean hasSetUp;
+    private final boolean hasSetUp;
 
     /**
      * Does that script have a tearDown target (defined when scanning the script)
      */
-    private boolean hasTearDown;
+    private final boolean hasTearDown;
 
     /**
      * Does that script has a suiteSetUp target.
      */
-    private boolean hasSuiteSetUp;
+    private final boolean hasSuiteSetUp;
 
     /**
      * Does that script has a suite tearDown target that should be executed.
      */
-    private boolean hasSuiteTearDown;
+    private final boolean hasSuiteTearDown;
+
+    /**
+     * List of target names
+     */
+    private final List testTargets;
 
     /** 
      * The project currently used.
@@ -108,54 +95,35 @@ public class AntUnitScriptRunner {
     
     /**
      * Create a new AntScriptRunner on the given environment.
-     * @param env The environment used to create project and where the test progress will be 
-     * notified. 
+     * @param prjFactory A factory for the ant project that will contains the antunit test to execute.
+     * The factory might be invoked multiple time in order to provide test isolation.
      */
-    public AntUnitScriptRunner(AntUnitExecutionPlatform env) {
-        if (env == null) {
-            throw new AssertionError();
+    public AntUnitScriptRunner(ProjectFactory prjFactory) {
+        this.prjFactory = prjFactory;
+        Project newProject = getCurrentProject();
+        Map targets = newProject.getTargets();
+        hasSetUp = targets.containsKey(SETUP);
+        hasTearDown = targets.containsKey(TEARDOWN);
+        hasSuiteSetUp = targets.containsKey(SUITESETUP);
+        hasSuiteTearDown = targets.containsKey(SUITETEARDOWN);
+        testTargets = new LinkedList();
+        Iterator it = targets.keySet().iterator();
+        while (it.hasNext()) {
+            String name = (String) it.next();
+            if (name.startsWith(TEST) && !name.equals(TEST)) {
+                testTargets.add(name);
+            }
         }
-        this.env = env;
-    }
-
-    /** 
-     * Set the ant script to use.
-     * @post isActive() 
-     */
-    public void activate(File f) {
-        scriptFile = f;
-        project = null;
-        isScanned = false;
-        isSuiteStarted = false;
-    }
-
-    /** 
-     * Declare that the current ant script doesn't need to be used anymore.
-     * @post !isActive() 
-     */
-    public void deactivate() {
-        scriptFile = null;
-        project = null; 
-    }
-
-    /** 
-     * Indicates if there is a project currently under test. 
-     */
-    public boolean isActive() {
-        return scriptFile != null;
     }
 
     /**
      * Get the project currently in use.  The caller is not allowed to invoke a target or
      * do anything that would break the isolation of the test targets.
-     * @pre isActif()
      */
-    public Project getCurrentProject() {
-        if (!isActive()) {
-            throw new AssertionError();
-        }
+    public final Project getCurrentProject() {
+    	//Method is final because it is called from the constructor
         if (project == null) {
-            project = env.createProjectForFile(scriptFile);
+            project = prjFactory.createProject();
             projectIsDirty = false;
         }
         return project;
@@ -163,14 +131,10 @@ public class AntUnitScriptRunner {
 
     /**
      * Get a project that has not yet been used in order to execute a target on it.
-     * @pre isActive()
      */
     private Project getCleanProject() {
-        if (!isActive()) {
-            throw new AssertionError();
-        }
         if (project == null || projectIsDirty) {
-            project = env.createProjectForFile(scriptFile);
+            project = prjFactory.createProject();
         }
         //we already set isDirty to true in order to make sure we didn't reuse
         //this project next time getCleanProject is called.  
@@ -179,60 +143,34 @@ public class AntUnitScriptRunner {
     }
 
     /**
-     * Provides the list of test targets of the active antunit script.
-     * @pre isActive()
-     * @return List<String> List of test target names
+     * @return List<String> List of test targets of the script file
      */
-    public List scanFile() {
-        if (!isActive()) {
-            throw new AssertionError();
-        }
-        Project newProject = getCurrentProject();
-        Map targets = newProject.getTargets();
-        hasSetUp = targets.containsKey(SETUP);
-        hasTearDown = targets.containsKey(TEARDOWN);
-        hasSuiteSetUp = targets.containsKey(SUITESETUP);
-        hasSuiteTearDown = targets.containsKey(SUITETEARDOWN);
-        List testTargets = new LinkedList();
-        Iterator it = targets.keySet().iterator();
-        while (it.hasNext()) {
-            String name = (String) it.next();
-            if (name.startsWith(TEST) && !name.equals(TEST)) {
-                testTargets.add(name);
-            }
-        }
-        isScanned = true;
+    public List getTestTartgets() {
         return testTargets;
     }
 
     /**
      * Provides the name of the active script.
-     * @pre isAvtive()
      */
     public String getName() {
-        if (!isActive()) {
-            throw new AssertionError();
-        }
         return getCurrentProject().getName();
     }
 
     /**
      * Executes the suiteSetUp target if presents and report any execution error.
+     * A failure is reported to the notifier and by returning false.
      * Note that if the method return false, you are not allowed to run targets.
      * @return false in case of execution failure.  true in case of success. 
      */
-    public boolean startSuite() {
-        if (!isScanned) {
-            throw new AssertionError();
-        }
+    private boolean startSuite(AntUnitExecutionNotifier notifier) {
         getCurrentProject().fireBuildStarted();
         if (hasSuiteSetUp) {
             try {
                 Project newProject = getCleanProject();
                 newProject.executeTarget(SUITESETUP);
             } catch (BuildException e) {
-                env.fireStartTest(SUITESETUP);
-                fireFailOrError(SUITESETUP, e);
+                notifier.fireStartTest(SUITESETUP);
+                fireFailOrError(SUITESETUP, e, notifier);
                 return false;
             }
         }
@@ -242,10 +180,12 @@ public class AntUnitScriptRunner {
 
     /** 
      * Run the specific test target, possibly between the setUp and tearDown targets if
-     * it exists.  Exception or failures are reported to the execution environment.
+     * it exists.  Exception or failures are reported to the notifier.
      * @param name name of the test target to execute.
+     * @param notifier will receive execution notifications.
+     * @pre startSuite has been invoked successfully
      */
-    public void runTarget(String name) {
+    private void runTarget(String name, AntUnitExecutionNotifier notifier) {
         if (!isSuiteStarted) {
             throw new AssertionError();
         }
@@ -258,23 +198,23 @@ public class AntUnitScriptRunner {
         // create and register a logcapturer on the newProject
         LogCapturer lc = new LogCapturer(newProject);
         try {
-            env.fireStartTest(name);
+            notifier.fireStartTest(name);
             newProject.executeTargets(v);
         } catch (BuildException e) {
-            fireFailOrError(name, e);
+            fireFailOrError(name, e, notifier);
         } finally {
             // fire endTest here instead of the endTarget
             // event, otherwise an error would be
             // registered after the endTest event -
             // endTarget is called before this method's catch block
             // is reached.
-            env.fireEndTest(name);
+            notifier.fireEndTest(name);
             // clean up
             if (hasTearDown) {
                 try {
                     newProject.executeTarget(TEARDOWN);
                 } catch (final BuildException e) {
-                    fireFailOrError(name, e);
+                    fireFailOrError(name, e, notifier);
                 }
             }
         }
@@ -282,20 +222,18 @@ public class AntUnitScriptRunner {
 
     /**
      * Executes the suiteTearDown target if presents and report any execution error.
-     * @param caught Any internal exception triggered (and catched) by the caller indicating that 
-     * the this runner could not be invoked as expected.  
+     * @param caught Any internal exception triggered (and caught) by the caller indicating that 
+     * the execution could not be invoked as expected.  
+     * @param notifier will receive execution notifications.
      */
-    public void endSuite(Throwable caught) {
-        if (!isScanned) {
-            throw new AssertionError();
-        }
+    private void endSuite(Throwable caught, AntUnitExecutionNotifier notifier) {
         if (hasSuiteTearDown) {
             try {
                 Project newProject = getCleanProject();
                 newProject.executeTarget(SUITETEARDOWN);
             } catch (BuildException e) {
-                env.fireStartTest(SUITETEARDOWN);
-                fireFailOrError(SUITETEARDOWN, e);
+                notifier.fireStartTest(SUITETEARDOWN);
+                fireFailOrError(SUITETEARDOWN, e, notifier);
             }
         }
         getCurrentProject().fireBuildFinished(caught);
@@ -307,20 +245,45 @@ public class AntUnitScriptRunner {
      * or is caused by an AssertionFailedException. If so, fire a failure for 
      * given targetName.  Otherwise fire an error.
      */
-    private void fireFailOrError(String targetName, BuildException e) {
+    private void fireFailOrError(String targetName, BuildException e, 
+                                 AntUnitExecutionNotifier notifier) {
         boolean failed = false;
         Throwable t = e;
         while (t != null && t instanceof BuildException) {
             if (t instanceof AssertionFailedException) {
                 failed = true;
-                env.fireFail(targetName, (AssertionFailedException) t);
+                notifier.fireFail(targetName, (AssertionFailedException) t);
                 break;
             }
             t = ((BuildException) t).getCause();
         }
 
         if (!failed) {
-            env.fireError(targetName, e);
+            notifier.fireError(targetName, e);
+        }
+    }
+
+
+    /**
+     * Executes the suite.
+     * @param suiteTargets An ordered list of test targets.  It must be a sublist of getTestTargets
+     * @param notifier 
+     */
+    public void runSuite(List suiteTargets, AntUnitExecutionNotifier notifier) {
+        Throwable caught = null;
+        try {
+            if (!startSuite(notifier)) {
+                return;
+            }
+            Iterator iter = suiteTargets.iterator();
+            while (iter.hasNext()) {
+                String name = (String) iter.next();
+                runTarget(name, notifier);
+            }
+        } catch (Throwable e) {
+            caught = e;
+        } finally {
+            endSuite(caught, notifier);
         }
     }
 
