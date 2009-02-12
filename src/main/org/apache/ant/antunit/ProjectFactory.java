@@ -4,7 +4,7 @@ import org.apache.tools.ant.Project;
 
 /** 
  * Provides project instances for AntUnit execution.<br/>  
- * The aproach to creates a project depends on the context.  When invoked from an 
+ * The approach to creates a project depends on the context.  When invoked from an 
  * ant project, some elements might be intialized from the parent project.  When
  * executed in a junit runner, a brand new project must be initialized.<br/>
  * The AntScriptRunner will usually creates multiple project in order to provide test isolation. 

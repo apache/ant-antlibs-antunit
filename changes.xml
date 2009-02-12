@@ -38,6 +38,9 @@
   </properties>
 
   <release version="1.2" date="not-released">
+    <action type="add">
+      Add Junit3 and Junit4 adapters allowing to launch AntUnit script from JUnit runner
+    </action>
     <action type="update">
       expectfailure report the original build exception chained when failing
     </action>

@@ -1,0 +1,133 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+
+package org.apache.ant.antunit.junit3;
+
+import java.io.File;
+
+import junit.framework.TestCase;
+import junit.framework.TestResult;
+
+/**
+ * JUnit TestCase that will executes a single AntUnit target. This class is not
+ * supposed to be used directly. <br/>
+ * It is public only because junit must access it as a public.
+ */
+public class AntUnitTestCase extends TestCase {
+    // We have to extends TestCase, and not implements Test because otherwise 
+    // JUnit4 will derive the Description composing the suite description from 
+    // this className only (AntUnitTestCase), and not from the name.
+    // However, during execution it use the right Description (base on the 
+    // toString)
+
+    /**
+     * AntUnitSuite that contains this AntUnitTestCase. Execution is done via
+     * this suite
+     */
+    private final AntUnitSuite suite;
+
+    /**
+     * The test target
+     */
+    private final String target;
+
+    /**
+     * Prepare an AntUnitTestCase that will be executed alone. This constructor 
+     * is typically used by a junit 3 runner that will reexecute a specific 
+     * test.</br> 
+     * The execution of this test will be embed in a suiteSetUp and 
+     * suiteTearDown.
+     * @param name The name of the AntUnitTestCase, normally obtained from a 
+     * previous execution. 
+     */
+    public AntUnitTestCase(String name) {
+        super(name);
+        TestCaseName nameParser = new TestCaseName(name);
+        target = nameParser.getTarget();
+        suite = new AntUnitSuite(nameParser.getScript());
+        // TODO : check that target is in the list
+    }
+
+    /**
+     * Prepare an AntUnitTestCase that will be executed in a suite. It is the
+     * suite that prepare the antScriptRunner and the JUnitExcutionPlatform. It
+     * is the responsibility of the suite to execute the suiteSetUp and the
+     * suiteTearDown.
+     * 
+     * @param target
+     * @param antScriptRunner
+     * @param executionEnv
+     */
+    public AntUnitTestCase(AntUnitSuite suite, File scriptFile, String target) {
+        // The name can be reused by eclipse when running a single test
+        super(new TestCaseName(scriptFile, target).getName());
+        this.target = target;
+        this.suite = suite;
+    }
+
+    /** Get the AntUnit test target name */
+    public String getTarget() {
+        return target;
+    }
+
+    /** @overwrite */
+    public void run(TestResult result) {
+        suite.runTest(this, result);
+    }
+
+    /**
+     * Handle the serialization and the parsing of the name of a TestCase. The
+     * name of the TestCase contains the filename of the script and the target,
+     * so that the name uniquely identify the TestCase, and a TestCase can be
+     * executed from its name.
+     */
+    static class TestCaseName {
+        private final String name;
+        private final File script;
+        private final String target;
+
+        public TestCaseName(String name) {
+            this.name = name;
+            this.target = name.substring(0, name.indexOf(' '));
+            String filename = name.substring(name.indexOf(' ') + 2, name
+                    .length() - 1);
+            this.script = new File(filename);
+        }
+
+        public TestCaseName(File script, String target) {
+            this.script = script;
+            this.target = target;
+            this.name = target + " [" + script + "]";
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public File getScript() {
+            return script;
+        }
+
+        public String getTarget() {
+            return target;
+        }
+    }
+
+}
