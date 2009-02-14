@@ -22,6 +22,8 @@ package org.apache.ant.antunit.junit3;
 
 import java.io.File;
 
+import org.apache.tools.ant.BuildException;
+
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 
@@ -49,6 +51,15 @@ public class AntUnitTestCase extends TestCase {
     private final String target;
 
     /**
+     * Store the exception when the project can not be parsed, but only if this
+     * class has been created directly by the IDE from its name.
+     * In case of initialisation problem when the test is build from the suite,
+     * the problem is handled at the level of the suite (and this object is never
+     * created) 
+     */
+    private final BuildException initialisationException;
+    
+    /**
      * Prepare an AntUnitTestCase that will be executed alone. This constructor 
      * is typically used by a junit 3 runner that will reexecute a specific 
      * test.</br> 
@@ -59,10 +70,19 @@ public class AntUnitTestCase extends TestCase {
      */
     public AntUnitTestCase(String name) {
         super(name);
-        TestCaseName nameParser = new TestCaseName(name);
-        target = nameParser.getTarget();
-        suite = new AntUnitSuite(nameParser.getScript());
-        // TODO : check that target is in the list
+        BuildException catchedEx = null;
+        AntUnitSuite createdSuite = null;
+        TestCaseName nameParser = new TestCaseName(name);        
+        try {
+            createdSuite = new AntUnitSuite(this, nameParser.getScript());
+        } catch (BuildException e) {
+            catchedEx = e;
+        }
+        this.initialisationException = catchedEx;
+        this.suite = createdSuite;
+        this.target = nameParser.getTarget();
+        //There is no need to check here if the target still exists.  This check
+        //will be done during execution, and we will get a very nice error
     }
 
     /**
@@ -80,6 +100,7 @@ public class AntUnitTestCase extends TestCase {
         super(new TestCaseName(scriptFile, target).getName());
         this.target = target;
         this.suite = suite;
+        this.initialisationException = null;
     }
 
     /** Get the AntUnit test target name */
@@ -87,11 +108,34 @@ public class AntUnitTestCase extends TestCase {
         return target;
     }
 
-    /** @overwrite */
+    /** 
+     * Called by a Junit Runner that want to executes specifically
+     * this test target.
+     * This implementation delegates the call to the suite.
+     * @Overwrite
+     */
     public void run(TestResult result) {
-        suite.runTest(this, result);
+        if (initialisationException==null && suite!=null) {
+            //normal case, the test is executed from the suite
+            suite.runTest(this, result);
+        } else {
+            //special case, the suite failed to be created
+            //the execution will be handled by this object
+            //directly
+            super.run(result);
+        }
     }
 
+    /**
+     * Normally never used because this object delegates all execution
+     * to an AntUnitSuite.  However, when the suite can not be created
+     * (because the ant project is invalid), this object is executed
+     * and just throws the exception.
+     */
+    protected void runTest() throws BuildException {
+        throw initialisationException;
+    }
+    
     /**
      * Handle the serialization and the parsing of the name of a TestCase. The
      * name of the TestCase contains the filename of the script and the target,

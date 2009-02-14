@@ -44,6 +44,9 @@ public class AntUnitSuiteRunner extends CompositeRunner {
         super(suite.getName());
         Enumeration tests = suite.tests();
         while (tests.hasMoreElements()) {
+            //TODO Handle the the case of FileNotFound. 
+            //In that case the suite contains an error Test and we have
+            //a ClassCastException instead of a nice & clear error            
             AntUnitTestCase tc = (AntUnitTestCase) tests.nextElement();
             add(new AntUnitTestCaseRunner(tc, junitTestClass));
         }

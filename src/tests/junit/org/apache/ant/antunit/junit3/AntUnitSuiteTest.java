@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import junit.framework.TestCase;
+import junit.framework.TestFailure;
 import junit.framework.TestResult;
 
 import org.apache.tools.ant.util.FileUtils;
@@ -34,7 +35,7 @@ import org.apache.tools.ant.util.FileUtils;
 public class AntUnitSuiteTest extends TestCase {
 
     AntUnitSuite suite = new AntUnitSuite(new File(
-            "src/etc/testcases/antunit/junit.xml"));
+            "src/etc/testcases/antunit/junit.xml"), AntUnitSuiteTest.class);
     File outFile = new File("target/test_output/junit_out.xml");
 
     public void testRunSuiteSetUp() throws FileNotFoundException, IOException {
@@ -51,8 +52,8 @@ public class AntUnitSuiteTest extends TestCase {
     }
 
     public void testSuiteName() {
-        assertTrue("Expected non empty suite name", suite.getName().trim()
-                .length() > 0);
+        assertTrue("Expected non empty suite name", 
+                suite.getName().trim().length() > 0);
     }
 
     public void testChildNames() {
@@ -84,4 +85,16 @@ public class AntUnitSuiteTest extends TestCase {
                 "suiteSetUp-setUp-test1-tearDown-suiteTearDown".equals(output));
     }
 
+    public void testFileNotFound() throws Exception {
+        suite = new AntUnitSuite(new File("xxxx"), AntUnitSuiteTest.class); 
+        TestResult testResult = new TestResult();
+        suite.run(testResult);
+        
+        assertEquals(1 , testResult.errorCount());
+        TestFailure error = (TestFailure) testResult.errors().nextElement();
+        assertTrue("Unexpected error : " + error.exceptionMessage(),
+                error.exceptionMessage().contains("xxxx"));
+    }
+    
+    //TODO test missing target error reporting
 }

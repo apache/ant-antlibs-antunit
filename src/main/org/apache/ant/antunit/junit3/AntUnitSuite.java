@@ -28,11 +28,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
 import org.apache.ant.antunit.AntUnitScriptRunner;
 import org.apache.ant.antunit.ProjectFactory;
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.MagicNames;
 import org.apache.tools.ant.Project;
@@ -47,6 +49,7 @@ public class AntUnitSuite extends TestSuite {
     private final AntUnitScriptRunner antScriptRunner;
     private final MultiProjectDemuxOutputStream stderr;
     private final MultiProjectDemuxOutputStream stdout;
+    private final Test initializationReportingTest;
 
     /**
      * Create a JUnit TestSuite that when executed will run the given ant
@@ -62,22 +65,25 @@ public class AntUnitSuite extends TestSuite {
      *            The test class that creates this suite. This is used to give
      *            a name to the suite so that an IDE can reexecute this suite.
      */
-    public AntUnitSuite(final File scriptFile, Class rootClass) {
-        this(scriptFile);
-        setName(rootClass.getName());// Allows eclipse to reexecute the test
-    }
-
-    /**
-     * Constructor used by AntUnitTestCase when a single test case is created.
-     * The difference with the public constructor is this version doesn't set
-     * the name.
-     */
-    AntUnitSuite(final File scriptFile) {
-        MyProjectFactory prjFactory = new MyProjectFactory(scriptFile);
-        antScriptRunner = new AntUnitScriptRunner(prjFactory);
+    public AntUnitSuite(File scriptFile, Class rootClass) {
+        AntUnitScriptRunner createdScriptRunner = null;
+        try {
+            MyProjectFactory prjFactory = new MyProjectFactory(scriptFile);
+            createdScriptRunner = new AntUnitScriptRunner(prjFactory);
+        } catch (BuildException e) {
+            antScriptRunner = null;
+            stdout = null;
+            stderr = null;
+            initializationReportingTest = error(e);
+            addTest(initializationReportingTest);
+            return;
+        }
+        antScriptRunner = createdScriptRunner;
+        initializationReportingTest = null;
         stdout = new MultiProjectDemuxOutputStream(antScriptRunner, false);
         stderr = new MultiProjectDemuxOutputStream(antScriptRunner, true);
-        setName(antScriptRunner.getName() + "[" + scriptFile + "]"); 
+        setName(antScriptRunner.getName() + "[" + scriptFile + "]");        
+        setName(rootClass.getName());// Allows eclipse to reexecute the test
         List testTargets = antScriptRunner.getTestTartgets();
         for (Iterator it = testTargets.iterator(); it.hasNext();) {
             String target = (String) it.next();
@@ -87,23 +93,57 @@ public class AntUnitSuite extends TestSuite {
     }
 
     /**
+     * Constructor used by AntUnitTestCase when a single test case is created.
+     * The difference with the public constructor is this version doesn't set
+     * the name.
+     * @throws BuildException when the file project can not be create (parsed/read)
+     */
+    AntUnitSuite(AntUnitTestCase singleTc , File scriptFile) throws BuildException {
+        MyProjectFactory prjFactory = new MyProjectFactory(scriptFile);
+        antScriptRunner = new AntUnitScriptRunner(prjFactory);
+        //the exception is throwed, and it is up to the AntUnitTestCase to handle it.
+        initializationReportingTest = null; 
+        stdout = new MultiProjectDemuxOutputStream(antScriptRunner, false);
+        stderr = new MultiProjectDemuxOutputStream(antScriptRunner, true);
+        setName(antScriptRunner.getName() + "[" + scriptFile + "]");
+        addTest(singleTc);
+    }
+    
+    /**
      * @Override Run the full AntUnit suite
      */
     public void run(TestResult testResult) {
-        List testTartgets = antScriptRunner.getTestTartgets();
-        runInContainer(testTartgets, testResult, tests());
+        if (initializationReportingTest!=null) {
+            initializationReportingTest.run(testResult);
+        } else {
+            List testTartgets = antScriptRunner.getTestTartgets();
+            runInContainer(testTartgets, testResult);
+        }
     }
 
+    
+    private static Test error(final BuildException ex) {
+        return new TestCase("warning") {
+            protected void runTest() throws BuildException {
+                throw ex;
+            }
+        };
+    }
+
+
+    
     /**
      * @Override Run a single test target of the AntUnit suite. suiteSetUp,
      *           setUp, tearDown and suiteTearDown are executed around it.
      */
     public void runTest(Test test, TestResult result) {
-        String targetName = ((AntUnitTestCase) test).getTarget();
-        List singleTargetList = Collections.singletonList(targetName);
-        Enumeration singleTestList = Collections.enumeration(Collections
-                .singletonList(test));
-        runInContainer(singleTargetList, result, singleTestList);
+        if (initializationReportingTest!=null) {
+            initializationReportingTest.run(result);
+        } else {
+            String targetName = ((AntUnitTestCase) test).getTarget();
+            List singleTargetList = Collections.singletonList(targetName);
+            runInContainer(singleTargetList, result);
+        }
     }
 
     /**
@@ -119,10 +159,9 @@ public class AntUnitSuite extends TestSuite {
      * @param tests
      *            The JUnit3 Test classes instances to use in the notification.
      */
-    private void runInContainer(List targetList, TestResult result,
-            Enumeration/*<Test>*/tests) {
+    private void runInContainer(List targetList, TestResult result) {
         JUnitNotificationAdapter notifier = new JUnitNotificationAdapter(
-                result, tests);
+                result, tests());
         PrintStream savedErr = System.err;
         PrintStream savedOut = System.out;
         try {

@@ -1,5 +1,6 @@
 package org.apache.ant.antunit;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 /** 
@@ -14,7 +15,8 @@ public interface ProjectFactory {
     
     /**
      * Creates a new project instance and configures it according to the execution context.
+     * @throws BuildException The project can not be created (probably parsed)
      */
-    public Project createProject();
+    public Project createProject() throws BuildException;
 
 }

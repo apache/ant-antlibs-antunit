@@ -97,8 +97,9 @@ public class AntUnitScriptRunner {
      * Create a new AntScriptRunner on the given environment.
      * @param prjFactory A factory for the ant project that will contains the antunit test to execute.
      * The factory might be invoked multiple time in order to provide test isolation.
+     * @throws BuildException The project can not be parsed
      */
-    public AntUnitScriptRunner(ProjectFactory prjFactory) {
+    public AntUnitScriptRunner(ProjectFactory prjFactory) throws BuildException {
         this.prjFactory = prjFactory;
         Project newProject = getCurrentProject();
         Map targets = newProject.getTargets();
@@ -119,8 +120,9 @@ public class AntUnitScriptRunner {
     /**
      * Get the project currently in use.  The caller is not allowed to invoke a target or
      * do anything that would break the isolation of the test targets.
+     * @throws BuildException The project can not be parsed
      */
-    public final Project getCurrentProject() {
+    public final Project getCurrentProject() throws BuildException {
     	//Method is final because it is called from the constructor
         if (project == null) {
             project = prjFactory.createProject();

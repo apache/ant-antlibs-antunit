@@ -30,12 +30,16 @@ import org.apache.tools.ant.util.FileUtils;
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestFailure;
 import junit.framework.TestResult;
 
 public class AntUnitTestCaseTest extends TestCase {
 
     File f = new File("src/etc/testcases/antunit/junit.xml");
+    File invalidF = new File("invalidFile");
     String test1Name = new AntUnitTestCase.TestCaseName(f, "test1").getName();
+    String unknownName = new AntUnitTestCase.TestCaseName(f, "unknown").getName();
+    String nameForInvalidF = new AntUnitTestCase.TestCaseName(invalidF, "x").getName();
 
     File outFile = new File("target/test_output/junit_out.xml");
 
@@ -84,7 +88,38 @@ public class AntUnitTestCaseTest extends TestCase {
         AntUnitTestCase antUnitTestCase = new AntUnitTestCase(test1Name);
         antUnitTestCase.run(testResultMock);
 
-        Assert.assertSame(antUnitTestCase, startedTest);
-        Assert.assertSame(antUnitTestCase, endedTest);
+        assertSame(antUnitTestCase, startedTest);
+        assertSame(antUnitTestCase, endedTest);
     }
+    
+    public void testUnknownTarget() {
+        //when the antscript has changed (the target has been removed) and the user try 
+        //to rerun this target.
+        TestResult testResult = new TestResult();
+
+        AntUnitTestCase antUnitTestCase = new AntUnitTestCase(unknownName);
+        antUnitTestCase.run(testResult);
+
+        assertEquals(1 , testResult.errorCount());
+        TestFailure error = (TestFailure) testResult.errors().nextElement();
+        assertSame(antUnitTestCase, error.failedTest());
+        assertTrue("Unexpected error : " + error.exceptionMessage(),
+                error.exceptionMessage().contains("unknown"));
+    }
+
+    public void testInvalidFile() {
+        //when the ant script has changed (or just disappeared) and the user try 
+        //to rerun this target.
+        TestResult testResult = new TestResult();
+
+        AntUnitTestCase antUnitTestCase = new AntUnitTestCase(nameForInvalidF);
+        antUnitTestCase.run(testResult);
+
+        assertEquals(1 , testResult.errorCount());
+        TestFailure error = (TestFailure) testResult.errors().nextElement();
+        assertSame(antUnitTestCase, error.failedTest());
+        assertTrue("Unexpected error : " + error.exceptionMessage(),
+                error.exceptionMessage().contains("invalidFile"));
+    }
+
 }
