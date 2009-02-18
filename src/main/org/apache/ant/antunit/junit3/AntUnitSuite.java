@@ -23,7 +23,6 @@ package org.apache.ant.antunit.junit3;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,6 +31,7 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
+import org.apache.ant.antunit.AntUnitExecutionNotifier;
 import org.apache.ant.antunit.AntUnitScriptRunner;
 import org.apache.ant.antunit.ProjectFactory;
 import org.apache.tools.ant.BuildException;
@@ -117,7 +117,9 @@ public class AntUnitSuite extends TestSuite {
             initializationReportingTest.run(testResult);
         } else {
             List testTartgets = antScriptRunner.getTestTartgets();
-            runInContainer(testTartgets, testResult);
+            JUnitNotificationAdapter notifier = new JUnitNotificationAdapter(
+                    testResult, tests());
+            runInContainer(testTartgets, notifier);
         }
     }
 
@@ -142,7 +144,9 @@ public class AntUnitSuite extends TestSuite {
         } else {
             String targetName = ((AntUnitTestCase) test).getTarget();
             List singleTargetList = Collections.singletonList(targetName);
-            runInContainer(singleTargetList, result);
+            JUnitNotificationAdapter notifier = new JUnitNotificationAdapter(
+                    result, tests());
+            runInContainer(singleTargetList, notifier);
         }
     }
 
@@ -150,18 +154,14 @@ public class AntUnitSuite extends TestSuite {
      * Execute the test suite in a 'container' similar to the ant 'container'.
      * When ant executes a project it redirect the input and the output. In this
      * context we will only redirect output (unit test are not supposed to be
-     * interactive)
+     * interactive).<br/>
      * 
      * @param targetList
      *            The list of test target to execute
-     * @param result
-     *            The JUnit3 TestResult receiving result notification
-     * @param tests
-     *            The JUnit3 Test classes instances to use in the notification.
+     * @param notifier
+     *            The AntUnit notifier that will receive execution notifications
      */
-    private void runInContainer(List targetList, TestResult result) {
-        JUnitNotificationAdapter notifier = new JUnitNotificationAdapter(
-                result, tests());
+    public void runInContainer(List targetList, AntUnitExecutionNotifier notifier) {        
         PrintStream savedErr = System.err;
         PrintStream savedOut = System.out;
         try {

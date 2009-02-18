@@ -20,21 +20,44 @@
 package org.apache.ant.antunit.junit4;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.apache.ant.antunit.junit3.AntUnitSuite;
-import org.junit.Ignore;
+import org.apache.tools.ant.util.FileUtils;
 import org.junit.internal.runners.InitializationError;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 
-public class AntUnitSuiteTest extends TestCase {
+public class AntUnitSuiteRunnerTest extends TestCase {
 
     private boolean mockExecutionOK = false;
     private String mockExcutionError = "";
 
+    /**
+     * Validates the execution sequence.
+     */
+    public void testRunFullSuite() throws FileNotFoundException, IOException,
+            InitializationError {
+        AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
+                JUnit4AntUnitRunnable.class);
+
+        runner.run(new RunNotifier());
+        File outFile = new File("target/test_output/junit_out.xml");
+
+        String output = FileUtils.readFully(new FileReader(outFile));
+        String EXPECT1 = "suiteSetUp-setUp-test1-tearDown-setUp-test2-tearDown-suiteTearDown";
+        String EXPECT2 = "suiteSetUp-setUp-test2-tearDown-setUp-test1-tearDown-suiteTearDown";
+        assertTrue("unexted output : " + output, EXPECT1.equals(output)
+                || EXPECT2.equals(output));
+    }
+
+    
     /**
      * When a test is executed, the description used in the notification must be
      * equals to the description declared, otherwise the runner is confused (for
@@ -108,6 +131,31 @@ public class AntUnitSuiteTest extends TestCase {
         }
     }
 
+    public void testInvalidSuiteReturnTypeError() {
+        try {
+            AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
+                    JUnit4AntUnitRunnableWithInvalidSuiteReturnType.class);
+            fail("InitializationError expected");
+        } catch (InitializationError e) {
+            String msg = e.getCauses().get(0).getMessage();
+            assertTrue("Unexpected error : " + msg, msg.contains("suite"));
+            assertTrue("Unexpected error : " + msg, msg.contains("AntUnitSuite"));
+        }
+    }
+
+    public void testInvalidSuiteReturnNull() {
+        try {
+            AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
+                    JUnit4AntUnitRunnableWithInvalidSuiteReturningNull.class);
+            fail("InitializationError expected");
+        } catch (InitializationError e) {
+            String msg = e.getCauses().get(0).getMessage();
+            assertTrue("Unexpected error : " + msg, msg.contains("suite"));
+            assertTrue("Unexpected error : " + msg, msg.contains("null"));
+        }
+    }
+
+    
     public static class JUnit4AntUnitRunnable {
         public static AntUnitSuite suite() {
             File f = new File("src/etc/testcases/antunit/junit.xml");
@@ -124,6 +172,19 @@ public class AntUnitSuiteTest extends TestCase {
     }
 
     public static class JUnit4AntUnitRunnableWithoutSuiteMethod {
+    }
+
+    public static class JUnit4AntUnitRunnableWithInvalidSuiteReturnType {
+        public static TestSuite suite() {
+            return new TestSuite("We don't support returning generic TestSuite." +
+                    "  The Runner can not handle that");
+        }
+    }
+    
+    public static class JUnit4AntUnitRunnableWithInvalidSuiteReturningNull {
+        public static TestSuite suite() {
+            return null;
+        }
     }
 
 }
