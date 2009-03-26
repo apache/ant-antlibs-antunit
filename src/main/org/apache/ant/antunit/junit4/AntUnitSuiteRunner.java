@@ -35,10 +35,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import junit.framework.TestCase;
+
 import org.apache.ant.antunit.AntUnitExecutionNotifier;
 import org.apache.ant.antunit.AssertionFailedException;
 import org.apache.ant.antunit.junit3.AntUnitSuite;
 import org.apache.ant.antunit.junit3.AntUnitTestCase;
+import org.apache.ant.antunit.junit3.ErrorTestCase;
 import org.junit.internal.runners.InitializationError;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -64,18 +67,22 @@ public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
     private final Map/*<String, Description>*/ targetDescriptions = new HashMap();
     private final List/*<String>*/ targetsOrder = new LinkedList();
     
-    private AntUnitSuiteRunner(AntUnitSuite suite, Class junitTestClass) {
+    private AntUnitSuiteRunner(AntUnitSuite suite, Class junitTestClass) throws InitializationError {
         junit3Suite = suite;
-        Enumeration tests = suite.tests();
-        while (tests.hasMoreElements()) {
-            //TODO Handle the the case of FileNotFound. 
-            //In that case the suite contains an error Test and we have
-            //a ClassCastException instead of a nice & clear error
-            //TODO Handle the possibility for the user to define suite of AntUnit scripts
-            AntUnitTestCase tc = (AntUnitTestCase) tests.nextElement();
-            Description tc_desc = Description.createTestDescription(junitTestClass, tc.getName());
-            targetDescriptions.put(tc.getTarget(), tc_desc);
-            targetsOrder.add(tc.getTarget());
+        if (suite.hasAntInitError()) {
+            throw new InitializationError(
+                    new Throwable[] { suite.getAntInitialisationException() } 
+                  );
+        } else { 
+            Enumeration tests = suite.tests();
+            while (tests.hasMoreElements()) {
+                TestCase nextTc = (TestCase) tests.nextElement();
+                //TODO Handle the possibility for the user to define suite of AntUnit scripts            	
+            	AntUnitTestCase tc = (AntUnitTestCase) nextTc;
+            	Description tc_desc = Description.createTestDescription(junitTestClass, tc.getName());
+            	targetDescriptions.put(tc.getTarget(), tc_desc);
+            	targetsOrder.add(tc.getTarget());
+            }
         }
     }
 

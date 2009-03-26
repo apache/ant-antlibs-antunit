@@ -29,6 +29,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.ant.antunit.junit3.AntUnitSuite;
+import org.apache.ant.antunit.junit3.ErrorTestCase;
 import org.apache.tools.ant.util.FileUtils;
 import org.junit.internal.runners.InitializationError;
 import org.junit.runner.Description;
@@ -71,7 +72,6 @@ public class AntUnitSuiteRunnerTest extends TestCase {
                 JUnit4AntUnitRunnable.class);
         final ArrayList tDescs = runner.getDescription().getChildren();
 
-        final int TEST_STARTED = 1, TEST_FINISHED = 2;
         RunNotifier notifierMock = new RunNotifier() {
             Description curTest = null;
 
@@ -87,7 +87,6 @@ public class AntUnitSuiteRunnerTest extends TestCase {
                 curTest = description;
             }
 
-            @Override
             public void fireTestFinished(Description description) {
                 if (curTest == null) {
                     mockExcutionError += "Unexpected fireTestFinished("
@@ -155,7 +154,19 @@ public class AntUnitSuiteRunnerTest extends TestCase {
         }
     }
 
-    
+
+    public void testInvalidSuiteReferencingMissingFile() {
+        try {
+            AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
+                    JUnit4AntUnitRunnableRefferencingIncorrectFile.class);
+            fail("InitializationError expected");
+        } catch (InitializationError e) {
+            String msg = e.getCauses().get(0).getMessage();
+            assertTrue("Unexpected error : " + msg, msg.contains("FileNotFound"));
+            assertTrue("Unexpected error : " + msg, msg.contains("build_script_not_found.xml"));
+        }
+    }
+
     public static class JUnit4AntUnitRunnable {
         public static AntUnitSuite suite() {
             File f = new File("src/etc/testcases/antunit/junit.xml");
@@ -184,6 +195,15 @@ public class AntUnitSuiteRunnerTest extends TestCase {
     public static class JUnit4AntUnitRunnableWithInvalidSuiteReturningNull {
         public static TestSuite suite() {
             return null;
+        }
+    }
+
+    
+    public static class JUnit4AntUnitRunnableRefferencingIncorrectFile {
+        public static AntUnitSuite suite() {
+            File f = new File("build_script_not_found.xml");
+            return new AntUnitSuite(f,
+                    JUnit4AntUnitRunnableWithNonStaticSuite.class);
         }
     }
 

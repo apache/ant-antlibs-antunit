@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
@@ -49,7 +48,7 @@ public class AntUnitSuite extends TestSuite {
     private final AntUnitScriptRunner antScriptRunner;
     private final MultiProjectDemuxOutputStream stderr;
     private final MultiProjectDemuxOutputStream stdout;
-    private final Test initializationReportingTest;
+    private final ErrorTestCase initializationReportingTest;
 
     /**
      * Create a JUnit TestSuite that when executed will run the given ant
@@ -66,6 +65,7 @@ public class AntUnitSuite extends TestSuite {
      *            a name to the suite so that an IDE can reexecute this suite.
      */
     public AntUnitSuite(File scriptFile, Class rootClass) {
+        setName(rootClass.getName()); //This name allows eclipse to reexecute the test
         AntUnitScriptRunner createdScriptRunner = null;
         try {
             MyProjectFactory prjFactory = new MyProjectFactory(scriptFile);
@@ -74,7 +74,7 @@ public class AntUnitSuite extends TestSuite {
             antScriptRunner = null;
             stdout = null;
             stderr = null;
-            initializationReportingTest = error(e);
+            initializationReportingTest = new ErrorTestCase(e);
             addTest(initializationReportingTest);
             return;
         }
@@ -82,8 +82,6 @@ public class AntUnitSuite extends TestSuite {
         initializationReportingTest = null;
         stdout = new MultiProjectDemuxOutputStream(antScriptRunner, false);
         stderr = new MultiProjectDemuxOutputStream(antScriptRunner, true);
-        setName(antScriptRunner.getName() + "[" + scriptFile + "]");        
-        setName(rootClass.getName());// Allows eclipse to reexecute the test
         List testTargets = antScriptRunner.getTestTartgets();
         for (Iterator it = testTargets.iterator(); it.hasNext();) {
             String target = (String) it.next();
@@ -122,17 +120,6 @@ public class AntUnitSuite extends TestSuite {
             runInContainer(testTartgets, notifier);
         }
     }
-
-    
-    private static Test error(final BuildException ex) {
-        return new TestCase("warning") {
-            protected void runTest() throws BuildException {
-                throw ex;
-            }
-        };
-    }
-
-
     
     /**
      * @Override Run a single test target of the AntUnit suite. suiteSetUp,
@@ -204,4 +191,13 @@ public class AntUnitSuite extends TestSuite {
         }
     }
 
+    public boolean hasAntInitError() {
+        return this.initializationReportingTest!=null;
+    }
+
+    public BuildException getAntInitialisationException() {
+        return hasAntInitError() ? 
+                initializationReportingTest.getAntScriptError() :
+                null;
+    }
 }

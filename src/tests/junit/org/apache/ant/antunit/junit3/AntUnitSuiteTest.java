@@ -90,6 +90,7 @@ public class AntUnitSuiteTest extends TestCase {
         TestResult testResult = new TestResult();
         suite.run(testResult);
         
+        assertNotNull(suite.getName()); 
         assertEquals(1 , testResult.errorCount());
         TestFailure error = (TestFailure) testResult.errors().nextElement();
         assertTrue("Unexpected error : " + error.exceptionMessage(),
