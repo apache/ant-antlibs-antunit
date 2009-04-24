@@ -20,9 +20,9 @@
 
 package org.apache.ant.antunit.junit3;
 
-import org.apache.tools.ant.BuildException;
-
 import junit.framework.TestCase;
+
+import org.apache.tools.ant.BuildException;
 
 /**
  * A TestCase that will just report an error when running. This is pretty useful

@@ -41,7 +41,6 @@ import org.apache.ant.antunit.AntUnitExecutionNotifier;
 import org.apache.ant.antunit.AssertionFailedException;
 import org.apache.ant.antunit.junit3.AntUnitSuite;
 import org.apache.ant.antunit.junit3.AntUnitTestCase;
-import org.apache.ant.antunit.junit3.ErrorTestCase;
 import org.junit.internal.runners.InitializationError;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
