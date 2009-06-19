@@ -29,7 +29,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.ant.antunit.junit3.AntUnitSuite;
-import org.apache.ant.antunit.junit3.ErrorTestCase;
 import org.apache.tools.ant.util.FileUtils;
 import org.junit.internal.runners.InitializationError;
 import org.junit.runner.Description;
@@ -109,8 +108,7 @@ public class AntUnitSuiteRunnerTest extends TestCase {
 
     public void testMissingSuiteMethodInitializationError() {
         try {
-            AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
-                    JUnit4AntUnitRunnableWithoutSuiteMethod.class);
+            new AntUnitSuiteRunner(JUnit4AntUnitRunnableWithoutSuiteMethod.class);
             fail("InitializationError expected");
         } catch (InitializationError e) {
             String msg = e.getCauses().get(0).getMessage();
@@ -120,8 +118,7 @@ public class AntUnitSuiteRunnerTest extends TestCase {
 
     public void testNonStaticSuiteMethodInitializationError() {
         try {
-            AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
-                    JUnit4AntUnitRunnableWithNonStaticSuite.class);
+            new AntUnitSuiteRunner(JUnit4AntUnitRunnableWithNonStaticSuite.class);
             fail("InitializationError expected");
         } catch (InitializationError e) {
             String msg = e.getCauses().get(0).getMessage();
@@ -132,8 +129,7 @@ public class AntUnitSuiteRunnerTest extends TestCase {
 
     public void testInvalidSuiteReturnTypeError() {
         try {
-            AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
-                    JUnit4AntUnitRunnableWithInvalidSuiteReturnType.class);
+            new AntUnitSuiteRunner(JUnit4AntUnitRunnableWithInvalidSuiteReturnType.class);
             fail("InitializationError expected");
         } catch (InitializationError e) {
             String msg = e.getCauses().get(0).getMessage();
@@ -144,8 +140,7 @@ public class AntUnitSuiteRunnerTest extends TestCase {
 
     public void testInvalidSuiteReturnNull() {
         try {
-            AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
-                    JUnit4AntUnitRunnableWithInvalidSuiteReturningNull.class);
+            new AntUnitSuiteRunner(JUnit4AntUnitRunnableWithInvalidSuiteReturningNull.class);
             fail("InitializationError expected");
         } catch (InitializationError e) {
             String msg = e.getCauses().get(0).getMessage();
@@ -157,8 +152,7 @@ public class AntUnitSuiteRunnerTest extends TestCase {
 
     public void testInvalidSuiteReferencingMissingFile() {
         try {
-            AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
-                    JUnit4AntUnitRunnableRefferencingIncorrectFile.class);
+            new AntUnitSuiteRunner(JUnit4AntUnitRunnableRefferencingIncorrectFile.class);
             fail("InitializationError expected");
         } catch (InitializationError e) {
             String msg = e.getCauses().get(0).getMessage();

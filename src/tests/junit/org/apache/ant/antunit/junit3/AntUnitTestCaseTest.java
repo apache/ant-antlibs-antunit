@@ -24,14 +24,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.apache.ant.antunit.junit3.AntUnitTestCase;
-import org.apache.tools.ant.util.FileUtils;
-
-import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestFailure;
 import junit.framework.TestResult;
+
+import org.apache.tools.ant.util.FileUtils;
 
 public class AntUnitTestCaseTest extends TestCase {
 

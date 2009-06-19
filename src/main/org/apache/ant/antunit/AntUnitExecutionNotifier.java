@@ -20,9 +20,6 @@
 
 package org.apache.ant.antunit;
 
-import java.io.File;
-
-import org.apache.tools.ant.Project;
 
 /** 
  * Provides methods that allow the AntUnitScriptRunner to notify the test progress.
