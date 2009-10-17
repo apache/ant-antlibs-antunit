@@ -104,7 +104,7 @@ under the License.
     <sequential>
       <au:assertPropertySet message="@{message}" name="@{name}"/>
       <au:assertTrue message="@{message}">
-        <contains string="@{name}" substring="@{value}"
+        <contains string="${@{name}}" substring="@{value}"
                   casesensitive="@{casesensitive}"/>
       </au:assertTrue>
     </sequential>

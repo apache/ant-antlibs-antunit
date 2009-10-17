@@ -102,6 +102,16 @@ under the License.
     <au:assertPropertyEquals name="foo" value="BAR"/>
   </target>
 
+  <target name="assertPropertyContains">
+    <property name="foo" value="bar"/>
+    <au:assertPropertyContains name="foo" value="ba"/>
+  </target>
+
+  <target name="assertPropertyContainsFail">
+    <property name="foo" value="bar"/>
+    <au:assertPropertyContains name="foo" value="foo"/>
+  </target>
+
   <target name="assertFileExistsPass">
     <au:assertFileExists file="assert.xml"/>
   </target>

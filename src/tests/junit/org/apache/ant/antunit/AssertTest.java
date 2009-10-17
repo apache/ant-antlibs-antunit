@@ -101,6 +101,12 @@ public class AssertTest extends BuildFileTest {
     public void testPropertyEqualsFail3() {
         testFail("assertPropertyEqualsFail3", "Expected property 'foo' to have value 'BAR' but was 'bar'");
     }
+    public void testPropertyContains() {
+        testPass("assertPropertyContains");
+    }
+    public void testPropertyContainsFail() {
+        testFail("assertPropertyContainsFail", "Expected property 'foo' to contain value 'foo' but was 'bar'");
+    }
     public void testFileExistsFail() {
         testFail("assertFileExistsFail",
                  "Expected file 'assert.txt' to exist");
