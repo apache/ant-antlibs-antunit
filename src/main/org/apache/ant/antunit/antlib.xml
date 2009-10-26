@@ -21,7 +21,7 @@ under the License.
   <taskdef name="antunit"
     classname="org.apache.ant.antunit.AntUnit"/>
 
-  <taskdef name="assertTrue"
+  <taskdef name="fail"
     classname="org.apache.ant.antunit.AssertTask"/>
 
   <taskdef name="expectfailure"
@@ -45,15 +45,26 @@ under the License.
   <typedef name="logcontent"
     classname="org.apache.ant.antunit.LogContent" />
 
+  <!-- Actually just an alias of fail that expects a condition -->
+  <macrodef name="assertTrue" backtrace="false">
+    <attribute name="message" default="Assertion failed"/>
+    <element name="assertion" implicit="true"/>
+    <sequential>
+      <au:fail message="@{message}">
+        <assertion/>
+      </au:fail>
+    </sequential>
+  </macrodef>
+
   <macrodef name="assertFalse" backtrace="false">
     <attribute name="message" default="Assertion failed"/>
     <element name="assertion" implicit="true"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <not>
           <assertion/>
         </not>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -64,10 +75,10 @@ under the License.
     <attribute name="message"
       default="Expected '@{expected}' but was '@{actual}'"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <equals arg1="@{expected}" arg2="@{actual}"
                   casesensitive="@{casesensitive}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -76,9 +87,9 @@ under the License.
     <attribute name="message"
       default="Expected property '@{name}'"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <isset property="@{name}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -103,10 +114,10 @@ under the License.
                default="Expected property '@{name}' to contain value '@{value}' but was '${@{name}}'"/>
     <sequential>
       <au:assertPropertySet message="@{message}" name="@{name}"/>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <contains string="${@{name}}" substring="@{value}"
                   casesensitive="@{casesensitive}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
   
@@ -115,9 +126,9 @@ under the License.
     <attribute name="message"
       default="Expected file '@{file}' to exist"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <available file="@{file}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -139,10 +150,10 @@ under the License.
     <attribute name="message"
 	       default="Expected resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
 	<resourcecontains resource="@{resource}" substring="@{value}"
                           casesensitive="@{casesensitive}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -166,9 +177,9 @@ under the License.
     <attribute name="message"
       default="Expected '@{dest}' to be more recent than '@{src}'"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <uptodate srcfile="@{src}" targetfile="@{dest}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -190,9 +201,9 @@ under the License.
     <attribute name="message"
       default="Expected files '@{expected}' and '@{actual}' to match"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <filesmatch file1="@{expected}" file2="@{actual}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -213,9 +224,9 @@ under the License.
     <attribute name="message"
       default="Expected reference '@{refid}'"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <isreference refid="@{refid}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -226,9 +237,9 @@ under the License.
       default="Expected reference '@{refid}' to be a '@{type}'"/>
     <sequential>
       <au:assertReferenceSet refid="@{refid}"/>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <isreference refid="@{refid}" type="@{type}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -238,9 +249,9 @@ under the License.
     <attribute name="message"
       default="Expected log to contain '@{text}' at level @{level}"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <au:logcontains text="@{text}" level="@{level}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -265,12 +276,12 @@ under the License.
     <attribute name="message"
       default="Expected '@{string}' to match pattern '@{pattern}'"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
 	<matches string="@{string}" pattern="@{pattern}"
                  casesensitive="@{casesensitive}"
                  singleline="@{singleline}"
                  multiline="@{multiline}"/>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 
@@ -283,14 +294,14 @@ under the License.
     <attribute name="message"
       default="Expected '@{string}' to not match pattern '@{pattern}'"/>
     <sequential>
-      <au:assertTrue message="@{message}">
+      <au:fail message="@{message}">
         <not>
           <matches string="@{string}" pattern="@{pattern}"
                    casesensitive="@{casesensitive}"
                    singleline="@{singleline}"
                    multiline="@{multiline}"/>
         </not>
-      </au:assertTrue>
+      </au:fail>
     </sequential>
   </macrodef>
 

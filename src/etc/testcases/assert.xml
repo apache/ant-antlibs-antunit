@@ -29,6 +29,14 @@ under the License.
     </au:antunit>
   </target>
 
+  <target name="fail">
+    <au:fail />
+  </target>
+
+  <target name="failWithMessage">
+    <au:fail message="This test is expecting to fail" />
+  </target>
+
   <target name="assertTruePass">
     <au:assertTrue>
       <istrue value="true"/>

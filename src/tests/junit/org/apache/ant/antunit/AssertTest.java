@@ -31,6 +31,12 @@ public class AssertTest extends BuildFileTest {
         configureProject("src/etc/testcases/assert.xml");
     }
 
+    public void testFail() {
+        testFail("fail", "Test failed");
+    }
+    public void testFailWithMessage() {
+        testFail("failWithMessage", "This test is expecting to fail");
+    }
     public void testTruePass() {
         testPass("assertTruePass");
     }

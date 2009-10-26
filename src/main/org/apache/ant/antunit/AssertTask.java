@@ -26,7 +26,7 @@ import org.apache.tools.ant.taskdefs.condition.ConditionBase;
 
 /**
  * Exits the active build, giving an additional message if the single
- * nested condition fails.
+ * nested condition fails or if there is no condition at all.
  *
  * <p>This one could as well be implemented as
  *
@@ -68,11 +68,7 @@ public class AssertTask extends ConditionBase {
             throw new BuildException("You must not specify more than one "
                                      + "condition", getLocation());
         }
-        if (count < 1) {
-            throw new BuildException("You must specify a condition",
-                                     getLocation());
-        }
-        if (!((Condition) getConditions().nextElement()).eval()) {
+        if (count < 1 || !((Condition) getConditions().nextElement()).eval()) {
             throw new AssertionFailedException(message, getLocation());
         }
     }
