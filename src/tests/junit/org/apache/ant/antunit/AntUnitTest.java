@@ -107,7 +107,23 @@ public class AntUnitTest extends BuildFileTest {
             System.setErr(savedErr);
         }
     }
+
+    public void testReference() {
+        executeTarget("testReference");
+    }
     
+    public void testReferenceSet() {
+        executeTarget("testReferenceSet");
+    }
+
+    public void testReferenceRegex() {
+        executeTarget("testReferenceRegex");
+    }
+
+    public void testReferenceMapper() {
+        executeTarget("testReferenceMapper");
+    }
+
     public static class HelloWorld {
         public static void main(String[] args) {
             System.out.println("HelloWorld");

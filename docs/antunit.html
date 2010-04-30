@@ -171,6 +171,53 @@ public class LogCapturer {
     href="http://ant.apache.org/manual/CoreTypes/propertyset.html">&lt;propertyset&gt;</a>s
     can be used to pass properties to the build files under test.</p>
 
+    <h4>reference</h4>
+
+    <p>One or more references may be passed to the antunit script.  For example, paths and filesets
+    can be defined once in the outer build script and passed through to multiple antunit scripts.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <td valign="top"><b>Attribute</b></td>
+        <td valign="top"><b>Description</b></td>
+        <td align="center" valign="top"><b>Required</b></td>
+      </tr>
+      <tr>
+        <td valign="top">refid</td>
+        <td valign="top">The reference ID to inherit</td>
+        <td align="center" valign="middle" rowspan="2">Exactly one of these</td>
+      </tr>
+      <tr>
+        <td valign="top">regex</td>
+        <td valign="top">A regular expression identifying a group of reference IDs to inherit.</td>
+      </tr>
+      <tr>
+        <td valign="top">torefid</td>
+        <td valign="top">The ID of the reference in the test project.  </td>
+        <td align="center" valign="middle" width="25%">No.  If this reference appears inside
+        a <a href="#referenceset">&lt;referenceset&gt;</a> with a nested mapper element, the mapper
+        will be used to determine the target reference ID.  Otherwise, defaults to the source
+        reference ID.</td>
+      </tr>
+    </table>
+
+    <a name="referenceset"/><h4>referenceset</h4>
+
+    <p>References can be grouped inside a &lt;referenceset&gt; element for clarity.  Additionally, &lt;referenceset&gt;
+    elements may contain exactly one nested <a href="http://ant.apache.org/manual/CoreTypes/mapper.html">&lt;mapper&gt;</a> 
+    element, which defines how source reference IDs are translated into target reference IDs.  For example,
+
+<pre>
+  &lt;au:antunit&gt;
+    &lt;referenceset&gt;
+      &lt;reference refid="first.ref"/&gt;
+      &lt;reference refid="second.ref"/&gt;
+      &lt;mapper type="regexp" from="(.*)\.ref" to="mapped.ref.\1"/&gt;
+    &lt;/referenceset&gt;
+  &lt;/au:antunit&gt;
+</pre>
+    </p>
+
     <h3>Examples</h3>
 
     <p>This build file snippet (from src/etc/testcases/antunit/base.xml)</p>

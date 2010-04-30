@@ -35,8 +35,16 @@
     <last>Jackman</last>
   </name>
   <name>
+    <first>Gilles</first>
+    <last>Scokart</last>
+  </name>
+  <name>
     <first>Jan</first>
     <last>Mat&#232;rne</last>
+  </name>
+  <name>
+    <first>Jason</first>
+    <last>Trump</last>
   </name>
   <name>
     <first>Kevin</first>
@@ -61,9 +69,5 @@
   <name>
     <first>Steve</first>
     <last>Loughran</last>
-  </name>
-  <name>
-    <first>Gilles</first>
-    <last>Scokart</last>
   </name>
 </contributors>

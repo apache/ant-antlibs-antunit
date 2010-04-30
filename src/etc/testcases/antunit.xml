@@ -86,7 +86,56 @@ under the License.
       <au:plainlistener />
     </au:antunit>  	
   </target>
+
+  <target name="testReference">
+    <path id="inherited.ref" path="/some:/path:/value"/>
+    <path id="uninherited.ref" path="some:other:value"/>
+    <au:antunit>
+      <file file="antunit/reference.xml" />
+      <au:plainlistener />
+      <reference refid="inherited.ref"/>
+    </au:antunit>
+  </target>
  
+  <target name="testReferenceRegex">
+    <path id="first.ref" path="/first"/>
+    <path id="second.ref" path="/second"/>
+    <path id="third.missing" path="ignored"/>
+    <au:antunit>
+      <file file="antunit/reference-regex.xml" />
+      <au:plainlistener />
+      <reference regex=".*\.ref"/>
+    </au:antunit>
+  </target>
+
+  <target name="testReferenceSet">
+    <path id="first.ref" path="/first"/>
+    <path id="second.ref" path="/second"/>
+    <path id="third.ref" path="/third"/>
+    <au:antunit>
+      <file file="antunit/reference-set.xml" />
+      <au:plainlistener />
+      <referenceSet>
+        <reference refid="first.ref"/>
+        <reference refid="third.ref"/>
+      </referenceSet>
+    </au:antunit>
+  </target>
+
+  <target name="testReferenceMapper">
+    <path id="first.ref" path="/first"/>
+    <path id="second.ref" path="/second"/>
+    <au:antunit>
+      <file file="antunit/reference-mapper.xml" />
+      <au:plainlistener />
+      <referenceSet>
+        <reference refid="first.ref"/>
+        <reference refid="second.ref"/>
+        <mapper type="regexp" from="(.*)\.ref" to="\1.mapped"/>
+      </referenceSet>
+    </au:antunit>
+  </target>
+
   <property name="reportsdir" location="../../../build/reports"/>
   <target name="antunit-dir">
     <mkdir dir="${reportsdir}"/>
