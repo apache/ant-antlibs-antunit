@@ -38,6 +38,11 @@
   </properties>
 
   <release version="1.2" date="not-released">
+    <action type="fix" breaks-bwc="true">
+      The XSLT stylesheets now create HTML files instead of plain text
+      for logs sent to System.err and System.out.  You can always get
+      back to your own reporting by providing custom stylesheets.
+    </action>
     <action type="add" issue="49168">
       It is now possible to pass references from the build file
       containing the &lt;antunit&gt; task to the build files under
