@@ -264,13 +264,26 @@ under the License.
     <clean/>
   </target>
   
-  <target name="badcharacters" depends="-createreport">
+  <target name="-readbadcharsreport" depends="-createreport">
     <loadfile property="reportxml" srcFile="${reportfile}" />
-    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*&amp;#x5d;&amp;#x5d;&amp;gt;.*${systemoutend}" singleline="true"
-        message="Bad characters not escaped" />
+    <condition property="182+">
+      <antversion atleast="1.8.2"/>
+    </condition>
+  </target>
+
+  <target name="badcharacters" depends="badchars181,badchars182">
     <clean/>
   </target>
+
+  <target name="badchars181" depends="-readbadcharsreport" unless="182+">
+    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*&amp;#x5d;&amp;#x5d;&amp;gt;.*${systemoutend}" singleline="true"
+        message="Bad characters not escaped" />
+  </target>
   
+  <target name="badchars182" depends="-readbadcharsreport" if="182+">
+    <au:assertMatches string="${reportxml}" pattern="${systemoutstart}.*]]]]&gt;&lt;!\[CDATA\[&gt;.*${systemoutend}" singleline="true"
+        message="Bad characters not escaped" />
+  </target>
 
   <target name="suiteSetUp">
     <echo>suiteSetUp</echo>
