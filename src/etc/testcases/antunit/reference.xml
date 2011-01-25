@@ -28,8 +28,16 @@ under the License.
 
   <target name="testReference">
     <property name="ref.string" refid="inherited.ref"/>
-    <au:assertEquals expected="${file.separator}some${path.separator}${file.separator}path${path.separator}${file.separator}value" actual="${ref.string}" />
-
+    <au:assertTrue>
+      <and>
+        <contains substring="${file.separator}some${path.separator}"
+                  string="${ref.string}"/>
+        <contains substring="${file.separator}path${path.separator}"
+                  string="${ref.string}"/>
+        <contains substring="${file.separator}value"
+                  string="${ref.string}"/>
+      </and>
+    </au:assertTrue>
     <condition property="uninherited.is.set" value="true">
       <isreference refid="uninherited.ref"/>
     </condition>

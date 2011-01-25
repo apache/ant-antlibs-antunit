@@ -28,10 +28,14 @@ under the License.
 
   <target name="testReferenceSet">
     <property name="ref.one" refid="first.ref"/>
-    <au:assertEquals expected="${file.separator}first" actual="${ref.one}" />
+    <au:assertTrue>
+      <contains substring="${file.separator}first" string="${ref.one}"/>
+    </au:assertTrue>
 
     <property name="ref.three" refid="third.ref"/>
-    <au:assertEquals expected="${file.separator}third" actual="${ref.three}" />
+    <au:assertTrue>
+      <contains substring="${file.separator}third" string="${ref.three}"/>
+    </au:assertTrue>
 
     <condition property="uninherited.is.set" value="true">
       <isreference refid="second.ref"/>
