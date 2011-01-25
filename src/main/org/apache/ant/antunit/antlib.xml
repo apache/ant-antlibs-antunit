@@ -45,6 +45,9 @@ under the License.
   <typedef name="logcontent"
     classname="org.apache.ant.antunit.LogContent" />
 
+  <typedef name="resourcExists"
+    classname="org.apache.ant.antunit.ResourceExists"/>
+
   <!-- Actually just an alias of fail that expects a condition -->
   <macrodef name="assertTrue" backtrace="false">
     <attribute name="message" default="Assertion failed"/>
@@ -139,6 +142,28 @@ under the License.
     <sequential>
       <au:assertFalse message="@{message}">
         <available file="@{file}"/>
+      </au:assertFalse>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertResourceExists" backtrace="false">
+    <attribute name="resource"/>
+    <attribute name="message"
+      default="Expected resource '@{resource}' to exist"/>
+    <sequential>
+      <au:fail message="@{message}">
+        <au:resourceExists resource="@{resource}"/>
+      </au:fail>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertResourceDoesntExist" backtrace="false">
+    <attribute name="resource"/>
+    <attribute name="message"
+      default="Didn't expect resource '@{resource}' to exist"/>
+    <sequential>
+      <au:assertFalse message="@{message}">
+        <au:resourceExists resource="@{resource}"/>
       </au:assertFalse>
     </sequential>
   </macrodef>

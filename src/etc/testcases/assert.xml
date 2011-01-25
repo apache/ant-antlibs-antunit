@@ -136,6 +136,22 @@ under the License.
     <au:assertFileDoesntExist file="assert.xml"/>
   </target>
 
+  <target name="assertResourceExistsPass">
+    <au:assertResourceExists resource="assert.xml"/>
+  </target>
+
+  <target name="assertResourceExistsFail">
+    <au:assertResourceExists resource="assert.txt"/>
+  </target>
+
+  <target name="assertResourceDoesntExistPass">
+    <au:assertResourceDoesntExist resource="assert.txt"/>
+  </target>
+
+  <target name="assertResourceDoesntExistFail">
+    <au:assertResourceDoesntExist resource="assert.xml"/>
+  </target>
+
   <target name="assertDestIsUptodatePass">
     <au:assertDestIsUptodate
       src="../../main/org/apache/ant/antunit/AssertTask.java"

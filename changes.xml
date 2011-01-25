@@ -38,6 +38,10 @@
   </properties>
 
   <release version="1.2" date="not-released">
+    <action type="add">
+      New assertion assertResourceExists and assertResourceDoesntExist
+      have been added.
+    </action>
     <action type="fix" breaks-bwc="true">
       The XSLT stylesheets now create HTML files instead of plain text
       for logs sent to System.err and System.out.  You can always get

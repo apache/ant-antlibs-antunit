@@ -285,6 +285,80 @@
       &lt;assertFileDoesntExist file="${ant.home}/lib/ant.jar"/&gt;
     </pre>
 
+    <h2><a name="assertResourceExists">assertResourceExists</a></h2>
+
+    <p><em>Since AntUnit 1.2</em></p>
+
+    <p>Asserts that a given resource exists.  This is a
+      generalization of assertFileExists and allows to test for
+      arbitrary resources.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">resource</td>
+          <td valign="top">Location of the resource.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected
+            resource '<em>resource</em>' to exist".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the resource ${ant.home}/lib/ant.jar doesn't
+      exist:</p>
+
+    <pre>
+      &lt;assertResourceExists resource="${ant.home}/lib/ant.jar"/&gt;
+    </pre>
+
+    <h2><a name="assertResourceDoesntExist">assertResourceDoesntExist</a></h2>
+
+    <p><em>Since AntUnit 1.2</em></p>
+
+    <p>Asserts that a given resource does not exist.  This is a
+      generalization of assertFileDoesntExist and allows to test for
+      arbitrary resources.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">resource</td>
+          <td valign="top">Location of the resource.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Didn't expect
+            resource '<em>resource</em>' to exist".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the resource ${ant.home}/lib/ant.jar
+      exists:</p>
+
+    <pre>
+      &lt;assertResourceDoesntExist resource="${ant.home}/lib/ant.jar"/&gt;
+    </pre>
+
     <h2><a name="assertDestIsUptodate">assertDestIsUptodate</a></h2>
 
     <p>Asserts that a dest file is more recent than the source

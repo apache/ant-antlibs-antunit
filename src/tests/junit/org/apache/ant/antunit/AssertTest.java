@@ -64,6 +64,12 @@ public class AssertTest extends BuildFileTest {
     public void testFileDoesntExistPass() {
         testPass("assertFileDoesntExistPass");
     }
+    public void testResourceExistsPass() {
+        testPass("assertResourceExistsPass");
+    }
+    public void testResourceDoesntExistPass() {
+        testPass("assertResourceDoesntExistPass");
+    }
     public void testDestIsUptodatePass() {
         testPass("assertDestIsUptodatePass");
     }
@@ -120,6 +126,14 @@ public class AssertTest extends BuildFileTest {
     public void testFileDoesntExistFail() {
         testFail("assertFileDoesntExistFail",
                  "Didn't expect file 'assert.xml' to exist");
+    }
+    public void testResourceExistsFail() {
+        testFail("assertResourceExistsFail",
+                 "Expected resource 'assert.txt' to exist");
+    }
+    public void testResourceDoesntExistFail() {
+        testFail("assertResourceDoesntExistFail",
+                 "Didn't expect resource 'assert.xml' to exist");
     }
     public void testDestIsUptodateFail() {
         testFail("assertDestIsUptodateFail",
