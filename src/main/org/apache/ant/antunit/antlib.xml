@@ -175,6 +175,7 @@ under the License.
     <attribute name="message"
 	       default="Expected resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
     <sequential>
+      <au:assertResourceExists resource="@{resource}"/>
       <au:fail message="@{message}">
 	<resourcecontains resource="@{resource}" substring="@{value}"
                           casesensitive="@{casesensitive}"/>

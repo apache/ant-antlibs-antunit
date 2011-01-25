@@ -38,6 +38,12 @@
   </properties>
 
   <release version="1.2" date="not-released">
+    <action type="update" breaks-bwc="true">
+      assertResourceContains now first validates that the given
+      resource actually exists using assertResourceExists - this may
+      lead to a different error message than the ones generated with
+      AntUnit 1.1.
+    </action>
     <action type="add">
       New assertion assertResourceExists and assertResourceDoesntExist
       have been added.
