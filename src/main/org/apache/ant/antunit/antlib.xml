@@ -45,7 +45,7 @@ under the License.
   <typedef name="logcontent"
     classname="org.apache.ant.antunit.LogContent" />
 
-  <typedef name="resourcExists"
+  <typedef name="resourceExists"
     classname="org.apache.ant.antunit.ResourceExists"/>
 
   <!-- Actually just an alias of fail that expects a condition -->
