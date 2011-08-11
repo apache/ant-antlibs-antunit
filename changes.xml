@@ -59,7 +59,9 @@
       test.
     </action>
     <action type="add">
-      Add Junit3 and Junit4 adapters allowing to launch AntUnit script from JUnit runner
+      Add experimental JUnit3 and JUnit4 adapters allowing to launch
+      AntUnit script from JUnit runner.  The API of that code is not
+      fixed and may change in future releases.
     </action>
     <action type="update">
       expectfailure report the original build exception chained when failing
