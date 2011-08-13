@@ -25,6 +25,17 @@
   <artifactId>ant-antunit</artifactId>
   <packaging>jar</packaging>
   <version>${artifact.version}</version>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <organization>
+    <name>The Apache Software Foundation</name>
+    <url>http://www.apache.org/</url>
+  </organization>
 
   <!--
      Test doesn't work from maven, you have to fight with tricky classpath
