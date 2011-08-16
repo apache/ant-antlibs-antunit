@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl"?>
 <!--
- Licensed to the Apache Software Foundation (ASF) under one or more
+  Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
   this work for additional information regarding copyright ownership.
   The ASF licenses this file to You under the Apache License, Version 2.0
@@ -38,6 +38,13 @@
     <category rdf:resource="http://projects.apache.org/category/testing"/>
     <release>
       <Version>
+        <name>Apache AntUnit 1.2</name>
+        <created>2011-08-16</created>
+        <revision>1.2</revision>
+      </Version>
+    </release>
+    <release>
+      <Version>
         <name>Apache AntUnit 1.1</name>
         <created>2008-09-26</created>
         <revision>1.1</revision>
@@ -53,7 +60,7 @@
     <repository>
       <SVNRepository>
         <location rdf:resource="http://svn.apache.org/repos/asf/ant/antlibs/antunit"/>
-        <browse rdf:resource="http://svn.apache.org/viewcvs.cgi/ant/antlibs/antunit"/>
+        <browse rdf:resource="http://svn.apache.org/viewvc/ant/antlibs/antunit"/>
       </SVNRepository>
     </repository>
   </Project>
