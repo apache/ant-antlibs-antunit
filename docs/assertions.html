@@ -322,6 +322,21 @@
       &lt;assertResourceExists resource="${ant.home}/lib/ant.jar"/&gt;
     </pre>
 
+    <h3>Ant 1.7.x Note</h3>
+
+    <p><code>assertResourceExists</code> relies on Ant 1.8.0 or later,
+      it doesn't work with Ant 1.7.x.  You can simulate the assertion
+      using the <code>resourceExists</code> condition
+      and <code>assertTrue</code>, for example</p>
+
+    <pre>
+      &lt;au:assertTrue message="Expected resource '${ant.home}/lib/ant.jar' to exist"&gt;
+        &lt;au:resourceExists&gt;
+          &lt;file file="${ant.home}/lib/ant.jar"/&gt;
+        &lt;/au:resourceExists&gt;
+      &lt;/au:assertTrue&gt;
+    </pre>
+
     <h2><a name="assertResourceDoesntExist">assertResourceDoesntExist</a></h2>
 
     <p><em>Since AntUnit 1.2</em></p>
@@ -357,6 +372,21 @@
 
     <pre>
       &lt;assertResourceDoesntExist resource="${ant.home}/lib/ant.jar"/&gt;
+    </pre>
+
+    <h3>Ant 1.7.x Note</h3>
+
+    <p><code>assertResourceDoesntExist</code> relies on Ant 1.8.0 or later,
+      it doesn't work with Ant 1.7.x.  You can simulate the assertion
+      using the <code>resourceExists</code> condition
+      and <code>assertFalse</code>, for example</p>
+
+    <pre>
+      &lt;au:assertFalse message="Didn't expect resource '${ant.home}/lib/ant.jar' to exist"&gt;
+        &lt;au:resourceExists&gt;
+          &lt;file file="${ant.home}/lib/ant.jar"/&gt;
+        &lt;/au:resourceExists&gt;
+      &lt;/au:assertFalse&gt;
     </pre>
 
     <h2><a name="assertDestIsUptodate">assertDestIsUptodate</a></h2>
