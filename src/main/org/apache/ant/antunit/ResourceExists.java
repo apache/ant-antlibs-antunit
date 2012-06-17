@@ -44,6 +44,7 @@ public class ResourceExists extends ProjectComponent implements Condition {
             throw new BuildException("Only one resource can be tested.");
         }
         resource = r;
+        System.err.println("R: " + r);
     }
 
     /**
