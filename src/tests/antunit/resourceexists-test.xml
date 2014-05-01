@@ -27,6 +27,20 @@
     </au:assertTrue>
   </target>
 
+  <target name="test-refid-file">
+    <file file="resourceexists-test.xml" id="id1"/>
+    <au:assertTrue>
+      <au:resourceExists refid="id1"/>
+    </au:assertTrue>
+  </target>
+
+  <target name="test-refid-fileset">
+    <fileset file="resourceexists-test.xml" id="id2"/>
+    <au:assertTrue>
+      <au:resourceExists refid="id2"/>
+    </au:assertTrue>
+  </target>
+
   <target name="test-no">
     <au:assertFalse>
       <au:resourceExists>
@@ -40,12 +54,6 @@
       <au:resourceExists>
         <url url="http://ant.apache.org/index.html"/>
       </au:resourceExists>
-    </au:assertTrue>
-  </target>
-
-  <target name="NOtestURLAttribute">
-    <au:assertTrue>
-      <au:resourceExists resource="http://ant.apache.org/index.html"/>
     </au:assertTrue>
   </target>
 

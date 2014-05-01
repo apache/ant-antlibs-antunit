@@ -197,6 +197,81 @@ under the License.
     </sequential>
   </macrodef>
 
+  <macrodef name="assertNestedResourceExists" backtrace="false">
+    <attribute name="message" default="Expected resource to exist"/>
+    <element name="nested-resource" implicit="true"/>
+    <sequential>
+      <au:fail message="@{message}">
+        <au:resourceExists>
+          <nested-resource/>
+        </au:resourceExists>
+      </au:fail>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertNestedResourceDoesntExist" backtrace="false">
+    <attribute name="message" default="Didn't expect resource to exist"/>
+    <element name="nested-resource" implicit="true"/>
+    <sequential>
+      <au:assertFalse message="@{message}">
+        <au:resourceExists>
+          <nested-resource/>
+        </au:resourceExists>
+      </au:assertFalse>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertRefResourceExists" backtrace="false">
+    <attribute name="refid"/>
+    <attribute name="message"
+               default="Expected resource '@{refid}' to exist"/>
+    <sequential>
+      <au:fail message="@{message}">
+        <au:resourceExists refid="@{refid}"/>
+      </au:fail>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertRefResourceDoesntExist" backtrace="false">
+    <attribute name="refid"/>
+    <attribute name="message"
+               default="Didn't expect resource '@{refid}' to exist"/>
+    <sequential>
+      <au:assertFalse message="@{message}">
+        <au:resourceExists refid="@{refid}"/>
+      </au:assertFalse>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertRefResourceContains">
+    <attribute name="refid"/>
+    <attribute name="value"/>
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="message"
+	       default="Expected resource '@{refid}' to contain value '@{value}'"/>
+    <sequential>
+      <au:assertRefResourceExists refid="@{refid}"/>
+      <au:fail message="@{message}">
+	<resourcecontains refid="@{refid}" substring="@{value}"
+                          casesensitive="@{casesensitive}"/>
+      </au:fail>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="assertRefResourceDoesntContain">
+    <attribute name="refid"/>
+    <attribute name="value"/>
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="message"
+	       default="Didn't expect resource '@{refid}' to contain value '@{value}'"/>
+    <sequential>
+      <au:assertFalse message="@{message}">
+	<resourcecontains refid="@{refid}" substring="@{value}"
+                          casesensitive="@{casesensitive}"/>
+      </au:assertFalse>
+    </sequential>
+  </macrodef>
+
   <macrodef name="assertDestIsUptodate" backtrace="false">
     <attribute name="src"/>
     <attribute name="dest"/>

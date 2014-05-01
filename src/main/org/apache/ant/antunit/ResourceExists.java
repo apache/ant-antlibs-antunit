@@ -24,6 +24,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.ProjectComponent;
 import org.apache.tools.ant.taskdefs.condition.Condition;
 import org.apache.tools.ant.types.Resource;
+import org.apache.tools.ant.types.ResourceCollection;
 
 /**
  * A condition that tests whether a given resource exists.
@@ -32,6 +33,7 @@ import org.apache.tools.ant.types.Resource;
  */
 public class ResourceExists extends ProjectComponent implements Condition {
     private Resource resource;
+    private String refid;
 
     /**
      * The resource to check as attribute.
@@ -40,10 +42,17 @@ public class ResourceExists extends ProjectComponent implements Condition {
      * nested element.</p>
      */
     public void setResource(Resource r) {
-        if (resource != null) {
-            throw new BuildException("Only one resource can be tested.");
-        }
+        onlyOne();
         resource = r;
+    }
+
+    /**
+     * The resource to check as a refid.
+     * @since AntUnit 1.3
+     */
+    public void setRefid(String refid) {
+        onlyOne();
+        this.refid = refid;
     }
 
     /**
@@ -57,9 +66,39 @@ public class ResourceExists extends ProjectComponent implements Condition {
     }
 
     public boolean eval() {
-        if (resource == null) {
+        if (resource == null && refid == null) {
             throw new BuildException("You must specify a resource.");
         }
-        return resource.isExists();
+        Resource r = resource != null ? resource : expandRefId();
+        return r.isExists();
+    }
+
+    private void onlyOne() {
+        if (resource != null || refid != null) {
+            throw new BuildException("Only one resource can be tested.");
+        }
+    }
+
+    // logic stolen from Ant's ResourceContains condition
+    private Resource expandRefId() {
+        if (getProject() == null) {
+            throw new BuildException("Cannot retrieve refid; project unset");
+        }
+        Object o = getProject().getReference(refid);
+        if (!(o instanceof Resource)) {
+            if (o instanceof ResourceCollection) {
+                ResourceCollection rc = (ResourceCollection) o;
+                if (rc.size() == 1) {
+                    o = rc.iterator().next();
+                } else {
+                    throw new BuildException("Referred resource collection must"
+                                             + " contain exactly one resource.");
+                }
+            } else {
+                throw new BuildException("'" + refid + "' is not a resource but "
+                                         + String.valueOf(o));
+            }
+        }
+        return (Resource) o;
     }
 }

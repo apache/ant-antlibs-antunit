@@ -289,9 +289,12 @@
 
     <p><em>Since AntUnit 1.2</em></p>
 
-    <p>Asserts that a given resource exists.  This is a
-      generalization of assertFileExists and allows to test for
-      arbitrary resources.</p>
+    <p>Asserts that a given resource exists.  This was intended as a
+      generalization of <code>assertFileExists</code> but still really
+      only works for file resources.
+      Use <code>assertNestedResourceExists</code>
+      or <code>assertRefResourceExists</code> for non-filesystem
+      resources.</p>
 
     <table border="1" cellpadding="2" cellspacing="0">
         <tr>
@@ -337,13 +340,94 @@
       &lt;/au:assertTrue&gt;
     </pre>
 
+    <h2><a name="assertRefResourceExists">assertRefResourceExists</a></h2>
+
+    <p><em>Since AntUnit 1.3</em></p>
+
+    <p>Asserts that a resource given by its id exists.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">refid</td>
+          <td valign="top">Reference to a resource defined inside the project.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected
+            resource '<em>refid</em>' to exist".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the resource ${ant.home}/lib/ant.jar doesn't
+      exist:</p>
+
+    <pre>
+      &lt;file file="${ant.home}/lib/ant.jar" id="ant.jar"/&gt;
+      &lt;assertRefResourceExists refid="ant.jar"/&gt;
+    </pre>
+
+    <h3>Ant 1.7.x Note</h3>
+
+    <p><code>assertRefResourceExists</code> relies on Ant 1.8.0 or later,
+      it doesn't work with Ant 1.7.x.</p>
+
+    <h2><a name="assertNestedResourceExists">assertNestedResourceExists</a></h2>
+
+    <p><em>Since AntUnit 1.3</em></p>
+
+    <p>Asserts that a resource given as nested element exists.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Expected resource to exist".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the resource ${ant.home}/lib/ant.jar doesn't
+      exist:</p>
+
+    <pre>
+      &lt;assertNestedResourceExists&gt;
+        &lt;file file="${ant.home}/lib/ant.jar"/&gt;
+      &lt;/assertNestedResourceExists&gt;
+    </pre>
+
+    <h3>Ant 1.7.x Note</h3>
+
+    <p><code>assertNestedResourceExists</code> relies on Ant 1.8.0 or later,
+      it doesn't work with Ant 1.7.x.</p>
+
     <h2><a name="assertResourceDoesntExist">assertResourceDoesntExist</a></h2>
 
     <p><em>Since AntUnit 1.2</em></p>
 
-    <p>Asserts that a given resource does not exist.  This is a
-      generalization of assertFileDoesntExist and allows to test for
-      arbitrary resources.</p>
+    <p>Asserts that a given resource does not exist.  This was
+      intended as a generalization
+      of <code>assertFileDoesntExist</code> but still really only
+      works for file resources.
+      Use <code>assertNestedResourceDoesntExist</code>
+      or <code>assertRefResourceDoesntExist</code> for non-filesystem
+      resources.</p>
 
     <table border="1" cellpadding="2" cellspacing="0">
         <tr>
@@ -388,6 +472,84 @@
         &lt;/au:resourceExists&gt;
       &lt;/au:assertFalse&gt;
     </pre>
+
+    <h2><a name="assertRefResourceDoesntExist">assertRefResourceDoesntExist</a></h2>
+
+    <p><em>Since AntUnit 1.3</em></p>
+
+    <p>Asserts that a resource given by its id exists.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">refid</td>
+          <td valign="top">Reference to a resource defined inside the project.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Didn't expect
+            resource '<em>refid</em>' to exist".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the resource ${ant.home}/lib/ant.jar
+      exists:</p>
+
+    <pre>
+      &lt;file file="${ant.home}/lib/ant.jar" id="ant.jar"/&gt;
+      &lt;assertRefResourceDoesntExist refid="ant.jar"/&gt;
+    </pre>
+
+    <h3>Ant 1.7.x Note</h3>
+
+    <p><code>assertRefResourceDoesntExist</code> relies on Ant 1.8.0 or later,
+      it doesn't work with Ant 1.7.x.</p>
+
+    <h2><a name="assertNestedResourceDoesntExist">assertNestedResourceDoesntExist</a></h2>
+
+    <p><em>Since AntUnit 1.3</em></p>
+
+    <p>Asserts that a resource given as nested element exists.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Didn't expect
+            resource to exist".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail if the resource ${ant.home}/lib/ant.jar
+      exists:</p>
+
+    <pre>
+      &lt;assertNestedResourceDoesntExist&gt;
+        &lt;file file="${ant.home}/lib/ant.jar"/&gt;
+      &lt;/assertNestedResourceDoesntExist&gt;
+    </pre>
+
+    <h3>Ant 1.7.x Note</h3>
+
+    <p><code>assertNestedResourceDoesntExist</code> relies on Ant 1.8.0 or later,
+      it doesn't work with Ant 1.7.x.</p>
 
     <h2><a name="assertDestIsUptodate">assertDestIsUptodate</a></h2>
 
@@ -786,7 +948,10 @@
 
     <h2><a name="assertResourceContains">assertResourceContains</a></h2>
 
-    <p>Asserts that a resource's content includes a given string.</p>
+    <p>Asserts that a resource's content includes a given string.
+      This task anly really works for filesystem resources.
+      Use <code>assertRefResourceContains</code> when using non-file
+      resources.</p>
 
     <table border="1" cellpadding="2" cellspacing="0">
       <tr>
@@ -822,9 +987,51 @@
       </tr>
     </table>
 
+    <h2><a name="assertRefResourceContains">assertRefResourceContains</a></h2>
+
+    <p><em>Since AntUnit 1.3</em></p>
+
+    <p>Asserts that a resource's content includes a given string.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <td valign="top"><b>Attribute</b></td>
+        <td valign="top"><b>Description</b></td>
+        <td align="center" valign="top"><b>Required</b></td>
+      </tr>
+      <tr>
+        <td valign="top">refid</td>
+        <td valign="top">Reference to a resource defined inside the project.</td>
+        <td valign="top" align="center">Yes</td>
+      </tr>
+      <tr>
+        <td valign="top">value</td>
+        <td valign="top">The text to search for.</td>
+        <td valign="top" align="center">Yes</td>
+      </tr>
+        <tr>
+          <td valign="top">casesensitive</td>
+          <td valign="top">
+            Perform a case sensitive match.
+            Default is true.
+          </td>
+          <td align="center">No.</td>
+        </tr>
+      <tr>
+        <td valign="top">message</td>
+        <td valign="top">Message for the exception if the condition
+          doesn't hold true.  Defaults to "Expected resource
+          '<em>refeid</em>' to contain value '<em>value</em>'."</td>
+        <td align="center">No.</td>
+      </tr>
+    </table>
+
     <h2><a name="assertResourceDoesntContain">assertResourceDoesntContain</a></h2>
 
-    <p>Asserts that a resource's content doesn't include a given string.</p>
+    <p>Asserts that a resource's content doesn't include a given string.
+      This task anly really works for filesystem resources.
+      Use <code>assertRefResourceDoesntContain</code> when using non-file
+      resources.</p>
 
     <table border="1" cellpadding="2" cellspacing="0">
       <tr>
@@ -856,6 +1063,45 @@
           doesn't hold true.  Defaults to "Didn't expect resource
           '<em>resource</em>' to contain value '<em>value</em>' but
           was '<em>content of resource</em>'".</td>
+        <td align="center">No.</td>
+      </tr>
+    </table>
+
+    <h2><a name="assertRefResourceDoesntContain">assertRefResourceDoesntContain</a></h2>
+
+    <p><em>Since AntUnit 1.3</em></p>
+
+    <p>Asserts that a resource's content doesn't include a given string.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <td valign="top"><b>Attribute</b></td>
+        <td valign="top"><b>Description</b></td>
+        <td align="center" valign="top"><b>Required</b></td>
+      </tr>
+      <tr>
+        <td valign="top">refid</td>
+        <td valign="top">Reference to a resource defined inside the project.</td>
+        <td valign="top" align="center">Yes</td>
+      </tr>
+      <tr>
+        <td valign="top">value</td>
+        <td valign="top">The text to search for.</td>
+        <td valign="top" align="center">Yes</td>
+      </tr>
+        <tr>
+          <td valign="top">casesensitive</td>
+          <td valign="top">
+            Perform a case sensitive match.
+            Default is true.
+          </td>
+          <td align="center">No.</td>
+        </tr>
+      <tr>
+        <td valign="top">message</td>
+        <td valign="top">Message for the exception if the condition
+          doesn't hold true.  Defaults to "Didn't expect resource
+          '<em>refid</em>' to contain value '<em>value</em>'".</td>
         <td align="center">No.</td>
       </tr>
     </table>

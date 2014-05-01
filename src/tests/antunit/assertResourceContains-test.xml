@@ -19,30 +19,16 @@
 
   <import file="antunit-base.xml"/>
 
-  <target name="testURL"
-          description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53383">
-    <au:assertNestedResourceExists>
-      <url url="http://ant.apache.org/index.html"/>
-    </au:assertNestedResourceExists>
-  </target>
+  <url url="http://ant.apache.org/index.html" id="antsite"/>
 
   <target name="testURLUsingRef"
           description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53383">
-    <url url="http://ant.apache.org/index.html" id="antsite"/>
-    <au:assertRefResourceExists refid="antsite"/>
-  </target>
-
-  <target name="testURL-no"
-          description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53383">
-    <au:assertNestedResourceDoesntExist>
-      <url url="http://ant.apache.org/foo.html"/>
-    </au:assertNestedResourceDoesntExist>
+    <au:assertRefResourceContains refid="antsite" value="Apache Ant"/>
   </target>
 
   <target name="testURLUsingRef-no"
           description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53383">
-    <url url="http://ant.apache.org/foo.html" id="antsite-foo"/>
-    <au:assertRefResourceDoesntExist refid="antsite-foo"/>
+    <au:assertRefResourceDoesntContain refid="antsite" value="Foo"/>
   </target>
 
 </project>
