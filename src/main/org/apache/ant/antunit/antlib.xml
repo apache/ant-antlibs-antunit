@@ -36,6 +36,9 @@ under the License.
   <typedef name="failurelistener"
     classname="org.apache.ant.antunit.listener.FailureAntUnitListener"/>
 
+  <typedef name="logforwarder"
+    classname="org.apache.ant.antunit.listener.LogForwarder"/>
+
   <typedef name="logcapturer"
            classname="org.apache.ant.antunit.LogCapturer"/>
 

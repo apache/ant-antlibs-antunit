@@ -46,6 +46,11 @@
       assertions work for non-filesystem resources unlike their
       existing cousins of AntUnit 1.2.
     </action>
+    <action type="add" issue="43582">
+      A new AntUnitListener named "logforwarder" can be attached to
+      forward any log output from the project under test to the
+      project running the AntUnit task immediately.
+    </action>
   </release>
 
   <release version="1.2" date="2011-08-16">

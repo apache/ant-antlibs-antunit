@@ -158,12 +158,18 @@ public class LogCapturer {
 
     <p>Creates a test listener that gets attached to the task.</p>
 
-    <p>Two listeners are part of this antlib <a
-    href="plainlistener.html">&lt;plainlistener/&gt;</a> which
-    creates reports similar to the "plain" &lt;formatter&gt; of the
-    &lt;junit&gt; task and <a
-    href="xmllistener.html">&lt;xmllistener/&gt;</a> which is similar
-    to the "xml" &lt;formatter&gt;.</p>
+    <p>Some listeners are part of this antlib:</p>
+
+    <ul>
+      <li><a href="plainlistener.html">&lt;plainlistener/&gt;</a>
+        creates reports similar to the "plain" &lt;formatter&gt; of the
+        &lt;junit&gt; task.</li>
+      <li><a href="xmllistener.html">&lt;xmllistener/&gt;</a> is similar
+        to the "xml" &lt;formatter&gt;.</li>
+      <li><a href="logforwarder.html">&lt;logforwarder/&gt;</a>
+        forwards log output from the project under test to the project
+        executing the antunit task.</li>
+    </ul>
 
     <h4>propertyset</h4>
 
