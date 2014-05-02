@@ -51,6 +51,13 @@
       forward any log output from the project under test to the
       project running the AntUnit task immediately.
     </action>
+    <action type="fix" breaks-bwc="true" issue="56470">
+      LogCapturer now adds (platform dependent) line breaks between
+      log messages that it records.
+      This may break existing assertions on the log if they depended
+      on the absence of line breaks.  It also affects the contents of
+      the logcontents resource.
+    </action>
   </release>
 
   <release version="1.2" date="2011-08-16">

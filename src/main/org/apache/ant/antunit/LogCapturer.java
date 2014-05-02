@@ -23,6 +23,7 @@ package org.apache.ant.antunit;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.util.StringUtils;
 
 /**
  * Captures log messages generated during an antunit task run and
@@ -119,19 +120,19 @@ public class LogCapturer implements BuildListener {
      */
     public void messageLogged(BuildEvent event) {
         if (event.getPriority() <= Project.MSG_ERR) {
-            err.append(event.getMessage());
+            err.append(event.getMessage()).append(StringUtils.LINE_SEP);
         }
         if (event.getPriority() <= Project.MSG_WARN) {
-            warn.append(event.getMessage());
+            warn.append(event.getMessage()).append(StringUtils.LINE_SEP);
         }
         if (event.getPriority() <= Project.MSG_INFO) {
-            info.append(event.getMessage());
+            info.append(event.getMessage()).append(StringUtils.LINE_SEP);
         }
         if (event.getPriority() <= Project.MSG_VERBOSE) {
-            verbose.append(event.getMessage());
+            verbose.append(event.getMessage()).append(StringUtils.LINE_SEP);
         }
         if (event.getPriority() <= Project.MSG_DEBUG) {
-            debug.append(event.getMessage());
+            debug.append(event.getMessage()).append(StringUtils.LINE_SEP);
         }
     }
 }
