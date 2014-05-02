@@ -120,19 +120,23 @@ public class LogCapturer implements BuildListener {
      */
     public void messageLogged(BuildEvent event) {
         if (event.getPriority() <= Project.MSG_ERR) {
-            err.append(event.getMessage()).append(StringUtils.LINE_SEP);
+            append(err, event);
         }
         if (event.getPriority() <= Project.MSG_WARN) {
-            warn.append(event.getMessage()).append(StringUtils.LINE_SEP);
+            append(warn, event);
         }
         if (event.getPriority() <= Project.MSG_INFO) {
-            info.append(event.getMessage()).append(StringUtils.LINE_SEP);
+            append(info, event);
         }
         if (event.getPriority() <= Project.MSG_VERBOSE) {
-            verbose.append(event.getMessage()).append(StringUtils.LINE_SEP);
+            append(verbose, event);
         }
         if (event.getPriority() <= Project.MSG_DEBUG) {
-            debug.append(event.getMessage()).append(StringUtils.LINE_SEP);
+            append(debug, event);
         }
+    }
+
+    private static void append(StringBuffer sb, BuildEvent event) {
+        sb.append(event.getMessage()).append(StringUtils.LINE_SEP);
     }
 }
