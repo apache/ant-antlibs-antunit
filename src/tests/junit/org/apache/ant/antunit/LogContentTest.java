@@ -26,6 +26,7 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.LogLevel;
 import org.apache.tools.ant.types.resources.StringResource;
 import org.apache.tools.ant.util.ResourceUtils;
+import org.apache.tools.ant.util.StringUtils;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -68,6 +69,60 @@ public class LogContentTest extends TestCase {
                        Project.MSG_VERBOSE);
         assertMessages(new LogContent(p, LogLevel.DEBUG), msgs,
                        Project.MSG_DEBUG);
+    }
+
+    public void testWithoutMerge() throws IOException {
+        Project p = new Project();
+        LogCapturer c = new LogCapturer(p);
+
+        for (int i = 0; i < 2; i++) {
+            BuildEvent be = new BuildEvent(p);
+            be.setMessage(String.valueOf(i), 0);
+            c.messageLogged(be);
+        }
+
+        LogContent content = new LogContent(p, LogLevel.ERR, false);
+        StringResource s = new StringResource();
+        ResourceUtils.copyResource(content, s);
+
+        Assert.assertEquals(s.getValue(),
+                            "0" + StringUtils.LINE_SEP
+                            + "1" + StringUtils.LINE_SEP);
+    }
+
+    public void testWithExplicitMerge() throws IOException {
+        Project p = new Project();
+        LogCapturer c = new LogCapturer(p);
+
+        for (int i = 0; i < 2; i++) {
+            BuildEvent be = new BuildEvent(p);
+            be.setMessage(String.valueOf(i), 0);
+            c.messageLogged(be);
+        }
+
+        LogContent content = new LogContent(p, LogLevel.ERR, true);
+        StringResource s = new StringResource();
+        ResourceUtils.copyResource(content, s);
+
+        Assert.assertEquals(s.getValue(), "01");
+    }
+
+    public void testWithImplicitMerge() throws IOException {
+        Project p = new Project();
+        LogCapturer c = new LogCapturer(p);
+
+        for (int i = 0; i < 2; i++) {
+            BuildEvent be = new BuildEvent(p);
+            be.setMessage(String.valueOf(i), 0);
+            c.messageLogged(be);
+        }
+
+        LogContent content = new LogContent();
+        content.setProject(p);
+        StringResource s = new StringResource();
+        ResourceUtils.copyResource(content, s);
+
+        Assert.assertEquals(s.getValue(), "01");
     }
 
     private static void assertMessages(LogContent content, String[] messages,

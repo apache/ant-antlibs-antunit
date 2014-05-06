@@ -34,12 +34,13 @@ import org.apache.tools.ant.types.Resource;
 public class LogContent extends Resource {
 
     private LogLevel level;
+    private boolean mergeLines;
 
     /**
      * Create a new LogContent resource.
      */
     public LogContent() {
-        setLevel(LogLevel.INFO);
+        this(null, LogLevel.INFO);
     }
 
     /**
@@ -49,17 +50,40 @@ public class LogContent extends Resource {
      * @param level the LogLevel.
      */
     public LogContent(Project p, LogLevel level) {
+        this(p, level, true);
+    }
+
+    /**
+     * Create a new LogContent resource, specifying Project and log level.
+     * This constructor is provided primarily for convenience during
+     * programmatic usage.
+     * @param level the LogLevel.
+     * @param mergeLines whether to merge messages into a single line
+     * or split them into multiple lines
+     * @since AntUnit 1.3
+     */
+    public LogContent(Project p, LogLevel level, boolean mergeLines) {
         setProject(p);
         setLevel(level);
+        setMergeLines(mergeLines);
     }
 
     /**
      * Set the desired log level.
      * @param level a LogLevel enumerated attribute.
      */
-    public void setLevel(LogLevel level) {
+    public final void setLevel(LogLevel level) {
         this.level = level;
         setName(level.getValue());
+    }
+
+    /**
+     * Whether to merge messages into a single line or split them into
+     * multiple lines.
+     * @since AntUnit 1.3
+     */
+    public final void setMergeLines(boolean b) {
+        mergeLines = b;
     }
 
     //inherit doc
@@ -101,19 +125,19 @@ public class LogContent extends Resource {
         String log = null;
         switch (level.getLevel()) {
         case Project.MSG_ERR:
-            log = lc.getErrLog();
+            log = lc.getErrLog(mergeLines);
             break;
         case Project.MSG_WARN:
-            log = lc.getWarnLog();
+            log = lc.getWarnLog(mergeLines);
             break;
         case Project.MSG_INFO:
-            log = lc.getInfoLog();
+            log = lc.getInfoLog(mergeLines);
             break;
         case Project.MSG_VERBOSE:
-            log = lc.getVerboseLog();
+            log = lc.getVerboseLog(mergeLines);
             break;
         case Project.MSG_DEBUG:
-            log = lc.getDebugLog();
+            log = lc.getDebugLog(mergeLines);
             break;
         default:
             throw new IllegalStateException("how possible?");

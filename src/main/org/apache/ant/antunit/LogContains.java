@@ -56,6 +56,7 @@ public class LogContains extends ProjectComponent implements Condition {
     /**
      * Whether to merge messages into a single line or split them into
      * multiple lines.
+     * @since AntUnit 1.3
      */
     public void setMergeLines(boolean b) {
         mergeLines = b;
