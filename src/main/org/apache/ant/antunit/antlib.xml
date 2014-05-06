@@ -350,11 +350,13 @@ under the License.
   <macrodef name="assertLogContains" backtrace="false">
     <attribute name="text"/>
     <attribute name="level" default="info"/>
+    <attribute name="mergeLines" default="true"/>
     <attribute name="message"
       default="Expected log to contain '@{text}' at level @{level}"/>
     <sequential>
       <au:fail message="@{message}">
-        <au:logcontains text="@{text}" level="@{level}"/>
+        <au:logcontains text="@{text}" level="@{level}"
+                        mergeLines="@{mergeLines}"/>
       </au:fail>
     </sequential>
   </macrodef>
@@ -362,11 +364,13 @@ under the License.
   <macrodef name="assertLogDoesntContain" backtrace="false">
     <attribute name="text"/>
     <attribute name="level" default="info"/>
+    <attribute name="mergeLines" default="true"/>
     <attribute name="message"
       default="Unexpected log '@{text}' at level @{level}"/>
     <sequential>
       <au:assertFalse message="@{message}">
-        <au:logcontains text="@{text}" level="@{level}"/>
+        <au:logcontains text="@{text}" level="@{level}"
+                        mergeLines="@{mergeLines}"/>
       </au:assertFalse>
     </sequential>
   </macrodef>

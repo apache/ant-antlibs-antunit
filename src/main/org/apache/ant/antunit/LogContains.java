@@ -37,6 +37,7 @@ public class LogContains extends ProjectComponent implements Condition {
 
     private String text;
     private int logLevel = Project.MSG_INFO;
+    private boolean mergeLines = true;
 
     /**
      * Test the log shall contain.
@@ -52,6 +53,14 @@ public class LogContains extends ProjectComponent implements Condition {
         logLevel = echoLevel.getLevel();
     }
 
+    /**
+     * Whether to merge messages into a single line or split them into
+     * multiple lines.
+     */
+    public void setMergeLines(boolean b) {
+        mergeLines = b;
+    }
+
     public boolean eval() {
         if (text == null) {
             throw new BuildException("the text attribute is required");
@@ -62,19 +71,19 @@ public class LogContains extends ProjectComponent implements Condition {
             String log;
             switch (logLevel) {
             case Project.MSG_ERR:
-                log = c.getErrLog();
+                log = c.getErrLog(mergeLines);
                 break;
             case Project.MSG_WARN:
-                log = c.getWarnLog();
+                log = c.getWarnLog(mergeLines);
                 break;
             case Project.MSG_INFO:
-                log = c.getInfoLog();
+                log = c.getInfoLog(mergeLines);
                 break;
             case Project.MSG_VERBOSE:
-                log = c.getVerboseLog();
+                log = c.getVerboseLog(mergeLines);
                 break;
             case Project.MSG_DEBUG:
-                log = c.getDebugLog();
+                log = c.getDebugLog(mergeLines);
                 break;
                 
             default:
