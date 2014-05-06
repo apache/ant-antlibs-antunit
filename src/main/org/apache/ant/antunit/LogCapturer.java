@@ -20,6 +20,10 @@
 
 package org.apache.ant.antunit;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.LinkedList;
+
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
@@ -36,11 +40,7 @@ import org.apache.tools.ant.util.StringUtils;
 public class LogCapturer implements BuildListener {
     public static final String REFERENCE_ID = "ant.antunit.log";
 
-    private StringBuffer err = new StringBuffer();
-    private StringBuffer warn = new StringBuffer();
-    private StringBuffer info = new StringBuffer();
-    private StringBuffer verbose = new StringBuffer();
-    private StringBuffer debug = new StringBuffer();
+    private List/*<BuildEvent>*/ events = new LinkedList();
     private Project p;
 
     public LogCapturer(Project p) {
@@ -50,38 +50,84 @@ public class LogCapturer implements BuildListener {
     }
 
     /**
-     * All messages with <code>logLevel == Project.MSG_ERR</code>.
+     * All messages with <code>logLevel == Project.MSG_ERR</code>
+     * merging messages into a single line.
      */
     public String getErrLog() {
-        return err.toString();
+        return getErrLog(true);
+    }
+    /**
+     * All messages with <code>logLevel == Project.MSG_WARN</code> or
+     * more severe merging messages into a single line.
+     */
+    public String getWarnLog() {
+        return getWarnLog(true);
+    }
+    /**
+     * All messages with <code>logLevel == Project.MSG_INFO</code> or
+     * more severe merging messages into a single line.
+     */
+    public String getInfoLog() {
+        return getInfoLog(true);
+    }
+    /**
+     * All messages with <code>logLevel == Project.MSG_VERBOSE</code> or
+     * more severe merging messages into a single line.
+     */
+    public String getVerboseLog() {
+        return getVerboseLog(true);
+    }
+    /**
+     * All messages with <code>logLevel == Project.MSG_DEBUG</code> or
+     * more severe merging messages into a single line.
+     */
+    public String getDebugLog() {
+        return getDebugLog(true);
+    }
+
+    /**
+     * All messages with <code>logLevel == Project.MSG_ERR</code>.
+     * @param mergeLines whether to merge messages into a single line
+     * or split them into multiple lines
+     */
+    public String getErrLog(boolean mergeLines) {
+        return getLog(Project.MSG_ERR, mergeLines);
     }
     /**
      * All messages with <code>logLevel == Project.MSG_WARN</code> or
      * more severe.
+     * @param mergeLines whether to merge messages into a single line
+     * or split them into multiple lines
      */
-    public String getWarnLog() {
-        return warn.toString();
+    public String getWarnLog(boolean mergeLines) {
+        return getLog(Project.MSG_WARN, mergeLines);
     }
     /**
      * All messages with <code>logLevel == Project.MSG_INFO</code> or
      * more severe.
+     * @param mergeLines whether to merge messages into a single line
+     * or split them into multiple lines
      */
-    public String getInfoLog() {
-        return info.toString();
+    public String getInfoLog(boolean mergeLines) {
+        return getLog(Project.MSG_INFO, mergeLines);
     }
     /**
      * All messages with <code>logLevel == Project.MSG_VERBOSE</code> or
      * more severe.
+     * @param mergeLines whether to merge messages into a single line
+     * or split them into multiple lines
      */
-    public String getVerboseLog() {
-        return verbose.toString();
+    public String getVerboseLog(boolean mergeLines) {
+        return getLog(Project.MSG_VERBOSE, mergeLines);
     }
     /**
      * All messages with <code>logLevel == Project.MSG_DEBUG</code> or
      * more severe.
+     * @param mergeLines whether to merge messages into a single line
+     * or split them into multiple lines
      */
-    public String getDebugLog() {
-        return debug.toString();
+    public String getDebugLog(boolean mergeLines) {
+        return getLog(Project.MSG_DEBUG, mergeLines);
     }
 
     /**
@@ -119,24 +165,24 @@ public class LogCapturer implements BuildListener {
      * Record the message.
      */
     public void messageLogged(BuildEvent event) {
-        if (event.getPriority() <= Project.MSG_ERR) {
-            append(err, event);
-        }
-        if (event.getPriority() <= Project.MSG_WARN) {
-            append(warn, event);
-        }
-        if (event.getPriority() <= Project.MSG_INFO) {
-            append(info, event);
-        }
-        if (event.getPriority() <= Project.MSG_VERBOSE) {
-            append(verbose, event);
-        }
-        if (event.getPriority() <= Project.MSG_DEBUG) {
-            append(debug, event);
-        }
+        events.add(event);
     }
 
-    private static void append(StringBuffer sb, BuildEvent event) {
-        sb.append(event.getMessage()).append(StringUtils.LINE_SEP);
+    private String getLog(int minPriority, boolean mergeLines) {
+        StringBuffer sb = new StringBuffer();
+        for (Iterator/*<BuildEvent>*/ it = events.iterator(); it.hasNext(); ) {
+            append(sb, (BuildEvent) it.next(), minPriority, mergeLines);
+        }
+        return sb.toString();
+    }
+
+    private static void append(StringBuffer sb, BuildEvent event,
+                               int minPriority, boolean mergeLines) {
+        if (event.getPriority() <= minPriority) {
+            sb.append(event.getMessage());
+            if (!mergeLines) {
+                sb.append(StringUtils.LINE_SEP);
+            }
+        }
     }
 }

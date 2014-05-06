@@ -21,6 +21,7 @@ package org.apache.ant.antunit;
 
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.util.StringUtils;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -53,6 +54,33 @@ public class LogCapturerTest extends TestCase {
         assertMessages(c.getInfoLog(), messages, Project.MSG_INFO);
         assertMessages(c.getVerboseLog(), messages, Project.MSG_VERBOSE);
         assertMessages(c.getDebugLog(), messages, Project.MSG_DEBUG);
+    }
+
+    public void testWithoutMerge() {
+        Project p = new Project();
+        LogCapturer c = new LogCapturer(p);
+
+        for (int i = 0; i < 2; i++) {
+            BuildEvent be = new BuildEvent(p);
+            be.setMessage(String.valueOf(i), 0);
+            c.messageLogged(be);
+        }
+        Assert.assertEquals(c.getErrLog(false),
+                            "0" + StringUtils.LINE_SEP
+                            + "1" + StringUtils.LINE_SEP);
+    }
+
+    public void testWithMerge() {
+        Project p = new Project();
+        LogCapturer c = new LogCapturer(p);
+
+        for (int i = 0; i < 2; i++) {
+            BuildEvent be = new BuildEvent(p);
+            be.setMessage(String.valueOf(i), 0);
+            c.messageLogged(be);
+        }
+        Assert.assertEquals(c.getErrLog(), "01");
+        Assert.assertEquals(c.getErrLog(true), "01");
     }
 
     private static void assertMessages(String actual, String[] messages,
