@@ -98,6 +98,7 @@ public class LogCapturer implements BuildListener {
      * more severe.
      * @param mergeLines whether to merge messages into a single line
      * or split them into multiple lines
+     * @since AntUnit 1.3
      */
     public String getWarnLog(boolean mergeLines) {
         return getLog(Project.MSG_WARN, mergeLines);
@@ -107,6 +108,7 @@ public class LogCapturer implements BuildListener {
      * more severe.
      * @param mergeLines whether to merge messages into a single line
      * or split them into multiple lines
+     * @since AntUnit 1.3
      */
     public String getInfoLog(boolean mergeLines) {
         return getLog(Project.MSG_INFO, mergeLines);
@@ -116,6 +118,7 @@ public class LogCapturer implements BuildListener {
      * more severe.
      * @param mergeLines whether to merge messages into a single line
      * or split them into multiple lines
+     * @since AntUnit 1.3
      */
     public String getVerboseLog(boolean mergeLines) {
         return getLog(Project.MSG_VERBOSE, mergeLines);
@@ -125,6 +128,7 @@ public class LogCapturer implements BuildListener {
      * more severe.
      * @param mergeLines whether to merge messages into a single line
      * or split them into multiple lines
+     * @since AntUnit 1.3
      */
     public String getDebugLog(boolean mergeLines) {
         return getLog(Project.MSG_DEBUG, mergeLines);
