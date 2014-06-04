@@ -65,10 +65,10 @@
       </Version>
     </release>
     <repository>
-      <SVNRepository>
-        <location rdf:resource="http://svn.apache.org/repos/asf/ant/antlibs/antunit"/>
-        <browse rdf:resource="http://svn.apache.org/viewvc/ant/antlibs/antunit"/>
-      </SVNRepository>
+      <GitRepository>
+        <location rdf:resource="https://git-wip-us.apache.org/repos/asf/ant-antlibs-antunit.git"/>
+        <browse rdf:resource="https://git-wip-us.apache.org/repos/asf?p=ant-antlibs-antunit.git"/>
+      </GitRepository>
     </repository>
   </Project>
 </rdf:RDF>
