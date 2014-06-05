@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<!--
+Interim build-snippet.
+
+The AntLibs depend on the common build infrastructure supplied by the 
+antlibs-common project. In subversion these are included via svn:external
+directive. After migration to git there is need to have successor to that
+directive. Until we have that, we could do a 'manual' git-clone.
+
+The original of this snippet is maintained in the antlib-common project. 
+-->
+<project default="bootstrap" xmlns:unless="ant:unless" xmlns:if="ant:if">
+
+  <!-- AntLib-common Git-URL, so we could 'svn:external' that manually. -->
+  <property name="antlib.common.git" value="https://git-wip-us.apache.org/repos/asf/ant-antlibs-common.git"/>
+  <!-- Git executable -->
+  <property name="git" value="git"/>
+  
+  <!-- Which released version of AntUnit to use, where to download, where to store. -->
+  <property name="antunit.version" value="1.3"/>
+  <property name="antunit.url" value="http://repo1.maven.org/maven2/org/apache/ant/ant-antunit/${antunit.version}/ant-antunit-${antunit.version}.jar"/>
+  <property name="antunit.file" value="ant-antunit.jar"/>
+
+  <!-- Skip unnecessary tasks. -->
+  <available property="common.present"  file="common" type="dir"/>
+  <available property="antunit.present" file="${antunit.file}"/>
+
+
+  <target name="clone-common" unless="common.present">
+    <echo message="cloning antlib-common"/>
+    <exec executable="${git}" taskname="git">
+      <arg value="clone"/>
+      <arg value="${antlib.common.git}"/>
+      <arg value="common"/>
+    </exec>
+  </target>
+
+  <target name="update-common" if="common.present">
+    <echo message="updating antlib-common"/>
+    <exec executable="${git}" dir="common" taskname="git">
+      <arg value="pull"/>
+    </exec>
+  </target>
+
+  <target name="update-prepare-script">
+    <echo>updating prepare.xml</echo>
+    <copy file="common/prepare.xml" tofile="prepare.xml"/>
+  </target>
+
+  <target name="get-antunit" unless="antunit.present">
+    <echo>updating AntUnit</echo>
+    <get src="${antunit.url}" dest="${antunit.file}" usetimestamp="true"/>
+  </target>
+  
+  
+  <!-- Use a 'bootstrap-phase' so changes of the preparation could be catched in the same CI-cycle. -->
+  <target name="bootstrap" 
+          depends="clone-common,update-common,update-prepare-script"
+          description="Bootstraps the preparation script by cloning the antlib-common and updating this script from there."
+  >
+    <echo>Bootstrap done. Next step:</echo> 
+    <echo>  ant -f prepare.xml prepare</echo>
+  </target>
+          
+  <target name="prepare" 
+          depends="get-antunit"
+          description="Prepare the build by 'preparing' the infrastructure"
+  >
+    <echo>Preparation done. Next steps:</echo>
+    <echo> ant clean distribution</echo>
+    <echo> ant -lib ${antunit.file} -lib build/lib test</echo>
+  </target>
+
+</project>
