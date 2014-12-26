@@ -37,6 +37,14 @@
     <title>Apache AntUnit</title>
   </properties>
 
+  <release version="1.4" date="unreleased">
+    <action type="fix" issue="57341">
+      The br-replace template inside the XSLT stylesheets used by
+      for reports could cause stack overflows or out-of-memory errors
+      when applied to big outputs.
+    </action>
+  </release>
+
   <release version="1.3" date="2014-05-14">
     <action type="add" issue="53383">
       New assertion assertRefResourceExists,
