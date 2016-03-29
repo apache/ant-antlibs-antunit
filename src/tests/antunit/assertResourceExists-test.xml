@@ -19,29 +19,49 @@
 
   <import file="antunit-base.xml"/>
 
+  <property name="existing-url" value="http://ant.apache.org/index.html"/>
+  <property name="not-existing-url" value="http://ant.apache.org/foo.html"/>
+
+  <!-- some strange proxy setups hide the 404 results -->
+  <target name="-checkWhetherUrlsThatDontExistAreFound">
+    <condition property="cant.trust.urlcheck">
+      <http url="${not-existing-url}"/>
+    </condition>
+  </target>
+
+  <target name="-logWhetherUrlsThatDontExistAreFound"
+          depends="-checkWhetherUrlsThatDontExistAreFound"
+          if="cant.trust.urlcheck">
+    <echo>Get non-error response for missing URLs</echo>
+  </target>
+
   <target name="testURL"
           description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53383">
     <au:assertNestedResourceExists>
-      <url url="http://ant.apache.org/index.html"/>
+      <url url="${existing-url}"/>
     </au:assertNestedResourceExists>
   </target>
 
   <target name="testURLUsingRef"
           description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53383">
-    <url url="http://ant.apache.org/index.html" id="antsite"/>
+    <url url="${existing-url}" id="antsite"/>
     <au:assertRefResourceExists refid="antsite"/>
   </target>
 
   <target name="testURL-no"
+          depends="-logWhetherUrlsThatDontExistAreFound"
+          unless="cant.trust.urlcheck"
           description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53383">
     <au:assertNestedResourceDoesntExist>
-      <url url="http://ant.apache.org/foo.html"/>
+      <url url="${not-existing-url}"/>
     </au:assertNestedResourceDoesntExist>
   </target>
 
   <target name="testURLUsingRef-no"
+          depends="-logWhetherUrlsThatDontExistAreFound"
+          unless="cant.trust.urlcheck"
           description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53383">
-    <url url="http://ant.apache.org/foo.html" id="antsite-foo"/>
+    <url url="${not-existing-url}" id="antsite-foo"/>
     <au:assertRefResourceDoesntExist refid="antsite-foo"/>
   </target>
 
