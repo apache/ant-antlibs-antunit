@@ -37,6 +37,7 @@ public class ExpectFailureTask extends Sequential {
 
     /**
      * The exception message to expect.
+     * @param m the exception message to expect
      */
     public void setExpectedMessage(String m) {
         expectedMessage = m;
@@ -45,6 +46,7 @@ public class ExpectFailureTask extends Sequential {
     /**
      * The message to use in the AssertionFailedException if the nested
      * tasks fail to raise the "correct" exception.
+     * @param m message to use in the AssertionFailedException
      */
     public void setMessage(String m) {
         message = m;

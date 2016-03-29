@@ -70,6 +70,7 @@ public abstract class BaseAntUnitListener
 
     /**
      * Directory to write reports to.
+     * @return directory to write reports to
      */
     protected final File getToDir() {
         return toDir;
@@ -77,6 +78,7 @@ public abstract class BaseAntUnitListener
 
     /**
      * Sets the directory to write test reports to.
+     * @param f directory to write reports to
      */
     public void setToDir(File f) {
         toDir = f;
@@ -89,6 +91,7 @@ public abstract class BaseAntUnitListener
 
     /**
      * Where to send the test report.
+     * @param logTo where to send the test report
      */
     protected void setSendLogTo(SendLogTo logTo) {
         this.logTo = logTo;
@@ -170,6 +173,8 @@ public abstract class BaseAntUnitListener
      * Turns the build file name into something that vaguely looks
      * like a Java classname.  Close enough to be suitable for
      * junitreport.
+     * @param buildFile the test file name
+     * @return the normalized name
      */
     protected final String normalize(String buildFile) {
         File base = parentTask != null
@@ -217,6 +222,7 @@ public abstract class BaseAntUnitListener
     /**
      * Sets the minimum level a log message must be logged at to be
      * included in the output.
+     * @param l minimum level
      */
     public void setLogLevel(AntUnitLogLevel l) {
         logLevel = l;
@@ -225,9 +231,10 @@ public abstract class BaseAntUnitListener
     /**
      * Gets messages from the project running the test target if their
      * level is at least of the level specified with {@link
-     * #setLoglevel setLogLevel}.
+     * #setLogLevel setLogLevel}.
      *
      * <p>This implementation is empty.</p>
+     * @param event the logged message
      */
     protected void messageLogged(BuildEvent event) {}
 

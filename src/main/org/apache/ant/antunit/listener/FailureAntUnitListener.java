@@ -160,7 +160,7 @@ public class FailureAntUnitListener extends BaseAntUnitListener {
         }
         
         /** 
-         * Creates an <ant> call according to the stored information. 
+         * Creates an &lt;ant&gt; call according to the stored information. 
          * @see java.lang.Object#toString()
          */
         public String toString() {

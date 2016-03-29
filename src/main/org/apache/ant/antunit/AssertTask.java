@@ -28,7 +28,7 @@ import org.apache.tools.ant.taskdefs.condition.ConditionBase;
  * Exits the active build, giving an additional message if the single
  * nested condition fails or if there is no condition at all.
  *
- * <p>This one could as well be implemented as
+ * <p>This one could as well be implemented as</p>
  *
  * <pre>
  * &lt;macrodef name="assertTrue"&gt;
@@ -44,7 +44,7 @@ import org.apache.tools.ant.taskdefs.condition.ConditionBase;
  * &lt;/macrodef&gt;
  * </pre>
  * 
- * but wouldn't be able to throw a specialized exception that way -
+ * <p>but wouldn't be able to throw a specialized exception that way -
  * and the macrodef would nest the exception in yet another
  * BuildException.</p>
  */
@@ -57,6 +57,7 @@ public class AssertTask extends ConditionBase {
 
     /**
      * Message to use when the assertion fails.
+     * @param value message to use when the assertion fails
      */
     public void setMessage(String value) {
         this.message = value;

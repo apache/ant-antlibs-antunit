@@ -45,8 +45,9 @@ public class LogContent extends Resource {
 
     /**
      * Create a new LogContent resource, specifying Project and log level.
-     * This constructor is provided primarily for convenience during
-     * programmatic usage.
+     * <p>This constructor is provided primarily for convenience during
+     * programmatic usage.</p>
+     * @param p the test project
      * @param level the LogLevel.
      */
     public LogContent(Project p, LogLevel level) {
@@ -55,8 +56,9 @@ public class LogContent extends Resource {
 
     /**
      * Create a new LogContent resource, specifying Project and log level.
-     * This constructor is provided primarily for convenience during
-     * programmatic usage.
+     * <p>This constructor is provided primarily for convenience during
+     * programmatic usage.</p>
+     * @param p the test project
      * @param level the LogLevel.
      * @param mergeLines whether to merge messages into a single line
      * or split them into multiple lines
@@ -81,6 +83,7 @@ public class LogContent extends Resource {
      * Whether to merge messages into a single line or split them into
      * multiple lines.
      * @since AntUnit 1.3
+     * @param b whether to merge messages into a single line
      */
     public final void setMergeLines(boolean b) {
         mergeLines = b;

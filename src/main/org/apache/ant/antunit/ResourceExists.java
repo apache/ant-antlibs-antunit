@@ -40,6 +40,7 @@ public class ResourceExists extends ProjectComponent implements Condition {
      *
      * <p>Exactly one resource must be specfied either as attribute or
      * nested element.</p>
+     * @param r resource to check
      */
     public void setResource(Resource r) {
         onlyOne();
@@ -49,6 +50,7 @@ public class ResourceExists extends ProjectComponent implements Condition {
     /**
      * The resource to check as a refid.
      * @since AntUnit 1.3
+     * @param refid resource to check as a refid
      */
     public void setRefid(String refid) {
         onlyOne();
@@ -60,6 +62,7 @@ public class ResourceExists extends ProjectComponent implements Condition {
      *
      * <p>Exactly one resource must be specfied either as attribute or
      * nested element.</p>
+     * @param r resource to check
      */
     public void add(Resource r) {
         setResource(r);

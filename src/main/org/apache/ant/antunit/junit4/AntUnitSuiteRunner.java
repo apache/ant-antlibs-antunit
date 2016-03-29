@@ -58,7 +58,7 @@ import org.junit.runner.notification.RunNotifier;
  * run junit3 test. However, the test may be faster with this Runner (with the
  * default junit4 adapter, the suiteSetUp and suiteTearDown will be executed
  * around every test target). Also, more features are available when this runner
- * is used (filtering & sorting)
+ * is used (filtering &amp; sorting)
  */
 public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
 
@@ -114,7 +114,7 @@ public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
     }
 
     /**
-     * @Overwrite Filterable implementation
+     * Filterable implementation
      */
     public void filter(Filter filter) throws NoTestsRemainException {
         for (Iterator iter= targetDescriptions.entrySet().iterator(); iter.hasNext();) {
@@ -126,7 +126,7 @@ public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
     }
 
     /**
-     * @Overwrite Sortable implementation
+     * Sortable implementation
      */
     public void sort(final Sorter sorter) {
         Collections.sort(targetsOrder, new Comparator/*<String>*/() {
@@ -142,7 +142,7 @@ public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
     }
 
     /**
-     * @Overwrite Runner implementation
+     * Runner implementation
      */
     public Description getDescription() {
         Description r = Description.createSuiteDescription(
@@ -157,7 +157,7 @@ public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
     }
 
     /**
-     * @Overwrite Runner implementation
+     * Runner implementation
      */
     public void run(final RunNotifier junitNotifier) {
         LinkedList targetList = new LinkedList(targetDescriptions.keySet());

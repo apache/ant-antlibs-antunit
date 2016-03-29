@@ -141,6 +141,7 @@ public class AntUnitScriptRunner {
      * Get the project currently in use.  The caller is not allowed to invoke a target or
      * do anything that would break the isolation of the test targets.
      * @throws BuildException The project can not be parsed
+     * @return the current project
      */
     public final Project getCurrentProject() throws BuildException {
     	//Method is final because it is called from the constructor
@@ -165,7 +166,7 @@ public class AntUnitScriptRunner {
     }
 
     /**
-     * @return List<String> List of test targets of the script file
+     * @return List&lt;String&gt; List of test targets of the script file
      */
     public List getTestTartgets() {
         return testTargets;
@@ -173,6 +174,7 @@ public class AntUnitScriptRunner {
 
     /**
      * Provides the name of the active script.
+     * @return name of the project
      */
     public String getName() {
         return getCurrentProject().getName();
@@ -180,8 +182,8 @@ public class AntUnitScriptRunner {
 
     /**
      * Executes the suiteSetUp target if presents and report any execution error.
-     * A failure is reported to the notifier and by returning false.
-     * Note that if the method return false, you are not allowed to run targets.
+     * <p>A failure is reported to the notifier and by returning false.
+     * Note that if the method return false, you are not allowed to run targets.</p>
      * @return false in case of execution failure.  true in case of success. 
      */
     private boolean startSuite(AntUnitExecutionNotifier notifier) {
@@ -289,7 +291,7 @@ public class AntUnitScriptRunner {
     /**
      * Executes the suite.
      * @param suiteTargets An ordered list of test targets.  It must be a sublist of getTestTargets
-     * @param notifier 
+     * @param notifier is notified on test progress
      */
     public void runSuite(List suiteTargets, AntUnitExecutionNotifier notifier) {
         Throwable caught = null;

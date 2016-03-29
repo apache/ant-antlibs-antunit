@@ -41,6 +41,7 @@ public class LogContains extends ProjectComponent implements Condition {
 
     /**
      * Test the log shall contain.
+     * @param t text to look for
      */
     public void setText(String t) {
         text = t;
@@ -48,6 +49,7 @@ public class LogContains extends ProjectComponent implements Condition {
 
     /**
      * minimal log priority to consult.
+     * @param echoLevel minimal log priority
      */
     public void setLevel(Echo.EchoLevel echoLevel) {
         logLevel = echoLevel.getLevel();
@@ -57,6 +59,7 @@ public class LogContains extends ProjectComponent implements Condition {
      * Whether to merge messages into a single line or split them into
      * multiple lines.
      * @since AntUnit 1.3
+     * @param b whether to merge messages into a single line
      */
     public void setMergeLines(boolean b) {
         mergeLines = b;

@@ -24,11 +24,11 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 /** 
- * Provides project instances for AntUnit execution.<br/>  
- * The approach to creates a project depends on the context.  When invoked from an 
+ * Provides project instances for AntUnit execution.
+ * <p>The approach to creates a project depends on the context.  When invoked from an 
  * ant project, some elements might be intialized from the parent project.  When
- * executed in a junit runner, a brand new project must be initialized.<br/>
- * The AntScriptRunner will usually creates multiple project in order to provide test isolation. 
+ * executed in a junit runner, a brand new project must be initialized.</p>
+ * <p>The AntScriptRunner will usually create multiple project in order to provide test isolation.</p>
  * @since 1.2
  */
 public interface ProjectFactory {
@@ -36,7 +36,8 @@ public interface ProjectFactory {
     /**
      * Creates a new project instance and configures it according to the execution context.
      * @throws BuildException The project can not be created (probably parsed)
+     * @return a new project
      */
-    public Project createProject() throws BuildException;
+    Project createProject() throws BuildException;
 
 }

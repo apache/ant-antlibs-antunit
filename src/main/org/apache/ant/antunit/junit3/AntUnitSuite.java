@@ -52,11 +52,11 @@ public class AntUnitSuite extends TestSuite {
 
     /**
      * Create a JUnit TestSuite that when executed will run the given ant
-     * script.<br/> 
-     * Note that it is the responsibility of the caller to give the correct
+     * script.
+     * <p>Note that it is the responsibility of the caller to give the correct
      * File reference. Namely, if the File is a relative file, it will
      * be resolve relatively to the execution directory (which might be
-     * different different from the project root directory).
+     * different different from the project root directory).</p>
      * 
      * @param scriptFile
      *            AntUnit script file
@@ -108,7 +108,8 @@ public class AntUnitSuite extends TestSuite {
     }
     
     /**
-     * @Override Run the full AntUnit suite
+     * {@inheritDoc}
+     * <p>Run the full AntUnit suite.</p>
      */
     public void run(TestResult testResult) {
         if (initializationReportingTest!=null) {
@@ -122,8 +123,9 @@ public class AntUnitSuite extends TestSuite {
     }
     
     /**
-     * @Override Run a single test target of the AntUnit suite. suiteSetUp,
-     *           setUp, tearDown and suiteTearDown are executed around it.
+     * {@inheritDoc}
+     * <p>Run a single test target of the AntUnit suite. suiteSetUp,
+     *           setUp, tearDown and suiteTearDown are executed around it.</p>
      */
     public void runTest(Test test, TestResult result) {
         if (initializationReportingTest!=null) {
@@ -139,9 +141,9 @@ public class AntUnitSuite extends TestSuite {
 
     /**
      * Execute the test suite in a 'container' similar to the ant 'container'.
-     * When ant executes a project it redirect the input and the output. In this
+     * <p>When ant executes a project it redirect the input and the output. In this
      * context we will only redirect output (unit test are not supposed to be
-     * interactive).<br/>
+     * interactive).</p>
      * 
      * @param targetList
      *            The list of test target to execute

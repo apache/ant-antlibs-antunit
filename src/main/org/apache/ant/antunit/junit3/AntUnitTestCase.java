@@ -28,9 +28,10 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 
 /**
- * JUnit TestCase that will executes a single AntUnit target. This class is not
- * supposed to be used directly. <br/>
- * It is public only because junit must access it as a public.
+ * JUnit TestCase that will executes a single AntUnit target.
+ * <p>This class is not
+ * supposed to be used directly.</p>
+ * <p>It is public only because junit must access it as a public.</p>
  */
 public class AntUnitTestCase extends TestCase {
     // We have to extends TestCase, and not implements Test because otherwise 
@@ -60,11 +61,12 @@ public class AntUnitTestCase extends TestCase {
     private final BuildException initialisationException;
     
     /**
-     * Prepare an AntUnitTestCase that will be executed alone. This constructor 
+     * Prepare an AntUnitTestCase that will be executed alone.
+     * <p>This constructor 
      * is typically used by a junit 3 runner that will reexecute a specific 
-     * test.</br> 
-     * The execution of this test will be embed in a suiteSetUp and 
-     * suiteTearDown.
+     * test.</p>
+     * <p>The execution of this test will be embed in a suiteSetUp and 
+     * suiteTearDown.</p>
      * @param name The name of the AntUnitTestCase, normally obtained from a 
      * previous execution. 
      */
@@ -91,9 +93,9 @@ public class AntUnitTestCase extends TestCase {
      * is the responsibility of the suite to execute the suiteSetUp and the
      * suiteTearDown.
      * 
-     * @param target
-     * @param antScriptRunner
-     * @param executionEnv
+     * @param target test target 
+     * @param suite test suite
+     * @param scriptFile test file
      */
     public AntUnitTestCase(AntUnitSuite suite, File scriptFile, String target) {
         // The name can be reused by eclipse when running a single test
@@ -103,7 +105,10 @@ public class AntUnitTestCase extends TestCase {
         this.initialisationException = null;
     }
 
-    /** Get the AntUnit test target name */
+    /**
+     * Get the AntUnit test target name.
+     * @return target name
+     */
     public String getTarget() {
         return target;
     }
@@ -111,8 +116,7 @@ public class AntUnitTestCase extends TestCase {
     /** 
      * Called by a Junit Runner that want to executes specifically
      * this test target.
-     * This implementation delegates the call to the suite.
-     * @Overwrite
+     * <p>This implementation delegates the call to the suite.</p>
      */
     public void run(TestResult result) {
         if (initialisationException==null && suite!=null) {

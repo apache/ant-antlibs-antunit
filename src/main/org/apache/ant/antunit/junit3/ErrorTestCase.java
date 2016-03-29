@@ -45,9 +45,6 @@ public class ErrorTestCase extends TestCase {
         this.ex = antScriptError;
     }
 
-    /**
-     * @overwrite
-     */
     protected void runTest() throws BuildException {
         throw ex;
     }

@@ -176,6 +176,7 @@ public class AntUnit extends Task {
 
     /**
      * Add a set of inherited references.
+     * @return set of inherited references
      */
     public ReferenceSet createReferenceSet() {
         ReferenceSet set = new ReferenceSet();
@@ -185,7 +186,8 @@ public class AntUnit extends Task {
     }
 
     /**
-     * Add an inherited reference
+     * Add an inherited reference.
+     * @param reference inherited reference
      */
     public void addReference(Reference reference) {
         //wrap in a singleton reference set.
@@ -478,7 +480,12 @@ public class AntUnit extends Task {
             }
         }
 
-        /** configure a single mapper to translate reference IDs */
+        /**
+         * Configure a single mapper to translate reference IDs.
+         * @param typeName the mapper type
+         * @param from the from attribute
+         * @param to the to attribute
+         */
         public void setMapper(String typeName, String from, String to) {
             Mapper mapper = createMapper();
             Mapper.MapperType type = new Mapper.MapperType();
@@ -493,6 +500,7 @@ public class AntUnit extends Task {
          * Copy all identified references into the target project,
          * applying any name mapping required by a nested mapper
          * element.
+         * @param newProject the target project to copy references into
          */
         public void copyReferencesInto(Project newProject) {
             FileNameMapper mapper = this.mapper == null
@@ -597,7 +605,7 @@ public class AntUnit extends Task {
 
         /**
          * Set a regular expression to match references.
-         * @param regex
+         * @param regex the regular expression
          */
         public void setRegex(String regex) {
             this.regex = regex;

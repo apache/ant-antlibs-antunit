@@ -52,6 +52,7 @@ public class LogCapturer implements BuildListener {
     /**
      * All messages with <code>logLevel == Project.MSG_ERR</code>
      * merging messages into a single line.
+     * @return All messages with <code>logLevel == Project.MSG_ERR</code>
      */
     public String getErrLog() {
         return getErrLog(true);
@@ -59,6 +60,7 @@ public class LogCapturer implements BuildListener {
     /**
      * All messages with <code>logLevel == Project.MSG_WARN</code> or
      * more severe merging messages into a single line.
+     * @return All messages with <code>logLevel == Project.MSG_WARN</code> or above
      */
     public String getWarnLog() {
         return getWarnLog(true);
@@ -66,6 +68,7 @@ public class LogCapturer implements BuildListener {
     /**
      * All messages with <code>logLevel == Project.MSG_INFO</code> or
      * more severe merging messages into a single line.
+     * @return All messages with <code>logLevel == Project.MSG_INFO</code> or above
      */
     public String getInfoLog() {
         return getInfoLog(true);
@@ -73,6 +76,7 @@ public class LogCapturer implements BuildListener {
     /**
      * All messages with <code>logLevel == Project.MSG_VERBOSE</code> or
      * more severe merging messages into a single line.
+     * @return All messages with <code>logLevel == Project.MSG_VERBOSE</code> or above
      */
     public String getVerboseLog() {
         return getVerboseLog(true);
@@ -80,6 +84,7 @@ public class LogCapturer implements BuildListener {
     /**
      * All messages with <code>logLevel == Project.MSG_DEBUG</code> or
      * more severe merging messages into a single line.
+     * @return All messages with <code>logLevel == Project.MSG_DEBUG</code> or above
      */
     public String getDebugLog() {
         return getDebugLog(true);
@@ -89,6 +94,7 @@ public class LogCapturer implements BuildListener {
      * All messages with <code>logLevel == Project.MSG_ERR</code>.
      * @param mergeLines whether to merge messages into a single line
      * or split them into multiple lines
+     * @return All messages with <code>logLevel == Project.MSG_ERR</code>
      */
     public String getErrLog(boolean mergeLines) {
         return getLog(Project.MSG_ERR, mergeLines);
@@ -98,6 +104,7 @@ public class LogCapturer implements BuildListener {
      * more severe.
      * @param mergeLines whether to merge messages into a single line
      * or split them into multiple lines
+     * @return All messages with <code>logLevel == Project.MSG_WARN</code> or above
      * @since AntUnit 1.3
      */
     public String getWarnLog(boolean mergeLines) {
@@ -108,6 +115,7 @@ public class LogCapturer implements BuildListener {
      * more severe.
      * @param mergeLines whether to merge messages into a single line
      * or split them into multiple lines
+     * @return All messages with <code>logLevel == Project.MSG_INFO</code> or above
      * @since AntUnit 1.3
      */
     public String getInfoLog(boolean mergeLines) {
@@ -118,6 +126,7 @@ public class LogCapturer implements BuildListener {
      * more severe.
      * @param mergeLines whether to merge messages into a single line
      * or split them into multiple lines
+     * @return All messages with <code>logLevel == Project.MSG_VERBOSE</code> or above
      * @since AntUnit 1.3
      */
     public String getVerboseLog(boolean mergeLines) {
@@ -128,6 +137,7 @@ public class LogCapturer implements BuildListener {
      * more severe.
      * @param mergeLines whether to merge messages into a single line
      * or split them into multiple lines
+     * @return All messages with <code>logLevel == Project.MSG_DEBUG</code> or above
      * @since AntUnit 1.3
      */
     public String getDebugLog(boolean mergeLines) {
