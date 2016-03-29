@@ -174,7 +174,8 @@ public class LogCapturer implements BuildListener {
 
     private String getLog(int minPriority, boolean mergeLines) {
         StringBuffer sb = new StringBuffer();
-        for (Iterator/*<BuildEvent>*/ it = events.iterator(); it.hasNext(); ) {
+        for (Iterator/*<BuildEvent>*/ it = new LinkedList(events).iterator();
+             it.hasNext(); ) {
             append(sb, (BuildEvent) it.next(), minPriority, mergeLines);
         }
         return sb.toString();
