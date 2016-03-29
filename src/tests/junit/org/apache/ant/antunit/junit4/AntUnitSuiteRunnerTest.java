@@ -102,7 +102,7 @@ public class AntUnitSuiteRunnerTest extends TestCase {
         };
 
         runner.run(notifierMock);
-        assertTrue(mockExcutionError, mockExcutionError.isEmpty());
+        assertTrue(mockExcutionError, mockExcutionError.length() == 0);
         assertTrue(mockExecutionOK);
     }
 
