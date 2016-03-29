@@ -37,7 +37,7 @@ import org.junit.runner.notification.RunNotifier;
 public class AntUnitSuiteRunnerTest extends TestCase {
 
     private boolean mockExecutionOK = false;
-    private String mockExcutionError = "";
+    private String mockExecutionError = "";
 
     /**
      * Validates the execution sequence.
@@ -76,11 +76,11 @@ public class AntUnitSuiteRunnerTest extends TestCase {
 
             public void fireTestStarted(Description description) {
                 if (curTest != null) {
-                    mockExcutionError += "Unexpected fireTestStarted("
+                    mockExecutionError += "Unexpected fireTestStarted("
                             + description.getDisplayName() + "\n";
                 }
                 if (!tDescs.contains(description)) {
-                    mockExcutionError += "Unexpected fireTestStarted("
+                    mockExecutionError += "Unexpected fireTestStarted("
                             + description.getDisplayName() + ")\n";
                 }
                 curTest = description;
@@ -88,11 +88,11 @@ public class AntUnitSuiteRunnerTest extends TestCase {
 
             public void fireTestFinished(Description description) {
                 if (curTest == null) {
-                    mockExcutionError += "Unexpected fireTestFinished("
+                    mockExecutionError += "Unexpected fireTestFinished("
                             + description.getDisplayName() + "\n";
                 }
                 if (!curTest.equals(description)) {
-                    mockExcutionError += "Unexpected fireTestFinished("
+                    mockExecutionError += "Unexpected fireTestFinished("
                             + description.getDisplayName() + "); expect "
                             + curTest.getDisplayName() + "\n";
                 }
@@ -102,7 +102,7 @@ public class AntUnitSuiteRunnerTest extends TestCase {
         };
 
         runner.run(notifierMock);
-        assertTrue(mockExcutionError, mockExcutionError.length() == 0);
+        assertTrue(mockExecutionError, mockExecutionError.length() == 0);
         assertTrue(mockExecutionOK);
     }
 
