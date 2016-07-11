@@ -21,6 +21,7 @@
 package org.apache.ant.antunit;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectComponent;
 import org.apache.tools.ant.taskdefs.condition.Condition;
 import org.apache.tools.ant.types.Resource;
@@ -73,6 +74,7 @@ public class ResourceExists extends ProjectComponent implements Condition {
             throw new BuildException("You must specify a resource.");
         }
         Resource r = resource != null ? resource : expandRefId();
+        log("Checking: " + r, Project.MSG_VERBOSE);
         return r.isExists();
     }
 
