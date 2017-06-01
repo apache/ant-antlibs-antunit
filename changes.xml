@@ -38,6 +38,10 @@
   </properties>
 
   <release version="1.4" date="unreleased">
+    <action type="update" breaks-bwc="true">
+      The coordinates inside the Ivy file have been changed to match
+      those of the POM.
+    </action>
     <action type="fix" issue="57341">
       The br-replace template inside the XSLT stylesheets used by
       for reports could cause stack overflows or out-of-memory errors

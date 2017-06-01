@@ -18,7 +18,7 @@
 
 -->
 <ivy-module version="2.0">
-  <info organisation="Apache Ant"
+  <info organisation="org.apache.ant"
         module="${artifact.name}"
         revision="${artifact.version}"
         publication="${artifact.publication.datetime}">
