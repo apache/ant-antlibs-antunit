@@ -156,7 +156,6 @@ public class AntUnitSuiteRunnerTest extends TestCase {
             fail("InitializationError expected");
         } catch (InitializationError e) {
             String msg = e.getCauses().get(0).getMessage();
-            assertTrue("Unexpected error : " + msg, msg.contains("FileNotFound"));
             assertTrue("Unexpected error : " + msg, msg.contains("build_script_not_found.xml"));
         }
     }
