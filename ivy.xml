@@ -35,7 +35,8 @@
   </info>
   <configurations>
 		<conf name="default" description="full antlib with all dependencies"/>
-		<conf name="test" description="dependencies used for junit testing the antlib" visibility="private" />
+        <conf name="provided" description="Ant must be present at runtime"/>
+		<conf name="test" description="dependencies used for JUnit tests of the antlib" transitive="false" visibility="private"/>
   </configurations>
   <publications xmlns:e="urn:ant.apache.org:ivy-extras">
     <artifact name="${artifact.name}" type="pom" ext="pom"/>
@@ -56,6 +57,8 @@
               e:classifier="ivy"/>
   </publications>
   <dependencies>
-    <dependency org="junit" name="junit" rev="4.11" conf="default"/>
+    <dependency org="junit" name="junit" rev="4.12" conf="default"/>
+    <dependency org="org.apache.ant" name="ant" rev="1.8.1" conf="provided->default"/>
+    <dependency org="org.apache.ant" name="ant-testutil" rev="1.8.1" conf="test->default"/>
   </dependencies>
 </ivy-module>
