@@ -23,6 +23,7 @@ package org.apache.ant.antunit;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Collections;
 
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildListener;
@@ -40,7 +41,7 @@ import org.apache.tools.ant.util.StringUtils;
 public class LogCapturer implements BuildListener {
     public static final String REFERENCE_ID = "ant.antunit.log";
 
-    private List/*<BuildEvent>*/ events = new LinkedList();
+    private List/*<BuildEvent>*/ events = Collections.synchronizedList(new LinkedList());
     private Project p;
 
     public LogCapturer(Project p) {
