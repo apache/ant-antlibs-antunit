@@ -20,7 +20,7 @@ This Ant Library requires Ant 1.8.1 or later to build, some of
 the test use JUnit 4 (4.12 recommended).
 
 It should work with any Java(TM) Runtime (and compile with any Java(TM)
-Developer Kit) starting with version 1.2.
+Developer Kit) starting with version 5.
 
 Using
 =====
