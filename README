@@ -16,8 +16,8 @@ distribution.  The home of this library is
 Building
 ========
 
-This Ant Library requires Ant 1.7.0 or later to build, some of
-the test use JUnit 3 (3.8.2 recommended).
+This Ant Library requires Ant 1.8.1 or later to build, some of
+the test use JUnit 4 (4.12 recommended).
 
 It should work with any Java(TM) Runtime (and compile with any Java(TM)
 Developer Kit) starting with version 1.2.

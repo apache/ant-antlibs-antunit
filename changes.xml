@@ -47,6 +47,9 @@
       for reports could cause stack overflows or out-of-memory errors
       when applied to big outputs.
     </action>
+    <action type="update" breaks-bwc="true">
+      AntUnit now requires at least Ant 1.8.1 at runtime.
+    </action>
   </release>
 
   <release version="1.3" date="2014-05-14">
