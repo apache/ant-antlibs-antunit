@@ -37,7 +37,9 @@
     <title>Apache AntUnit</title>
   </properties>
 
-  <release version="1.4" date="unreleased">
+  <release version="1.5" date="unreleased">
+  </release>
+  <release version="1.4" date="2018-06-25">
     <action type="update" breaks-bwc="true">
       The coordinates inside the Ivy file have been changed to match
       those of the POM.
