@@ -23,10 +23,10 @@
         revision="${artifact.version}"
         publication="${artifact.publication.datetime}">
     <license name="Apache Software License 2.0"
-             url="http://www.apache.org/licenses/LICENSE-2.0"/>
+             url="https://www.apache.org/licenses/LICENSE-2.0"/>
     <ivyauthor name="Apache Ant Development Team"
-               url="http://ant.apache.org/"/>
-    <description homepage="http://ant.apache.org/antlibs/antunit/">
+               url="https://ant.apache.org/"/>
+    <description homepage="https://ant.apache.org/antlibs/antunit/">
       This library contains tasks that enables Ant task developers to test
       their tasks with Ant and without JUnit.  It contains a few assertion
       tasks and an antunit task that runs build files instead of test

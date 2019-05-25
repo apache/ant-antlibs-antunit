@@ -19,7 +19,7 @@
 
   <import file="antunit-base.xml"/>
 
-  <url url="http://ant.apache.org/index.html" id="antsite"/>
+  <url url="https://ant.apache.org/index.html" id="antsite"/>
 
   <target name="testURLUsingRef"
           description="https://issues.apache.org/bugzilla/show_bug.cgi?id=53383">
