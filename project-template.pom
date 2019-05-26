@@ -39,8 +39,8 @@
 
   <!--
      Test doesn't work from maven, you have to fight with tricky classpath
-     issue to solve that See http://markmail.org/thread/6giwzqproxidcwyc
-     And http://markmail.org/thread/5bbknx6hm7liqvi6 (until it is solved, I
+     issue to solve that See https://markmail.org/thread/6giwzqproxidcwyc
+     And https://markmail.org/thread/5bbknx6hm7liqvi6 (until it is solved, I
      comment test setting)
     -->
   <properties>
