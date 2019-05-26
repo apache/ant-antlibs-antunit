@@ -17,7 +17,7 @@
 <!--
    This POM has been created manually by the Ant Development Team. Please
    contact us if you are not satisfied with the data contained in this
-   POM . URL : http://ant.apache.org
+   POM . URL : https://ant.apache.org
   -->
 <project>
   <modelVersion>4.0.0</modelVersion>
@@ -34,7 +34,7 @@
   </licenses>
   <organization>
     <name>The Apache Software Foundation</name>
-    <url>http://www.apache.org/</url>
+    <url>https://www.apache.org/</url>
   </organization>
 
   <!--

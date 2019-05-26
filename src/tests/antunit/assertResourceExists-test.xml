@@ -19,8 +19,8 @@
 
   <import file="antunit-base.xml"/>
 
-  <property name="existing-url" value="http://ant.apache.org/index.html"/>
-  <property name="not-existing-url" value="http://ant.apache.org/foo.html"/>
+  <property name="existing-url" value="https://ant.apache.org/index.html"/>
+  <property name="not-existing-url" value="https://ant.apache.org/foo.html"/>
 
   <!-- some strange proxy setups hide the 404 results -->
   <target name="-checkWhetherUrlsThatDontExistAreFound">

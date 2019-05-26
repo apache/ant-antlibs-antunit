@@ -43,7 +43,7 @@ under the License.
 
   <target name="nonFile">
     <au:antunit>
-      <url url="http://ant.apache.org/"/>
+      <url url="https://ant.apache.org/"/>
     </au:antunit>
   </target>
 

@@ -52,13 +52,13 @@
   <target name="testURL">
     <au:assertTrue>
       <au:resourceExists>
-        <url url="http://ant.apache.org/index.html"/>
+        <url url="https://ant.apache.org/index.html"/>
       </au:resourceExists>
     </au:assertTrue>
   </target>
 
   <target name="testURLAttributeUsingRef">
-    <url url="http://ant.apache.org/index.html" id="antsite"/>
+    <url url="https://ant.apache.org/index.html" id="antsite"/>
     <au:assertTrue>
       <au:resourceExists resource="${ant.refid:antsite}"/>
     </au:assertTrue>
