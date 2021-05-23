@@ -38,6 +38,11 @@
   </properties>
 
   <release version="1.5" date="unreleased">
+    <action type="fix" issue="65315">
+      We didn't follow our own best practice and hard-coded the
+      AntUnit URI inside the Antlib descriptor instead of using
+      ant:current.
+    </action>
   </release>
   <release version="1.4" date="2018-06-25">
     <action type="update" breaks-bwc="true">
