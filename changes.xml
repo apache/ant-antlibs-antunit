@@ -37,7 +37,9 @@
     <title>Apache AntUnit</title>
   </properties>
 
-  <release version="1.4.1" date="unreleased">
+  <release version="1.5" date="unreleased">
+  </release>
+  <release version="1.4.1" date="2021-07-07">
     <action type="fix" issue="65315">
       We didn't follow our own best practice and hard-coded the
       AntUnit URI inside the Antlib descriptor instead of using
