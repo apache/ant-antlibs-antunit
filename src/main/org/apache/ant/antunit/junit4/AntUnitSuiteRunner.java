@@ -20,7 +20,6 @@
 
 package org.apache.ant.antunit.junit4;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -33,8 +32,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
 
 import org.apache.ant.antunit.AntUnitExecutionNotifier;
@@ -60,43 +59,40 @@ import org.junit.runner.notification.RunNotifier;
  * around every test target). Also, more features are available when this runner
  * is used (filtering &amp; sorting)
  */
+@SuppressWarnings("deprecation")
 public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
 
     private final AntUnitSuite junit3Suite;
-    private final Map/*<String, Description>*/ targetDescriptions = new HashMap();
-    private final List/*<String>*/ targetsOrder = new LinkedList();
-    
-    private AntUnitSuiteRunner(AntUnitSuite suite, Class junitTestClass) throws InitializationError {
+    private final Map<String, Description> targetDescriptions = new HashMap<String, Description>();
+    private final List<String> targetsOrder = new LinkedList<String>();
+
+    private AntUnitSuiteRunner(AntUnitSuite suite, Class<?> junitTestClass) throws InitializationError {
         junit3Suite = suite;
         if (suite.hasAntInitError()) {
-            throw new InitializationError(
-                    new Throwable[] { suite.getAntInitialisationException() } 
-                  );
-        } else { 
-            Enumeration tests = suite.tests();
-            while (tests.hasMoreElements()) {
-                TestCase nextTc = (TestCase) tests.nextElement();
-                //TODO Handle the possibility for the user to define suite of AntUnit scripts            	
-            	AntUnitTestCase tc = (AntUnitTestCase) nextTc;
-            	Description tc_desc = Description.createTestDescription(junitTestClass, tc.getName());
-            	targetDescriptions.put(tc.getTarget(), tc_desc);
-            	targetsOrder.add(tc.getTarget());
-            }
+            throw new InitializationError(suite.getAntInitialisationException());
+        }
+        for (Enumeration<Test> tests = suite.tests(); tests.hasMoreElements();) {
+            TestCase nextTc = (TestCase) tests.nextElement();
+            //TODO Handle the possibility for the user to define suite of AntUnit scripts
+            AntUnitTestCase tc = (AntUnitTestCase) nextTc;
+            Description tc_desc = Description.createTestDescription(junitTestClass, tc.getName());
+            targetDescriptions.put(tc.getTarget(), tc_desc);
+            targetsOrder.add(tc.getTarget());
         }
     }
 
-    public AntUnitSuiteRunner(Class testCaseClass) throws InitializationError {
+    public AntUnitSuiteRunner(Class<?> testCaseClass) throws InitializationError {
         this(getJUnit3AntSuite(testCaseClass), testCaseClass);
     }
 
-    private static AntUnitSuite getJUnit3AntSuite(Class testCaseClass)
+    private static AntUnitSuite getJUnit3AntSuite(Class<?> testCaseClass)
             throws InitializationError {
         try {
-            Method suiteMethod = testCaseClass.getMethod("suite", new Class[0]);
+            Method suiteMethod = testCaseClass.getMethod("suite");
             if (!Modifier.isStatic(suiteMethod.getModifiers())) {
                 throw new InitializationError("suite method must be static");
             }
-            Object suite = suiteMethod.invoke(null, new Object[0]);
+            Object suite = suiteMethod.invoke(null);
             if (suite == null) {
                 throw new InitializationError("suite method can not return null");
             }
@@ -105,11 +101,11 @@ public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
             }
             return (AntUnitSuite) suite;
         } catch (NoSuchMethodException e) {
-            throw new InitializationError(new Throwable[] { e });
+            throw new InitializationError(e);
         } catch (IllegalAccessException e) {
-            throw new InitializationError(new Throwable[] { e });
+            throw new InitializationError(e);
         } catch (InvocationTargetException e) {
-            throw new InitializationError(new Throwable[] { e });
+            throw new InitializationError(e);
         }
     }
 
@@ -117,11 +113,13 @@ public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
      * Filterable implementation
      */
     public void filter(Filter filter) throws NoTestsRemainException {
-        for (Iterator iter= targetDescriptions.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry mapEntry = (Entry) iter.next(); 
-            if (!filter.shouldRun((Description) mapEntry.getValue()))
+        for (Iterator<Map.Entry<String, Description>> iter =
+            targetDescriptions.entrySet().iterator(); iter.hasNext();) {
+            Map.Entry<String, Description> mapEntry = iter.next();
+            if (!filter.shouldRun(mapEntry.getValue())) {
                 iter.remove();
                 targetsOrder.remove(mapEntry.getKey());
+            }
         }
     }
 
@@ -129,28 +127,23 @@ public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
      * Sortable implementation
      */
     public void sort(final Sorter sorter) {
-        Collections.sort(targetsOrder, new Comparator/*<String>*/() {
-            public int compare(Object target1, Object target2) {
-                Description d2 = (Description)targetDescriptions.get(target2);
-                Description d1 = (Description)targetDescriptions.get(target1);
+        Collections.sort(targetsOrder, new Comparator<String>() {
+            public int compare(String target1, String target2) {
+                Description d2 = targetDescriptions.get(target2);
+                Description d1 = targetDescriptions.get(target1);
                 return sorter.compare(d1, d2);
             }
         });
-        /*for (Runner each : fRunners)
-            sorter.apply(each);
-        */
     }
 
     /**
      * Runner implementation
      */
     public Description getDescription() {
-        Description r = Description.createSuiteDescription(
-                junit3Suite.getName(), new Annotation[0]);
-        
-        Collection childDesc = targetDescriptions.values();
-        for (Iterator iterator = childDesc.iterator(); iterator.hasNext();) {
-            Description desc = (Description) iterator.next();
+        Description r = Description.createSuiteDescription(junit3Suite.getName());
+
+        Collection<Description> childDesc = targetDescriptions.values();
+        for (Description desc : childDesc) {
             r.addChild(desc);
         }
         return r;
@@ -160,14 +153,14 @@ public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
      * Runner implementation
      */
     public void run(final RunNotifier junitNotifier) {
-        LinkedList targetList = new LinkedList(targetDescriptions.keySet());
-        
-        AntUnitExecutionNotifier antUnitNotifier = new AntUnitExecutionNotifier() {            
+        List<String> targetList = new LinkedList<String>(targetDescriptions.keySet());
+
+        AntUnitExecutionNotifier antUnitNotifier = new AntUnitExecutionNotifier() {
             public void fireStartTest(String targetName) {
                 junitNotifier.fireTestStarted(getDescription(targetName));
             }
             public void fireEndTest(String targetName) {
-                junitNotifier.fireTestFinished(getDescription(targetName));                
+                junitNotifier.fireTestFinished(getDescription(targetName));
             }
             public void fireError(String targetName, Throwable t) {
                 Failure failure = new Failure(getDescription(targetName), t);
@@ -176,12 +169,12 @@ public class AntUnitSuiteRunner extends Runner implements Filterable, Sortable {
             public void fireFail(String targetName, AssertionFailedException ae) {
                 Failure failure = new Failure(getDescription(targetName), ae);
                 junitNotifier.fireTestFailure(failure);
-            }            
+            }
             private Description getDescription(String targetName) {
-                return (Description) targetDescriptions.get(targetName);
+                return targetDescriptions.get(targetName);
             }
         };
-        
+
         junit3Suite.runInContainer(targetList, antUnitNotifier);
     }
 

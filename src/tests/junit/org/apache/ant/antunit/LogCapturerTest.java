@@ -8,7 +8,7 @@
  * with the License.  You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -42,8 +42,8 @@ public class LogCapturerTest extends TestCase {
         Project p = new Project();
         LogCapturer c = new LogCapturer(p);
 
-        String[] messages = new String[] {"err", "warn", "info", "verbose",
-                                          "debug"};
+        String[] messages = new String[] { "err", "warn", "info", "verbose", "debug" };
+
         for (int i = 0; i < messages.length; i++) {
             BuildEvent be = new BuildEvent(p);
             be.setMessage(messages[i], i);
@@ -66,8 +66,7 @@ public class LogCapturerTest extends TestCase {
             c.messageLogged(be);
         }
         Assert.assertEquals(c.getErrLog(false),
-                            "0" + StringUtils.LINE_SEP
-                            + "1" + StringUtils.LINE_SEP);
+            "0" + StringUtils.LINE_SEP + "1" + StringUtils.LINE_SEP);
     }
 
     public void testWithMerge() {

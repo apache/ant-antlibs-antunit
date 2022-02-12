@@ -8,7 +8,7 @@
  * with the License.  You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -52,23 +52,18 @@ public class LogContentTest extends TestCase {
         Project p = new Project();
         LogCapturer c = new LogCapturer(p);
 
-        String[] msgs = new String[] {"err", "warn", "info", "verbose",
-                                          "debug"};
+        String[] msgs = new String[] { "err", "warn", "info", "verbose", "debug" };
+
         for (int i = 0; i < msgs.length; i++) {
             BuildEvent be = new BuildEvent(p);
             be.setMessage(msgs[i], i);
             c.messageLogged(be);
         }
-        assertMessages(new LogContent(p, LogLevel.ERR), msgs,
-                       Project.MSG_ERR);
-        assertMessages(new LogContent(p, LogLevel.WARN), msgs,
-                       Project.MSG_WARN);
-        assertMessages(new LogContent(p, LogLevel.INFO), msgs,
-                       Project.MSG_INFO);
-        assertMessages(new LogContent(p, LogLevel.VERBOSE), msgs,
-                       Project.MSG_VERBOSE);
-        assertMessages(new LogContent(p, LogLevel.DEBUG), msgs,
-                       Project.MSG_DEBUG);
+        assertMessages(new LogContent(p, LogLevel.ERR), msgs, Project.MSG_ERR);
+        assertMessages(new LogContent(p, LogLevel.WARN), msgs, Project.MSG_WARN);
+        assertMessages(new LogContent(p, LogLevel.INFO), msgs, Project.MSG_INFO);
+        assertMessages(new LogContent(p, LogLevel.VERBOSE), msgs, Project.MSG_VERBOSE);
+        assertMessages(new LogContent(p, LogLevel.DEBUG), msgs, Project.MSG_DEBUG);
     }
 
     public void testWithoutMerge() throws IOException {
@@ -85,9 +80,7 @@ public class LogContentTest extends TestCase {
         StringResource s = new StringResource();
         ResourceUtils.copyResource(content, s);
 
-        Assert.assertEquals(s.getValue(),
-                            "0" + StringUtils.LINE_SEP
-                            + "1" + StringUtils.LINE_SEP);
+        Assert.assertEquals(s.getValue(), "0" + StringUtils.LINE_SEP + "1" + StringUtils.LINE_SEP);
     }
 
     public void testWithExplicitMerge() throws IOException {
@@ -132,11 +125,11 @@ public class LogContentTest extends TestCase {
         String actual = s.getValue();
         for (int i = 0; i <= upTo && i < messages.length; i++) {
             Assert.assertTrue("checking for " + messages[i] + " in " + actual,
-                              actual.indexOf(messages[i]) > -1);
+                actual.indexOf(messages[i]) > -1);
         }
         for (int i = upTo + 1; i < messages.length; i++) {
             Assert.assertTrue("checking for " + messages[i] + " in " + actual,
-                              actual.indexOf(messages[i]) == -1);
+                actual.indexOf(messages[i]) == -1);
         }
     }
 }

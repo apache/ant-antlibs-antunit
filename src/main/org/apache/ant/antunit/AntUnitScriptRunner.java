@@ -20,7 +20,6 @@
 
 package org.apache.ant.antunit;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -28,15 +27,16 @@ import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Target;
 
-/** 
- * Run antunit tests suites.  This AntUnitScriptRunner is responsible for the 
- * management of the ant project and the correct invocation the target (taking 
+/**
+ * Run antunit tests suites.  This AntUnitScriptRunner is responsible for the
+ * management of the ant project and the correct invocation the target (taking
  * into account properly the [case]setUp and [case]tearDown targets).
  * The user can however provide the order of the test targets and or can filter
  * the list of test targets to execute.
  * The user must also provide its ProjectFactory and an AntUnitExecutionNotifier.
- * @since 1.2 
+ * @since 1.2
  */
 public class AntUnitScriptRunner {
 
@@ -69,13 +69,13 @@ public class AntUnitScriptRunner {
      * Object used to create projects in order to support test isolation.
      */
     private final ProjectFactory prjFactory;
-    
+
     /**
      * Indicates if the startSuite method has been invoked.  Use to fail fast if the
      * the caller forget to call the startSuite method
      */
     private boolean isSuiteStarted;
-    
+
     /**
      * Does that script have a setUp target (defined when scanning the script)
      */
@@ -99,20 +99,20 @@ public class AntUnitScriptRunner {
     /**
      * List of target names
      */
-    private final List testTargets;
+    private final List<String> testTargets = new LinkedList<String>();
 
-    /** 
+    /**
      * The project currently used.
      */
     private Project project = null;
 
-    /** 
-     * Indicates if a target has already be executed using this project. 
+    /**
+     * Indicates if a target has already be executed using this project.
      * Value is undefined when project is null.
      */
     private boolean projectIsDirty;
 
-    
+
     /**
      * Create a new AntScriptRunner on the given environment.
      * @param prjFactory A factory for the ant project that will contains the antunit test to execute.
@@ -122,17 +122,16 @@ public class AntUnitScriptRunner {
     public AntUnitScriptRunner(ProjectFactory prjFactory) throws BuildException {
         this.prjFactory = prjFactory;
         Project newProject = getCurrentProject();
-        Map targets = newProject.getTargets();
+        @SuppressWarnings("unchecked")
+        Map<String, Target> targets = newProject.getTargets();
         hasSetUp = targets.containsKey(SETUP);
         hasTearDown = targets.containsKey(TEARDOWN);
         hasSuiteSetUp = targets.containsKey(SUITESETUP);
         hasSuiteTearDown = targets.containsKey(SUITETEARDOWN);
-        testTargets = new LinkedList();
-        Iterator it = targets.keySet().iterator();
-        while (it.hasNext()) {
-            String name = (String) it.next();
-            if (name.startsWith(TEST) && !name.equals(TEST)) {
-                testTargets.add(name);
+
+        for (String name : targets.keySet()) {
+            if (name.startsWith(TEST) && !TEST.equals(name)) {
+                getTestTargets().add(name);
             }
         }
     }
@@ -160,7 +159,7 @@ public class AntUnitScriptRunner {
             project = prjFactory.createProject();
         }
         //we already set isDirty to true in order to make sure we didn't reuse
-        //this project next time getCleanProject is called.  
+        //this project next time getCleanProject is called.
         projectIsDirty = true;
         return project;
     }
@@ -168,7 +167,16 @@ public class AntUnitScriptRunner {
     /**
      * @return List&lt;String&gt; List of test targets of the script file
      */
-    public List getTestTartgets() {
+    @Deprecated
+    public List<String> getTestTartgets() {
+        return getTestTargets();
+    }
+
+    /**
+     * Get the (names of the) test targets to execute.
+     * @return {@link List} of {@link String}
+     */
+    public List<String> getTestTargets() {
         return testTargets;
     }
 
@@ -184,7 +192,7 @@ public class AntUnitScriptRunner {
      * Executes the suiteSetUp target if presents and report any execution error.
      * <p>A failure is reported to the notifier and by returning false.
      * Note that if the method return false, you are not allowed to run targets.</p>
-     * @return false in case of execution failure.  true in case of success. 
+     * @return false in case of execution failure.  true in case of success.
      */
     private boolean startSuite(AntUnitExecutionNotifier notifier) {
         getCurrentProject().fireBuildStarted();
@@ -202,7 +210,7 @@ public class AntUnitScriptRunner {
         return true;
     }
 
-    /** 
+    /**
      * Run the specific test target, possibly between the setUp and tearDown targets if
      * it exists.  Exception or failures are reported to the notifier.
      * @param name name of the test target to execute.
@@ -214,13 +222,13 @@ public class AntUnitScriptRunner {
             throw new AssertionError();
         }
         Project newProject = getCleanProject();
-        Vector v = new Vector();
+        Vector<String> v = new Vector<String>();
         if (hasSetUp) {
             v.add(SETUP);
         }
         v.add(name);
         // create and register a logcapturer on the newProject
-        LogCapturer lc = new LogCapturer(newProject);
+        new LogCapturer(newProject);
         try {
             notifier.fireStartTest(name);
             newProject.executeTargets(v);
@@ -246,8 +254,8 @@ public class AntUnitScriptRunner {
 
     /**
      * Executes the suiteTearDown target if presents and report any execution error.
-     * @param caught Any internal exception triggered (and caught) by the caller indicating that 
-     * the execution could not be invoked as expected.  
+     * @param caught Any internal exception triggered (and caught) by the caller indicating that
+     * the execution could not be invoked as expected.
      * @param notifier will receive execution notifications.
      */
     private void endSuite(Throwable caught, AntUnitExecutionNotifier notifier) {
@@ -266,14 +274,14 @@ public class AntUnitScriptRunner {
 
     /**
      * Try to see whether the BuildException e is an AssertionFailedException
-     * or is caused by an AssertionFailedException. If so, fire a failure for 
+     * or is caused by an AssertionFailedException. If so, fire a failure for
      * given targetName.  Otherwise fire an error.
      */
-    private void fireFailOrError(String targetName, BuildException e, 
+    private void fireFailOrError(String targetName, BuildException e,
                                  AntUnitExecutionNotifier notifier) {
         boolean failed = false;
         Throwable t = e;
-        while (t != null && t instanceof BuildException) {
+        while (t instanceof BuildException) {
             if (t instanceof AssertionFailedException) {
                 failed = true;
                 notifier.fireFail(targetName, (AssertionFailedException) t);
@@ -293,15 +301,13 @@ public class AntUnitScriptRunner {
      * @param suiteTargets An ordered list of test targets.  It must be a sublist of getTestTargets
      * @param notifier is notified on test progress
      */
-    public void runSuite(List suiteTargets, AntUnitExecutionNotifier notifier) {
+    public void runSuite(List<String> suiteTargets, AntUnitExecutionNotifier notifier) {
         Throwable caught = null;
         try {
             if (!startSuite(notifier)) {
                 return;
             }
-            Iterator iter = suiteTargets.iterator();
-            while (iter.hasNext()) {
-                String name = (String) iter.next();
+            for (String name : suiteTargets) {
                 runTarget(name, notifier);
             }
         } catch (Throwable e) {
@@ -310,5 +316,4 @@ public class AntUnitScriptRunner {
             endSuite(caught, notifier);
         }
     }
-
 }

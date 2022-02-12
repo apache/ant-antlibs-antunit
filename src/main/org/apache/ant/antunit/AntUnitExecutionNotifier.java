@@ -21,7 +21,7 @@
 package org.apache.ant.antunit;
 
 
-/** 
+/**
  * Provides methods that allow the AntUnitScriptRunner to notify the test progress.
  * @since 1.2
  */
@@ -31,26 +31,26 @@ public interface AntUnitExecutionNotifier {
      * invokes start on all registered test listeners.
      * @param targetName the name of the target.
      */
-    public void fireStartTest(String targetName);
+    void fireStartTest(String targetName);
 
     /**
      * invokes addFailure on all registered test listeners.
      * @param targetName the name of the failed target.
      * @param ae the associated AssertionFailedException.
      */
-    public void fireFail(String targetName, AssertionFailedException ae);
+    void fireFail(String targetName, AssertionFailedException ae);
 
     /**
      * invokes addError on all registered test listeners.
      * @param targetName the name of the failed target.
      * @param t the associated Throwable.
      */
-    public void fireError(String targetName, Throwable t);
+    void fireError(String targetName, Throwable t);
 
     /**
      * invokes endTest on all registered test listeners.
      * @param targetName the name of the current target.
      */
-    public void fireEndTest(String targetName);
+    void fireEndTest(String targetName);
 
 }

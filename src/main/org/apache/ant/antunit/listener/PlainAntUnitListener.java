@@ -8,7 +8,7 @@
  * with the License.  You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -37,7 +37,7 @@ import org.apache.tools.ant.Project;
  * test listener that is part of Ant.
  */
 public class PlainAntUnitListener extends BaseAntUnitListener {
-    private OutputStream out = null;
+    private OutputStream out;
     /**
      * Helper to store intermediate output.
      */
@@ -69,9 +69,7 @@ public class PlainAntUnitListener extends BaseAntUnitListener {
         inner = new StringWriter();
         wri = new PrintWriter(inner);
         out = getOut(buildFile);
-        StringBuffer sb = new StringBuffer("Build File: ");
-        sb.append(buildFile);
-        sb.append(NEW_LINE);
+        StringBuilder sb = new StringBuilder("Build File: ").append(buildFile).append(NEW_LINE);
         try {
             out.write(sb.toString().getBytes());
             out.flush();
@@ -82,7 +80,7 @@ public class PlainAntUnitListener extends BaseAntUnitListener {
 
     public void endTestSuite(Project testProject, String buildFile) {
         long runTime = System.currentTimeMillis() - start;
-        StringBuffer sb = new StringBuffer("Tests run: ");
+        StringBuilder sb = new StringBuilder("Tests run: ");
         sb.append(runCount);
         sb.append(", Failures: ");
         sb.append(failureCount);

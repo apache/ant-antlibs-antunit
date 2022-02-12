@@ -28,16 +28,16 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 
 /**
- * JUnit TestCase that will executes a single AntUnit target.
+ * JUnit TestCase that executes a single AntUnit target.
  * <p>This class is not
  * supposed to be used directly.</p>
  * <p>It is public only because junit must access it as a public.</p>
  */
 public class AntUnitTestCase extends TestCase {
-    // We have to extends TestCase, and not implements Test because otherwise 
-    // JUnit4 will derive the Description composing the suite description from 
+    // We have to extends TestCase, and not implements Test because otherwise
+    // JUnit4 will derive the Description composing the suite description from
     // this className only (AntUnitTestCase), and not from the name.
-    // However, during execution it use the right Description (base on the 
+    // However, during execution it use the right Description (base on the
     // toString)
 
     /**
@@ -56,25 +56,25 @@ public class AntUnitTestCase extends TestCase {
      * class has been created directly by the IDE from its name.
      * In case of initialisation problem when the test is build from the suite,
      * the problem is handled at the level of the suite (and this object is never
-     * created) 
+     * created)
      */
     private final BuildException initialisationException;
-    
+
     /**
      * Prepare an AntUnitTestCase that will be executed alone.
-     * <p>This constructor 
-     * is typically used by a junit 3 runner that will reexecute a specific 
+     * <p>This constructor
+     * is typically used by a junit 3 runner that will reexecute a specific
      * test.</p>
-     * <p>The execution of this test will be embed in a suiteSetUp and 
+     * <p>The execution of this test will be embed in a suiteSetUp and
      * suiteTearDown.</p>
-     * @param name The name of the AntUnitTestCase, normally obtained from a 
-     * previous execution. 
+     * @param name The name of the AntUnitTestCase, normally obtained from a
+     * previous execution.
      */
     public AntUnitTestCase(String name) {
         super(name);
         BuildException catchedEx = null;
         AntUnitSuite createdSuite = null;
-        TestCaseName nameParser = new TestCaseName(name);        
+        TestCaseName nameParser = new TestCaseName(name);
         try {
             createdSuite = new AntUnitSuite(this, nameParser.getScript());
         } catch (BuildException e) {
@@ -92,8 +92,8 @@ public class AntUnitTestCase extends TestCase {
      * suite that prepare the antScriptRunner and the JUnitExcutionPlatform. It
      * is the responsibility of the suite to execute the suiteSetUp and the
      * suiteTearDown.
-     * 
-     * @param target test target 
+     *
+     * @param target test target
      * @param suite test suite
      * @param scriptFile test file
      */
@@ -113,7 +113,7 @@ public class AntUnitTestCase extends TestCase {
         return target;
     }
 
-    /** 
+    /**
      * Called by a Junit Runner that want to executes specifically
      * this test target.
      * <p>This implementation delegates the call to the suite.</p>
@@ -139,7 +139,7 @@ public class AntUnitTestCase extends TestCase {
     protected void runTest() throws BuildException {
         throw initialisationException;
     }
-    
+
     /**
      * Handle the serialization and the parsing of the name of a TestCase. The
      * name of the TestCase contains the filename of the script and the target,

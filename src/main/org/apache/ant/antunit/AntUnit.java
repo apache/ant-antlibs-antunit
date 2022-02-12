@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
@@ -42,6 +42,7 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Ant;
 import org.apache.tools.ant.types.Mapper;
 import org.apache.tools.ant.types.PropertySet;
+import org.apache.tools.ant.types.Resource;
 import org.apache.tools.ant.types.ResourceCollection;
 import org.apache.tools.ant.types.resources.FileResource;
 import org.apache.tools.ant.types.resources.Union;
@@ -107,24 +108,24 @@ public class AntUnit extends Task {
      * The object responsible for the execution of the unit test.
      * scriptRunner is invoked to executes the targets and keep the
      * reference to the project.  scriptRunner is defined only when the
-     * antunit script is running. 
+     * antunit script is running.
      */
     private AntUnitScriptRunner scriptRunner;
 
     /**
      * listeners.
      */
-    private ArrayList listeners = new ArrayList();
+    private ArrayList<AntUnitListener> listeners = new ArrayList<AntUnitListener>();
 
     /**
      * propertysets.
      */
-    private ArrayList propertySets = new ArrayList();
+    private ArrayList<PropertySet> propertySets = new ArrayList<PropertySet>();
 
     /**
      * Holds references to be inherited by the test project
      */
-    private ArrayList referenceSets = new ArrayList();
+    private ArrayList<ReferenceSet> referenceSets = new ArrayList<ReferenceSet>();
 
     /**
      * has a failure occured?
@@ -241,15 +242,15 @@ public class AntUnit extends Task {
         if (!rc.isFilesystemOnly()) {
             throw new BuildException(ERROR_NON_FILES);
         }
+        @SuppressWarnings("unchecked")
+        Iterable<Resource> iterable = (Iterable<Resource>) rc;
 
-        Iterator i = rc.iterator();
-        while (i.hasNext()) {
-            FileResource r = (FileResource) i.next();
+        for (Resource resource : iterable) {
+            FileResource r = (FileResource) resource;
             if (r.isExists()) {
                 doFile(r.getFile());
             } else {
-                log("Skipping " + r + " since it doesn't exist",
-                    Project.MSG_VERBOSE);
+                log("Skipping " + r + " since it doesn't exist", Project.MSG_VERBOSE);
             }
         }
     }
@@ -266,20 +267,19 @@ public class AntUnit extends Task {
         };
         try {
             scriptRunner = new AntUnitScriptRunner(prjFactory);
-            List testTargets = scriptRunner.getTestTartgets();
+            List<String> testTargets = scriptRunner.getTestTargets();
             scriptRunner.runSuite(testTargets, notifier);
         } finally {
             scriptRunner=null;
         }
     }
 
-
     /**
      * Redirect output to new project instance.
      * @param outputToHandle the output to handle.
      */
     public void handleOutput(String outputToHandle) {
-        if (scriptRunner!=null) {
+        if (scriptRunner != null) {
             scriptRunner.getCurrentProject().demuxOutput(outputToHandle, false);
         } else {
             super.handleOutput(outputToHandle);
@@ -294,7 +294,7 @@ public class AntUnit extends Task {
      */
     public int handleInput(byte[] buffer, int offset, int length)
         throws IOException {
-        if (scriptRunner!=null) {
+        if (scriptRunner != null) {
             return scriptRunner.getCurrentProject().demuxInput(buffer, offset, length);
         }
         return super.handleInput(buffer, offset, length);
@@ -305,7 +305,7 @@ public class AntUnit extends Task {
      * @param toFlush the output String to flush.
      */
     public void handleFlush(String toFlush) {
-        if (scriptRunner!=null) {
+        if (scriptRunner != null) {
             scriptRunner.getCurrentProject().demuxFlush(toFlush, false);
         } else {
             super.handleFlush(toFlush);
@@ -317,7 +317,7 @@ public class AntUnit extends Task {
      * @param errorOutputToHandle the error output to handle.
      */
     public void handleErrorOutput(String errorOutputToHandle) {
-        if (scriptRunner!=null) {
+        if (scriptRunner != null) {
             scriptRunner.getCurrentProject().demuxOutput(errorOutputToHandle, true);
         } else {
             super.handleErrorOutput(errorOutputToHandle);
@@ -329,7 +329,7 @@ public class AntUnit extends Task {
      * @param errorOutputToFlush the error output to flush.
      */
     public void handleErrorFlush(String errorOutputToFlush) {
-        if (scriptRunner!=null) {
+        if (scriptRunner != null) {
             scriptRunner.getCurrentProject().demuxFlush(errorOutputToFlush, true);
         } else {
             super.handleErrorFlush(errorOutputToFlush);
@@ -347,19 +347,15 @@ public class AntUnit extends Task {
         p.setInputHandler(getProject().getInputHandler());
         getProject().initSubProject(p);
         //pass through inherited properties
-        for (Iterator outer = propertySets.iterator(); outer.hasNext(); ) {
-            PropertySet set = (PropertySet) outer.next();
-            Map props = set.getProperties();
-            for (Iterator keys = props.keySet().iterator();
-                 keys.hasNext(); ) {
-                String key = keys.next().toString();
-                if (MagicNames.PROJECT_BASEDIR.equals(key)
-                    || MagicNames.ANT_FILE.equals(key)) {
+        for (PropertySet set : propertySets) {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Map<String,Object> props = (Map) set.getProperties();
+            for (String key : props.keySet()) {
+                if (MagicNames.PROJECT_BASEDIR.equals(key) || MagicNames.ANT_FILE.equals(key)) {
                     continue;
                 }
                 Object value = props.get(key);
-                if (value != null && value instanceof String
-                    && p.getProperty(key) == null) {
+                if (value instanceof String && p.getProperty(key) == null) {
                     p.setNewProperty(key, (String) value);
                 }
             }
@@ -369,8 +365,7 @@ public class AntUnit extends Task {
         //with significant modification from taskdefs.Ant in Ant core.
         //unfortunately the only way we can share the code directly
         //would be to extend Ant (which might not be a bad idea?)
-        for (int i = 0; i < referenceSets.size(); ++i) {
-            ReferenceSet set = (ReferenceSet) referenceSets.get(i);
+        for (ReferenceSet set : referenceSets) {
             set.copyReferencesInto(p);
         }
 
@@ -390,12 +385,8 @@ public class AntUnit extends Task {
      * @param p the Project to attach to.
      */
     private void attachListeners(File buildFile, Project p) {
-        Iterator it = listeners.iterator();
-        while (it.hasNext()) {
-            AntUnitListener al = (AntUnitListener) it.next();
-            p.addBuildListener(new BuildToAntUnitListener(buildFile
-                                                          .getAbsolutePath(),
-                                                          al));
+        for (AntUnitListener al : listeners) {
+            p.addBuildListener(new BuildToAntUnitListener(buildFile.getAbsolutePath(), al));
             al.setCurrentTestProject(p);
         }
     }
@@ -405,9 +396,7 @@ public class AntUnit extends Task {
      * @param targetName the name of the target.
      */
     private void fireStartTest(String targetName) {
-        Iterator it = listeners.iterator();
-        while (it.hasNext()) {
-            AntUnitListener al = (AntUnitListener) it.next();
+        for (AntUnitListener al : listeners) {
             al.startTest(targetName);
         }
     }
@@ -419,9 +408,7 @@ public class AntUnit extends Task {
      */
     private void fireFail(String targetName, AssertionFailedException ae) {
         failures++;
-        Iterator it = listeners.iterator();
-        while (it.hasNext()) {
-            AntUnitListener al = (AntUnitListener) it.next();
+        for (AntUnitListener al : listeners) {
             al.addFailure(targetName, ae);
         }
     }
@@ -433,9 +420,7 @@ public class AntUnit extends Task {
      */
     private void fireError(String targetName, Throwable t) {
         errors++;
-        Iterator it = listeners.iterator();
-        while (it.hasNext()) {
-            AntUnitListener al = (AntUnitListener) it.next();
+        for (AntUnitListener al : listeners) {
             al.addError(targetName, t);
         }
     }
@@ -445,9 +430,7 @@ public class AntUnit extends Task {
      * @param targetName the name of the current target.
      */
     private void fireEndTest(String targetName) {
-        Iterator it = listeners.iterator();
-        while (it.hasNext()) {
-            AntUnitListener al = (AntUnitListener) it.next();
+        for (AntUnitListener al : listeners) {
             al.endTest(targetName);
         }
     }
@@ -461,7 +444,7 @@ public class AntUnit extends Task {
         /**
          * references inherited from parent project by antunit scripts
          */
-        private ArrayList references = new ArrayList();
+        private List<Reference> references = new ArrayList<Reference>();
         /**
          * maps source reference ID to target reference ID
          */
@@ -471,13 +454,16 @@ public class AntUnit extends Task {
             references.add(reference);
         }
 
+        /**
+         * Create a nested mapper element.
+         * @return {@link Mapper}
+         */
         public Mapper createMapper() {
             if (mapper == null) {
                 return mapper = new Mapper(getProject());
-            } else {
-                throw new BuildException("Only one mapper element is allowed"
-                                         + " per referenceSet", getLocation());
             }
+            throw new BuildException("Only one mapper element is allowed per referenceSet",
+                getLocation());
         }
 
         /**
@@ -503,19 +489,16 @@ public class AntUnit extends Task {
          * @param newProject the target project to copy references into
          */
         public void copyReferencesInto(Project newProject) {
-            FileNameMapper mapper = this.mapper == null
-                ? null : this.mapper.getImplementation();
-            HashSet matches = new HashSet();
-            Hashtable src = getProject().getReferences();
+            FileNameMapper mapper = this.mapper == null ? null : this.mapper.getImplementation();
+            Set<String> matches = new HashSet<String>();
+            @SuppressWarnings("unchecked")
+            Hashtable<String,Object> src = getProject().getReferences();
 
-            for (Iterator it = references.iterator(); it.hasNext(); ) {
-                Reference ref = (Reference) it.next();
-
+            for (Reference ref : references) {
                 matches.clear();
                 ref.addMatchingReferences(src, matches);
 
-                for (Iterator ids = matches.iterator(); ids.hasNext(); ) {
-                    String refid = (String) ids.next();
+                for (String refid : matches) {
                     String toRefid = ref.getToRefid();
 
                     //transform the refid with the mapper if necessary
@@ -556,12 +539,12 @@ public class AntUnit extends Task {
                 return;
             }
 
-            Class c = orig.getClass();
+            Class<?> c = orig.getClass();
             Object copy = orig;
             try {
-                Method cloneM = c.getMethod("clone", new Class[0]);
+                Method cloneM = c.getMethod("clone");
                 if (cloneM != null) {
-                    copy = cloneM.invoke(orig, new Object[0]);
+                    copy = cloneM.invoke(orig);
                     log("Adding clone of reference " + oldKey,
                         Project.MSG_DEBUG);
                 }
@@ -569,15 +552,14 @@ public class AntUnit extends Task {
                 // not Clonable
             }
 
-
             if (copy instanceof ProjectComponent) {
                 ((ProjectComponent) copy).setProject(newProject);
             } else {
                 try {
                     Method setProjectM =
-                        c.getMethod("setProject", new Class[] {Project.class});
+                        c.getMethod("setProject", Project.class);
                     if (setProjectM != null) {
-                        setProjectM.invoke(copy, new Object[] {newProject});
+                        setProjectM.invoke(copy, newProject);
                     }
                 } catch (NoSuchMethodException e) {
                     // ignore this if the class being referenced does not have
@@ -590,8 +572,6 @@ public class AntUnit extends Task {
             }
             newProject.addReference(newKey, copy);
         }
-
-
     }
 
     public static class Reference extends Ant.Reference {
@@ -620,22 +600,21 @@ public class AntUnit extends Task {
          * @param src table of references to check
          * @param dest set of reference IDs matching this reference pattern
          */
-        public void addMatchingReferences(Hashtable src, Collection dest) {
+        public void addMatchingReferences(Hashtable<String, Object> src, Collection<String> dest) {
             String id = getRefId();
             if (id != null) {
                 if (src.containsKey(id)) {
                     dest.add(id);
                 }
             } else if (matcher != null) {
-                for (Iterator it = src.keySet().iterator(); it.hasNext(); ) {
-                    String refid = (String)it.next();
+                for (String refid : src.keySet()) {
                     if (matcher.matches(refid)) {
                         dest.add(refid);
                     }
                 }
             } else {
-                throw new BuildException("either the refid or regex attribute "
-                                         + "is required for reference elements");
+                throw new BuildException(
+                    "either the refid or regex attribute is required for reference elements");
             }
         }
     }
@@ -658,10 +637,8 @@ public class AntUnit extends Task {
         public void buildFinished(BuildEvent event) {
             a.endTestSuite(event.getProject(), buildFile);
         }
-        public void targetStarted(BuildEvent event) {
-        }
-        public void targetFinished(BuildEvent event) {
-        }
+        public void targetStarted(BuildEvent event) {}
+        public void targetFinished(BuildEvent event) {}
         public void taskStarted(BuildEvent event) {}
         public void taskFinished(BuildEvent event) {}
         public void messageLogged(BuildEvent event) {}

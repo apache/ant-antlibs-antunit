@@ -8,7 +8,7 @@
  * with the License.  You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -38,27 +38,27 @@ import org.apache.tools.ant.util.FileUtils;
  * This AntUnitListener creates a new buildfile with a target for each
  * failed test target in the AntUnit run. The generated target calls
  * the failed target (with setUp and tearDown if present in the called
- * project). 
+ * project).
  * This is intended for rerunning just failed tests.
  */
 public class FailureAntUnitListener extends BaseAntUnitListener {
- 
+
     /** LineSeparator just for beautifying the output. */
-    private static final String BR = System.getProperty("line.separator"); 
+    private static final String BR = System.getProperty("line.separator");
 
     /** A sorted list (without duplicates) of failed tests. */
-    private static SortedSet failedTests = new TreeSet();
-    
+    private static SortedSet<TestInfos> failedTests = new TreeSet<TestInfos>();
+
     /** Where to write the generated buildfile. */
     private static File failureBuildfile;
-    
+
     /** The current running test project. Needed for addError()/addFailure(). */
     private Project currentTestProject;
 
     /** The current running build file. Needed for addError()/addFailure(). */
     private String currentBuildFile;
-    
-    
+
+
     /** No-arg constructor. */
     public FailureAntUnitListener() {
         super(new BaseAntUnitListener.SendLogTo(SendLogTo.ANT_LOG), "txt");
@@ -73,23 +73,23 @@ public class FailureAntUnitListener extends BaseAntUnitListener {
         currentTestProject = testProject;
         currentBuildFile = buildFile;
     }
-    
+
     public void addError(String target, Throwable ae) {
         super.addError(target, ae);
         failedTests.add(new TestInfos(currentTestProject, currentBuildFile, target, ae.getMessage()));
     }
-    
+
     public void addFailure(String target, AssertionFailedException ae) {
         super.addFailure(target, ae);
         failedTests.add(new TestInfos(currentTestProject, currentBuildFile, target, ae.getMessage()));
-    } 
-    
+    }
+
     /** not in use */
-    public void endTest(String target) { 
+    public void endTest(String target) {
     }
 
     public void endTestSuite(Project testProject, String buildFile) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         // <project> and antunit-target for direct run
         sb.append("<project default=\"antunit\" xmlns:au=\"antlib:org.apache.ant.antunit\">");
         sb.append(BR);
@@ -102,23 +102,23 @@ public class FailureAntUnitListener extends BaseAntUnitListener {
         sb.append("  </target>").append(BR);
         sb.append(BR);
         sb.append(BR);
-        
+
         // one target for each failed test
         int testNumber = 0;
         NumberFormat f = NumberFormat.getIntegerInstance();
-        for (Iterator it = failedTests.iterator(); it.hasNext();) {
+        for (Iterator<TestInfos> it = failedTests.iterator(); it.hasNext();) {
             sb.append("  <target name=\"test");
             sb.append(f.format(testNumber++));
             sb.append("\">").append(BR);
-            TestInfos testInfos = (TestInfos) it.next();
+            TestInfos testInfos = it.next();
             sb.append(testInfos);
             sb.append("  </target>").append(BR);
             sb.append(BR);
         }
-        
+
         // close the <project>
         sb.append("</project>").append(BR);
-        
+
         // write the whole file
         try {
             FileOutputStream fos = new FileOutputStream(failureBuildfile);
@@ -130,41 +130,40 @@ public class FailureAntUnitListener extends BaseAntUnitListener {
             throw new BuildException(e);
         }
     }
-    
-    
+
     /**
      * Class for collecting needed information about failed tests.
      */
-    public class TestInfos implements Comparable {
+    public class TestInfos implements Comparable<TestInfos> {
         /** Does the project has a setUp target? */
         boolean projectHasSetup = false;
-        
+
         /** Does the project has a tearDown target? */
         boolean projectHasTearDown = false;
-        
+
         /** The called target. */
         String target;
-        
+
         /** The buildfile of the project. */
         String buildfile;
-        
+
         /** The error message which was shown. */
         String errorMessage;
-        
+
         public TestInfos(Project project, String buildfile, String target, String errorMessage) {
             projectHasSetup = project.getTargets().containsKey("setUp");
             projectHasTearDown = project.getTargets().containsKey("tearDown");
             this.buildfile = buildfile;
-            this.target = target; 
+            this.target = target;
             this.errorMessage = errorMessage;
         }
-        
-        /** 
-         * Creates an &lt;ant&gt; call according to the stored information. 
+
+        /**
+         * Creates an &lt;ant&gt; call according to the stored information.
          * @see java.lang.Object#toString()
          */
         public String toString() {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             // make the reader of the buildfile happy
             sb.append("    <!-- ");
             sb.append(errorMessage);
@@ -191,15 +190,10 @@ public class FailureAntUnitListener extends BaseAntUnitListener {
             sb.append("    </ant>").append(BR);
             return sb.toString();
         }
-        
+
         // Needed, so that a SortedSet could sort this class into the list.
-        public int compareTo(Object other) {
-            if (!(other instanceof TestInfos)) {
-                return -1;
-            } else {
-                TestInfos that = (TestInfos)other;
-                return this.toString().compareTo(that.toString());   
-            }
+        public int compareTo(TestInfos other) {
+            return this.toString().compareTo((other).toString());
         }
     }
 

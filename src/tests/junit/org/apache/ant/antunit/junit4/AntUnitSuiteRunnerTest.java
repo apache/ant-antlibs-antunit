@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -42,10 +42,8 @@ public class AntUnitSuiteRunnerTest extends TestCase {
     /**
      * Validates the execution sequence.
      */
-    public void testRunFullSuite() throws FileNotFoundException, IOException,
-            InitializationError {
-        AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
-                JUnit4AntUnitRunnable.class);
+    public void testRunFullSuite() throws FileNotFoundException, IOException, InitializationError {
+        AntUnitSuiteRunner runner = new AntUnitSuiteRunner(JUnit4AntUnitRunnable.class);
 
         runner.run(new RunNotifier());
         File outFile = new File("target/test_output/junit_out.xml");
@@ -53,47 +51,46 @@ public class AntUnitSuiteRunnerTest extends TestCase {
         String output = FileUtils.readFully(new FileReader(outFile));
         String EXPECT1 = "suiteSetUp-setUp-test1-tearDown-setUp-test2-tearDown-suiteTearDown";
         String EXPECT2 = "suiteSetUp-setUp-test2-tearDown-setUp-test1-tearDown-suiteTearDown";
-        assertTrue("unexted output : " + output, EXPECT1.equals(output)
-                || EXPECT2.equals(output));
+        assertTrue("unexted output : " + output, EXPECT1.equals(output) || EXPECT2.equals(output));
     }
 
-    
+
     /**
      * When a test is executed, the description used in the notification must be
      * equals to the description declared, otherwise the runner is confused (for
      * example in eclipse you have all the tests listed twice, but reported only
      * once as executed.
-     * 
+     *
      * @throws InitializationError
      */
     public void testDescriptionsReportedInNotifier() throws InitializationError {
         final AntUnitSuiteRunner runner = new AntUnitSuiteRunner(
                 JUnit4AntUnitRunnable.class);
-        final ArrayList tDescs = runner.getDescription().getChildren();
+        final List<Description> tDescs = runner.getDescription().getChildren();
 
         RunNotifier notifierMock = new RunNotifier() {
             Description curTest = null;
 
             public void fireTestStarted(Description description) {
                 if (curTest != null) {
-                    mockExecutionError += "Unexpected fireTestStarted("
-                            + description.getDisplayName() + "\n";
+                    mockExecutionError +=
+                        "Unexpected fireTestStarted(" + description.getDisplayName() + "\n";
                 }
                 if (!tDescs.contains(description)) {
-                    mockExecutionError += "Unexpected fireTestStarted("
-                            + description.getDisplayName() + ")\n";
+                    mockExecutionError +=
+                        "Unexpected fireTestStarted(" + description.getDisplayName() + ")\n";
                 }
                 curTest = description;
             }
 
             public void fireTestFinished(Description description) {
                 if (curTest == null) {
-                    mockExecutionError += "Unexpected fireTestFinished("
-                            + description.getDisplayName() + "\n";
+                    mockExecutionError +=
+                        "Unexpected fireTestFinished(" + description.getDisplayName() + "\n";
                 }
                 if (!curTest.equals(description)) {
-                    mockExecutionError += "Unexpected fireTestFinished("
-                            + description.getDisplayName() + "); expect "
+                    mockExecutionError +=
+                        "Unexpected fireTestFinished(" + description.getDisplayName() + "); expect "
                             + curTest.getDisplayName() + "\n";
                 }
                 curTest = null;
@@ -170,8 +167,7 @@ public class AntUnitSuiteRunnerTest extends TestCase {
     public static class JUnit4AntUnitRunnableWithNonStaticSuite {
         public AntUnitSuite suite() {
             File f = new File("src/etc/testcases/antunit/junit.xml");
-            return new AntUnitSuite(f,
-                    JUnit4AntUnitRunnableWithNonStaticSuite.class);
+            return new AntUnitSuite(f, JUnit4AntUnitRunnableWithNonStaticSuite.class);
         }
     }
 
@@ -180,23 +176,22 @@ public class AntUnitSuiteRunnerTest extends TestCase {
 
     public static class JUnit4AntUnitRunnableWithInvalidSuiteReturnType {
         public static TestSuite suite() {
-            return new TestSuite("We don't support returning generic TestSuite." +
-                    "  The Runner can not handle that");
+            return new TestSuite(
+                "We don't support returning generic TestSuite.  The Runner can not handle that");
         }
     }
-    
+
     public static class JUnit4AntUnitRunnableWithInvalidSuiteReturningNull {
         public static TestSuite suite() {
             return null;
         }
     }
 
-    
+
     public static class JUnit4AntUnitRunnableRefferencingIncorrectFile {
         public static AntUnitSuite suite() {
             File f = new File("build_script_not_found.xml");
-            return new AntUnitSuite(f,
-                    JUnit4AntUnitRunnableWithNonStaticSuite.class);
+            return new AntUnitSuite(f, JUnit4AntUnitRunnableWithNonStaticSuite.class);
         }
     }
 

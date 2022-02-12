@@ -36,9 +36,9 @@ import org.apache.ant.antunit.AssertionFailedException;
 class JUnitNotificationAdapter implements AntUnitExecutionNotifier {
 
     private final TestResult junitTestResult;
-    private Map testByTarget = new HashMap(); 
+    private Map<String, AntUnitTestCase> testByTarget = new HashMap<String, AntUnitTestCase>();
 
-    public JUnitNotificationAdapter(TestResult testResult, Enumeration tests) {
+    public JUnitNotificationAdapter(TestResult testResult, Enumeration<Test> tests) {
         this.junitTestResult = testResult;
         while(tests.hasMoreElements()) {
             AntUnitTestCase test = (AntUnitTestCase) tests.nextElement();
@@ -48,22 +48,22 @@ class JUnitNotificationAdapter implements AntUnitExecutionNotifier {
 
     public void fireStartTest(String targetName) {
         //TODO : if it is null, eclipse stop the unit test (add a unit test)
-        junitTestResult.startTest((Test) testByTarget.get(targetName));
+        junitTestResult.startTest(testByTarget.get(targetName));
     }
-    
+
     public void fireEndTest(String targetName) {
-        junitTestResult.endTest((Test) testByTarget.get(targetName));
+        junitTestResult.endTest(testByTarget.get(targetName));
     }
 
     public void fireError(String targetName, Throwable t) {
-        junitTestResult.addError((Test) testByTarget.get(targetName), t);
+        junitTestResult.addError(testByTarget.get(targetName), t);
     }
 
     public void fireFail(String targetName, AssertionFailedException ae) {
-        //I don't see how to transform the AntUnit assertion exception into 
+        //I don't see how to transform the AntUnit assertion exception into
         //junit assertion exception (we would loose the stack trace).
         //So failures will be reported as errors
-        junitTestResult.addError((Test) testByTarget.get(targetName), ae);
+        junitTestResult.addError(testByTarget.get(targetName), ae);
     }
 
 }

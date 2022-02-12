@@ -8,7 +8,7 @@
  * with the License.  You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -96,14 +96,15 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
 
             Element propertiesElement =
                 DOMUtils.createChildElement(root, XMLConstants.PROPERTIES);
-            Hashtable propertiesMap = testProject.getProperties();
-            for (final Iterator iterator = propertiesMap.entrySet().iterator(); 
+            @SuppressWarnings("unchecked")
+            Hashtable<String,Object> propertiesMap = testProject.getProperties();
+            for (final Iterator<Map.Entry<String, Object>> iterator = propertiesMap.entrySet().iterator();
                  iterator.hasNext();) {
-                final Map.Entry property = (Map.Entry) iterator.next();
+                final Map.Entry<String, Object> property = iterator.next();
                 Element e = DOMUtils.createChildElement(propertiesElement,
                                                         XMLConstants.PROPERTY);
                 e.setAttribute(XMLConstants.ATTR_NAME,
-                               property.getKey().toString());
+                               property.getKey());
                 e.setAttribute(XMLConstants.ATTR_VALUE,
                                property.getValue().toString());
             }
@@ -122,7 +123,7 @@ public class XMLAntUnitListener extends BaseAntUnitListener {
                 log.setLength(0);
                 domWri.write(e, wri, 1, INDENT);
             }
-            e = DOMUtils.createChildElement(root, XMLConstants.ATTR_TESTS); 
+            e = DOMUtils.createChildElement(root, XMLConstants.ATTR_TESTS);
             DOMUtils.appendText(e, String.valueOf(runCount));
             domWri.write(e, wri, 1, INDENT);
             e = DOMUtils.createChildElement(root, XMLConstants.ATTR_FAILURES);

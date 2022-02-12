@@ -30,10 +30,10 @@ import org.apache.tools.ant.BuildFileTest;
 import org.apache.tools.ant.Project;
 
 public class SetUpAndTearDownTest extends BuildFileTest {
-    
+
     public static class TestReportListener extends BaseAntUnitListener {
 
-        private OutputStream out = null;
+        private OutputStream out;
         /**
          * Helper to store intermediate output.
          */
@@ -82,12 +82,12 @@ public class SetUpAndTearDownTest extends BuildFileTest {
             super.addFailure(target, ae);
             wri.println("failure:" + target + "(" + ae.getMessage() + ")");
         }
-        
+
         public void addError(String target, Throwable ae) {
             super.addError(target, ae);
             wri.println("error:" + target + "(" + ae.getMessage() + ")");
         }
-        
+
         public void messageLogged(int level, String message) {}
    }
 
@@ -124,7 +124,7 @@ public class SetUpAndTearDownTest extends BuildFileTest {
         int index = log.indexOf("Tests run: 3, Failures: 3, Errors: 0,");
         assertTrue("summary", index > -1);
     }
-    
+
     public void testErrorSetup() {
         executeTarget("testErrorSetup");
         String log = getLog();
@@ -138,7 +138,7 @@ public class SetUpAndTearDownTest extends BuildFileTest {
         int index = log.indexOf("Tests run: 3, Failures: 3, Errors: 0,");
         assertTrue("summary", index > -1);
     }
-    
+
     public void testErrorTeardown() {
         executeTarget("testErrorTeardown");
         String log = getLog();
@@ -180,7 +180,7 @@ public class SetUpAndTearDownTest extends BuildFileTest {
         index = log.indexOf("error:suiteSetUp(Expected error)");
         assertTrue("testname", index > -1);
     }
-    
+
     public void testFailureSuiteTearDown() {
         executeTarget("testFailureSuiteTearDown");
         String log = getLog();
@@ -189,7 +189,7 @@ public class SetUpAndTearDownTest extends BuildFileTest {
         index = log.indexOf("failure:suiteTearDown(Expected failure)");
         assertTrue("testname", index > -1);
     }
-    
+
     public void testErrorSuiteTearDown() {
         executeTarget("testErrorSuiteTearDown");
         String log = getLog();

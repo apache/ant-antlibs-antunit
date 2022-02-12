@@ -23,7 +23,6 @@ package org.apache.ant.antunit.junit3;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Test;
@@ -57,16 +56,16 @@ public class AntUnitSuite extends TestSuite {
      * File reference. Namely, if the File is a relative file, it will
      * be resolve relatively to the execution directory (which might be
      * different different from the project root directory).</p>
-     * 
+     *
      * @param scriptFile
      *            AntUnit script file
      * @param rootClass
      *            The test class that creates this suite. This is used to give
      *            a name to the suite so that an IDE can reexecute this suite.
      */
-    public AntUnitSuite(File scriptFile, Class rootClass) {
+    public AntUnitSuite(File scriptFile, Class<?> rootClass) {
         setName(rootClass.getName()); //This name allows eclipse to reexecute the test
-        AntUnitScriptRunner createdScriptRunner = null;
+        final AntUnitScriptRunner createdScriptRunner;
         try {
             MyProjectFactory prjFactory = new MyProjectFactory(scriptFile);
             createdScriptRunner = new AntUnitScriptRunner(prjFactory);
@@ -82,11 +81,8 @@ public class AntUnitSuite extends TestSuite {
         initializationReportingTest = null;
         stdout = new MultiProjectDemuxOutputStream(antScriptRunner, false);
         stderr = new MultiProjectDemuxOutputStream(antScriptRunner, true);
-        List testTargets = antScriptRunner.getTestTartgets();
-        for (Iterator it = testTargets.iterator(); it.hasNext();) {
-            String target = (String) it.next();
-            AntUnitTestCase tc = new AntUnitTestCase(this, scriptFile, target);
-            addTest(tc);
+        for (String target : antScriptRunner.getTestTargets()) {
+            addTest(new AntUnitTestCase(this, scriptFile, target));
         }
     }
 
@@ -100,28 +96,28 @@ public class AntUnitSuite extends TestSuite {
         MyProjectFactory prjFactory = new MyProjectFactory(scriptFile);
         antScriptRunner = new AntUnitScriptRunner(prjFactory);
         //the exception is throwed, and it is up to the AntUnitTestCase to handle it.
-        initializationReportingTest = null; 
+        initializationReportingTest = null;
         stdout = new MultiProjectDemuxOutputStream(antScriptRunner, false);
         stderr = new MultiProjectDemuxOutputStream(antScriptRunner, true);
         setName(antScriptRunner.getName() + "[" + scriptFile + "]");
         addTest(singleTc);
     }
-    
+
     /**
      * {@inheritDoc}
      * <p>Run the full AntUnit suite.</p>
      */
     public void run(TestResult testResult) {
-        if (initializationReportingTest!=null) {
+        if (initializationReportingTest != null) {
             initializationReportingTest.run(testResult);
         } else {
-            List testTartgets = antScriptRunner.getTestTartgets();
+            List<String> testTargets = antScriptRunner.getTestTargets();
             JUnitNotificationAdapter notifier = new JUnitNotificationAdapter(
                     testResult, tests());
-            runInContainer(testTartgets, notifier);
+            runInContainer(testTargets, notifier);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      * <p>Run a single test target of the AntUnit suite. suiteSetUp,
@@ -132,7 +128,7 @@ public class AntUnitSuite extends TestSuite {
             initializationReportingTest.run(result);
         } else {
             String targetName = ((AntUnitTestCase) test).getTarget();
-            List singleTargetList = Collections.singletonList(targetName);
+            List<String> singleTargetList = Collections.singletonList(targetName);
             JUnitNotificationAdapter notifier = new JUnitNotificationAdapter(
                     result, tests());
             runInContainer(singleTargetList, notifier);
@@ -144,13 +140,13 @@ public class AntUnitSuite extends TestSuite {
      * <p>When ant executes a project it redirect the input and the output. In this
      * context we will only redirect output (unit test are not supposed to be
      * interactive).</p>
-     * 
+     *
      * @param targetList
      *            The list of test target to execute
      * @param notifier
      *            The AntUnit notifier that will receive execution notifications
      */
-    public void runInContainer(List targetList, AntUnitExecutionNotifier notifier) {        
+    public void runInContainer(List<String> targetList, AntUnitExecutionNotifier notifier) {
         PrintStream savedErr = System.err;
         PrintStream savedOut = System.out;
         try {
@@ -176,7 +172,7 @@ public class AntUnitSuite extends TestSuite {
             this.scriptFile = scriptFile;
         }
 
-        public Project createProject() { 
+        public Project createProject() {
             ProjectHelper prjHelper = ProjectHelper.getProjectHelper();
             Project prj = new Project();
             DefaultLogger logger = new DefaultLogger();
@@ -198,8 +194,6 @@ public class AntUnitSuite extends TestSuite {
     }
 
     public BuildException getAntInitialisationException() {
-        return hasAntInitError() ? 
-                initializationReportingTest.getAntScriptError() :
-                null;
+        return hasAntInitError() ? initializationReportingTest.getAntScriptError() : null;
     }
 }

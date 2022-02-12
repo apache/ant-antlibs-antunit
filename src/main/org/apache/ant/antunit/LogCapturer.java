@@ -8,7 +8,7 @@
  * with the License.  You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -20,7 +20,6 @@
 
 package org.apache.ant.antunit;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Collections;
@@ -41,7 +40,7 @@ import org.apache.tools.ant.util.StringUtils;
 public class LogCapturer implements BuildListener {
     public static final String REFERENCE_ID = "ant.antunit.log";
 
-    private List/*<BuildEvent>*/ events = Collections.synchronizedList(new LinkedList());
+    private List<BuildEvent> events = Collections.synchronizedList(new LinkedList<BuildEvent>());
     private Project p;
 
     public LogCapturer(Project p) {
@@ -184,15 +183,14 @@ public class LogCapturer implements BuildListener {
     }
 
     private String getLog(int minPriority, boolean mergeLines) {
-        StringBuffer sb = new StringBuffer();
-        for (Iterator/*<BuildEvent>*/ it = new LinkedList(events).iterator();
-             it.hasNext(); ) {
-            append(sb, (BuildEvent) it.next(), minPriority, mergeLines);
+        StringBuilder sb = new StringBuilder();
+        for (BuildEvent buildEvent : new LinkedList<BuildEvent>(events)) {
+            append(sb, buildEvent, minPriority, mergeLines);
         }
         return sb.toString();
     }
 
-    private static void append(StringBuffer sb, BuildEvent event,
+    private static void append(StringBuilder sb, BuildEvent event,
                                int minPriority, boolean mergeLines) {
         if (event.getPriority() <= minPriority) {
             sb.append(event.getMessage());

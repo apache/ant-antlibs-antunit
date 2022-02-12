@@ -8,7 +8,7 @@
  * with the License.  You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -37,26 +37,30 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
 import org.apache.tools.ant.types.EnumeratedAttribute;
 import org.apache.tools.ant.util.FileUtils;
+import org.apache.tools.ant.util.KeepAliveOutputStream;
 import org.apache.tools.ant.util.TeeOutputStream;
 
 /**
  * A test listener for &lt;antunit&gt; modeled aftern the Plain JUnit
  * test listener that is part of Ant.
  */
-public abstract class BaseAntUnitListener
-    implements AntUnitListener {
-
-    protected BaseAntUnitListener(SendLogTo defaultReportTarget,
-                                  String extension) {
-        logTo = defaultReportTarget;
-        this.extension = extension;
-        logLevel = BaseAntUnitListener.AntUnitLogLevel.NONE;
-    }
+public abstract class BaseAntUnitListener implements AntUnitListener {
 
     /**
      * Formatter for timings.
      */
     protected static final NumberFormat nf = NumberFormat.getInstance();
+
+    /**
+     * Create a new {@link BaseAntUnitListener} instance.
+     * @param defaultReportTarget
+     * @param extension
+     */
+    protected BaseAntUnitListener(SendLogTo defaultReportTarget, String extension) {
+        logTo = defaultReportTarget;
+        this.extension = extension;
+        logLevel = BaseAntUnitListener.AntUnitLogLevel.NONE;
+    }
 
     /**
      * Directory to write reports to.
@@ -118,9 +122,7 @@ public abstract class BaseAntUnitListener
     }
 
     protected final void close(OutputStream out) {
-        if (out != System.out && out != System.err) {
-            FileUtils.close(out);
-        }
+        FileUtils.close(out);
     }
 
     public void startTest(String target) {
@@ -135,36 +137,43 @@ public abstract class BaseAntUnitListener
     }
 
     protected final OutputStream getOut(String buildFile) {
-        OutputStream l, f;
-        l = f = null;
-        if (logTo.getValue().equals(SendLogTo.ANT_LOG)
-            || logTo.getValue().equals(SendLogTo.BOTH)) {
+        final String dest = logTo.getValue();
+
+        if (logTo.getIndex() < 0) {
+            throw new BuildException(String.format("Invalid @sendlogto value '%s'", dest));
+        }
+        OutputStream l;
+
+        if (SendLogTo.ANT_LOG.equals(dest) || SendLogTo.BOTH.equals(dest)) {
             if (parentTask != null) {
                 l = new LogOutputStream(parentTask, Project.MSG_INFO);
             } else {
-                l = System.out;
+                l = new KeepAliveOutputStream(System.out);
             }
-            if (logTo.getValue().equals(SendLogTo.ANT_LOG)) {
+            if (SendLogTo.ANT_LOG.equals(dest)) {
                 return l;
             }
+        } else {
+            l = null;
         }
-        if (logTo.getValue().equals(SendLogTo.FILE)
-            || logTo.getValue().equals(SendLogTo.BOTH)) {
+        OutputStream f;
 
-            String fileName = "TEST-" + normalize(buildFile) + "." + extension;
-            File file = toDir == null
-                ? (parentTask != null 
-                   ? parentTask.getProject().resolveFile(fileName)
-                   : new File(fileName))
-                : new File(toDir, fileName);
-            try {
-                f = new FileOutputStream(file);
-            } catch (IOException e) {
-                throw new BuildException(e);
-            }
-            if (logTo.getValue().equals(SendLogTo.FILE)) {
-                return f;
-            }
+        String fileName = "TEST-" + normalize(buildFile) + "." + extension;
+        File file;
+        if (toDir != null) {
+            file = new File(toDir, fileName);
+        } else if (parentTask == null) {
+            file = new File(fileName);
+        } else {
+            file = parentTask.getProject().resolveFile(fileName);
+        }
+        try {
+            f = new FileOutputStream(file);
+        } catch (IOException e) {
+            throw new BuildException(e);
+        }
+        if (SendLogTo.FILE.equals(dest)) {
+            return f;
         }
         return new TeeOutputStream(l, f);
     }
@@ -177,18 +186,13 @@ public abstract class BaseAntUnitListener
      * @return the normalized name
      */
     protected final String normalize(String buildFile) {
-        File base = parentTask != null
-            ? parentTask.getProject().getBaseDir()
+        File base = parentTask != null ? parentTask.getProject().getBaseDir()
             : new File(System.getProperty("user.dir"));
-        buildFile = FileUtils.getFileUtils()
-            .removeLeadingPath(base, new File(buildFile));
-        if (buildFile.length() > 0
-            && buildFile.charAt(0) == File.separatorChar) {
+        buildFile = FileUtils.getFileUtils().removeLeadingPath(base, new File(buildFile));
+        if (buildFile.length() > 0 && buildFile.charAt(0) == File.separatorChar) {
             buildFile = buildFile.substring(1);
         }
-
-        return buildFile.replace('.', '_').replace(':', '_')
-            .replace(File.separatorChar, '.');
+        return buildFile.replace('.', '_').replace(':', '_').replace(File.separatorChar, '.');
     }
 
     protected final Location getLocation(Throwable t) {
