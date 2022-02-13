@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
@@ -41,6 +42,7 @@ import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Ant;
 import org.apache.tools.ant.types.Mapper;
+import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.PropertySet;
 import org.apache.tools.ant.types.Resource;
 import org.apache.tools.ant.types.ResourceCollection;
@@ -147,6 +149,10 @@ public class AntUnit extends Task {
      */
     private String errorProperty = null;
 
+    private Path classpath;
+
+    private AntClassLoader subprojectCoreLoader;
+
     /**
      * Add build files to run as tests.
      * @param rc the ResourceCollection to add.
@@ -212,11 +218,36 @@ public class AntUnit extends Task {
     }
 
     /**
+     * Create the nested classpath element.
+     * @return {@link Path}
+     */
+    public Path createClasspath() {
+        if (classpath != null) {
+            throw new BuildException("Can only set classpath once");
+        }
+        return classpath = new Path(getProject());
+    }
+
+    /**
+     * Set the test classpath as a reference to a {@link Path} defined elsewhere.
+     * @param classpathRefid
+     */
+    public void setClasspathRefid(String classpathRefid) {
+        if (classpathRefid == null || classpathRefid.trim().length() == 0) {
+            throw new BuildException("Null/empty/blank @classpathrefid specified");
+        }
+        createClasspath().setRefid(new org.apache.tools.ant.types.Reference(getProject(), classpathRefid));
+    }
+
+    /**
      * Execute the tests.
      */
     public void execute() {
         if (buildFiles == null) {
             throw new BuildException(ERROR_NO_TESTS);
+        }
+        if (classpath != null && classpath.size() > 0) {
+            subprojectCoreLoader = getProject().createClassLoader(classpath);
         }
         doResourceCollection(buildFiles);
         if (failures > 0 || errors > 0) {
@@ -342,6 +373,9 @@ public class AntUnit extends Task {
      */
     private Project createProjectForFile(File f) {
         Project p = new Project();
+        if (subprojectCoreLoader != null) {
+            p.setCoreLoader(subprojectCoreLoader);
+        }
         p.setDefaultInputStream(getProject().getDefaultInputStream());
         p.initProperties();
         p.setInputHandler(getProject().getInputHandler());
