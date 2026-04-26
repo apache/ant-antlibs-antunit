@@ -38,6 +38,13 @@
   </properties>
 
   <release version="1.5" date="unreleased">
+    <action type="add">
+      Allow the AntUnit task to use a different classloader when
+      running the test by means of a nested classpath or a
+      classpathrefid attribute.
+
+      Only works properly with Ant 1.10.13 or later.
+    </action>
   </release>
   <release version="1.4.1" date="2021-07-07">
     <action type="fix" issue="65315">
