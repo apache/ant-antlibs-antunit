@@ -86,6 +86,15 @@ under the License.
     <au:assertPropertySet name="foo"/>
   </target>
 
+  <target name="assertPropertyNotSetPass">
+    <au:assertPropertyNotSet name="foo"/>
+  </target>
+
+  <target name="assertPropertyNotSetFail">
+    <property name="foo" value="bar"/>
+    <au:assertPropertyNotSet name="foo"/>
+  </target>
+
   <target name="assertPropertyEqualsPass">
     <property name="foo" value="bar"/>
     <au:assertPropertyEquals name="foo" value="bar"/>

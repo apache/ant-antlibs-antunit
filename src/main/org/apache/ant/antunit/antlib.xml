@@ -99,6 +99,19 @@ under the License.
     </sequential>
   </macrodef>
 
+  <macrodef name="assertPropertyNotSet" backtrace="false">
+    <attribute name="name"/>
+    <attribute name="message"
+      default="Expected property '@{name}' to not be set but was '${@{name}}'"/>
+    <sequential>
+      <au:fail message="@{message}">
+        <not>
+          <isset property="@{name}"/>
+        </not>
+      </au:fail>
+    </sequential>
+  </macrodef>
+
   <macrodef name="assertPropertyEquals" backtrace="false">
     <attribute name="name"/>
     <attribute name="value"/>

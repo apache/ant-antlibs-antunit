@@ -52,6 +52,9 @@ public class AssertTest extends BuildFileTest {
     public void testPropertySetPass() {
         testPass("assertPropertySetPass");
     }
+    public void testPropertyNotSetPass() {
+        testPass("assertPropertyNotSetPass");
+    }
     public void testPropertyEqualsPass() {
         testPass("assertPropertyEqualsPass");
     }
@@ -103,6 +106,9 @@ public class AssertTest extends BuildFileTest {
     }
     public void testPropertySetFail() {
         testFail("assertPropertySetFail", "Expected property 'foo'");
+    }
+    public void testPropertyNotSetFail() {
+        testFail("assertPropertyNotSetFail", "Expected property 'foo' to not be set but was 'bar'");
     }
     public void testPropertyEqualsFail1() {
         testFail("assertPropertyEqualsFail1", "Expected property 'foo' to have value 'bar' but was '${foo}'");

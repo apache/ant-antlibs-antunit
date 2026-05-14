@@ -45,6 +45,9 @@
 
       Only works properly with Ant 1.10.13 or later.
     </action>
+    <action type="add">
+      Add a new assertPropertyNotSet assertion.
+    </action>
   </release>
   <release version="1.4.1" date="2021-07-07">
     <action type="fix" issue="65315">
