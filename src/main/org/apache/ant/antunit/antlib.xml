@@ -88,6 +88,22 @@ under the License.
     </sequential>
   </macrodef>
 
+  <macrodef name="assertNotEquals" backtrace="false">
+    <attribute name="notExpected"/>
+    <attribute name="actual"/>
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="message"
+      default="Didn't expect '@{notExpected}' to be '@{actual}'"/>
+    <sequential>
+      <au:fail message="@{message}">
+        <not>
+          <equals arg1="@{notExpected}" arg2="@{actual}"
+                  casesensitive="@{casesensitive}"/>
+        </not>
+      </au:fail>
+    </sequential>
+  </macrodef>
+
   <macrodef name="assertPropertySet" backtrace="false">
     <attribute name="name"/>
     <attribute name="message"
@@ -102,7 +118,7 @@ under the License.
   <macrodef name="assertPropertyNotSet" backtrace="false">
     <attribute name="name"/>
     <attribute name="message"
-      default="Expected property '@{name}' to not be set but was '${@{name}}'"/>
+      default="Didn't expect property '@{name}' to be set but was '${@{name}}'"/>
     <sequential>
       <au:fail message="@{message}">
         <not>
@@ -125,6 +141,19 @@ under the License.
     </sequential>
   </macrodef>
 
+  <macrodef name="assertPropertyNotEquals" backtrace="false">
+    <attribute name="name"/>
+    <attribute name="value"/>
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="message"
+      default="Didn't expect property '@{name}' to have value '@{value}'"/>
+    <sequential>
+      <au:assertPropertySet message="@{message}" name="@{name}"/>
+      <au:assertNotEquals message="@{message}" notexpected="@{value}"
+        actual="${@{name}}" casesensitive="@{casesensitive}"/>
+    </sequential>
+  </macrodef>
+
   <macrodef name="assertPropertyContains" backtrace="false">
     <attribute name="name"/>
     <attribute name="value"/>
@@ -139,7 +168,24 @@ under the License.
       </au:fail>
     </sequential>
   </macrodef>
-  
+
+  <macrodef name="assertPropertyDoesntContain" backtrace="false">
+    <attribute name="name"/>
+    <attribute name="value"/>
+    <attribute name="casesensitive" default="true"/>
+    <attribute name="message"
+               default="Didn't expect property '@{name}' to contain value '@{value}' but was '${@{name}}'"/>
+    <sequential>
+      <au:assertPropertySet message="@{message}" name="@{name}"/>
+      <au:fail message="@{message}">
+        <not>
+          <contains string="${@{name}}" substring="@{value}"
+                    casesensitive="@{casesensitive}"/>
+        </not>
+      </au:fail>
+    </sequential>
+  </macrodef>
+
   <macrodef name="assertFileExists" backtrace="false">
     <attribute name="file"/>
     <attribute name="message"
@@ -189,11 +235,11 @@ under the License.
     <attribute name="value"/>
     <attribute name="casesensitive" default="true"/>
     <attribute name="message"
-	       default="Expected resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
+               default="Expected resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
     <sequential>
       <au:assertResourceExists resource="@{resource}"/>
       <au:fail message="@{message}">
-	<resourcecontains resource="@{resource}" substring="@{value}"
+        <resourcecontains resource="@{resource}" substring="@{value}"
                           casesensitive="@{casesensitive}"/>
       </au:fail>
     </sequential>
@@ -204,10 +250,10 @@ under the License.
     <attribute name="value"/>
     <attribute name="casesensitive" default="true"/>
     <attribute name="message"
-	       default="Didn't expect resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
+               default="Didn't expect resource '@{resource}' to contain value '@{value}' but was '${@{resource}}'"/>
     <sequential>
       <au:assertFalse message="@{message}">
-	<resourcecontains resource="@{resource}" substring="@{value}"
+        <resourcecontains resource="@{resource}" substring="@{value}"
                           casesensitive="@{casesensitive}"/>
       </au:assertFalse>
     </sequential>
@@ -264,11 +310,11 @@ under the License.
     <attribute name="value"/>
     <attribute name="casesensitive" default="true"/>
     <attribute name="message"
-	       default="Expected resource '@{refid}' to contain value '@{value}'"/>
+               default="Expected resource '@{refid}' to contain value '@{value}'"/>
     <sequential>
       <au:assertRefResourceExists refid="@{refid}"/>
       <au:fail message="@{message}">
-	<resourcecontains refid="@{refid}" substring="@{value}"
+        <resourcecontains refid="@{refid}" substring="@{value}"
                           casesensitive="@{casesensitive}"/>
       </au:fail>
     </sequential>
@@ -279,10 +325,10 @@ under the License.
     <attribute name="value"/>
     <attribute name="casesensitive" default="true"/>
     <attribute name="message"
-	       default="Didn't expect resource '@{refid}' to contain value '@{value}'"/>
+               default="Didn't expect resource '@{refid}' to contain value '@{value}'"/>
     <sequential>
       <au:assertFalse message="@{message}">
-	<resourcecontains refid="@{refid}" substring="@{value}"
+        <resourcecontains refid="@{refid}" substring="@{value}"
                           casesensitive="@{casesensitive}"/>
       </au:assertFalse>
     </sequential>
@@ -347,6 +393,19 @@ under the License.
     </sequential>
   </macrodef>
 
+  <macrodef name="assertReferenceIsNotSet" backtrace="false">
+    <attribute name="refid"/>
+    <attribute name="message"
+      default="Didn't expect reference '@{refid}'"/>
+    <sequential>
+      <au:fail message="@{message}">
+        <not>
+          <isreference refid="@{refid}"/>
+        </not>
+      </au:fail>
+    </sequential>
+  </macrodef>
+
   <macrodef name="assertReferenceIsType" backtrace="false">
     <attribute name="refid"/>
     <attribute name="type"/>
@@ -398,7 +457,7 @@ under the License.
       default="Expected '@{string}' to match pattern '@{pattern}'"/>
     <sequential>
       <au:fail message="@{message}">
-	<matches string="@{string}" pattern="@{pattern}"
+        <matches string="@{string}" pattern="@{pattern}"
                  casesensitive="@{casesensitive}"
                  singleline="@{singleline}"
                  multiline="@{multiline}"/>

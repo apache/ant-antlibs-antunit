@@ -49,6 +49,12 @@ public class AssertTest extends BuildFileTest {
     public void testEqualsCasePass() {
         testPass("assertEqualsCasePass");
     }
+    public void testNotEqualsPass1() {
+        testPass("assertNotEqualsPass1");
+    }
+    public void testNotEqualsPass2() {
+        testPass("assertNotEqualsPass2");
+    }
     public void testPropertySetPass() {
         testPass("assertPropertySetPass");
     }
@@ -60,6 +66,18 @@ public class AssertTest extends BuildFileTest {
     }
     public void testPropertyEqualsCasePass() {
         testPass("assertPropertyEqualsCasePass");
+    }
+    public void testPropertyNotEqualsPass1() {
+        testPass("assertPropertyNotEqualsPass1");
+    }
+    public void testPropertyNotEqualsPass2() {
+        testPass("assertPropertyNotEqualsPass2");
+    }
+    public void testPropertyContains() {
+        testPass("assertPropertyContains");
+    }
+    public void testPropertyDoesntContain() {
+        testPass("assertPropertyDoesntContain");
     }
     public void testFileExistsPass() {
         testPass("assertFileExistsPass");
@@ -88,6 +106,9 @@ public class AssertTest extends BuildFileTest {
     public void testReferenceSetPass() {
         testPass("assertReferenceSetPass");
     }
+    public void testReferenceIsNotSetPass() {
+        testPass("assertReferenceIsNotSetPass");
+    }
     public void testReferenceIsTypePass() {
         testPass("assertReferenceIsTypePass");
     }
@@ -104,11 +125,17 @@ public class AssertTest extends BuildFileTest {
     public void testEqualsFail2() {
         testFail("assertEqualsFail2", "Expected 'bar' but was 'BAR'");
     }
+    public void testNotEqualsFail() {
+        testFail("assertNotEqualsFail", "Didn't expect 'bar' to be 'bar'");
+    }
+    public void testNotEqualsCaseFail() {
+        testFail("assertNotEqualsCaseFail", "Didn't expect 'bar' to be 'BAR'");
+    }
     public void testPropertySetFail() {
         testFail("assertPropertySetFail", "Expected property 'foo'");
     }
     public void testPropertyNotSetFail() {
-        testFail("assertPropertyNotSetFail", "Expected property 'foo' to not be set but was 'bar'");
+        testFail("assertPropertyNotSetFail", "Didn't expect property 'foo' to be set but was 'bar'");
     }
     public void testPropertyEqualsFail1() {
         testFail("assertPropertyEqualsFail1", "Expected property 'foo' to have value 'bar' but was '${foo}'");
@@ -119,11 +146,20 @@ public class AssertTest extends BuildFileTest {
     public void testPropertyEqualsFail3() {
         testFail("assertPropertyEqualsFail3", "Expected property 'foo' to have value 'BAR' but was 'bar'");
     }
-    public void testPropertyContains() {
-        testPass("assertPropertyContains");
+    public void testPropertyNotEqualsFail1() {
+        testFail("assertPropertyNotEqualsFail1", "Didn't expect property 'foo' to have value 'bar'");
+    }
+    public void testPropertyNotEqualsFail2() {
+        testFail("assertPropertyNotEqualsFail2", "Didn't expect property 'foo' to have value 'bar'");
+    }
+    public void testPropertyNotEqualsCaseFail() {
+        testFail("assertPropertyNotEqualsCaseFail", "Didn't expect property 'foo' to have value 'BAR'");
     }
     public void testPropertyContainsFail() {
         testFail("assertPropertyContainsFail", "Expected property 'foo' to contain value 'foo' but was 'bar'");
+    }
+    public void testPropertyDoesntContainFail() {
+        testFail("assertPropertyDoesntContainFail", "Didn't expect property 'foo' to contain value 'ba' but was 'bar'");
     }
     public void testFileExistsFail() {
         testFail("assertFileExistsFail",
@@ -159,6 +195,9 @@ public class AssertTest extends BuildFileTest {
     }
     public void testReferenceSetFail() {
         testFail("assertReferenceSetFail", "Expected reference 'foo2'");
+    }
+    public void testReferenceIsNotSetFail() {
+        testFail("assertReferenceIsNotSetFail", "Didn't expect reference 'foo4'");
     }
     public void testReferenceIsTypeFailNotSet() {
         testFail("assertReferenceIsTypeFailNotSet",

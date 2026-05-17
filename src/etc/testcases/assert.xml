@@ -77,6 +77,22 @@ under the License.
     <au:assertEquals expected="bar" actual="BAR"/>
   </target>
 
+  <target name="assertNotEqualsPass1">
+    <au:assertNotEquals notexpected="bar" actual="baz"/>
+  </target>
+
+  <target name="assertNotEqualsPass2">
+    <au:assertNotEquals notexpected="bar" actual="BAR"/>
+  </target>
+
+  <target name="assertNotEqualsFail">
+    <au:assertNotEquals notexpected="bar" actual="bar"/>
+  </target>
+
+  <target name="assertNotEqualsCaseFail">
+    <au:assertNotEquals notexpected="bar" actual="BAR" casesensitive="false"/>
+  </target>
+
   <target name="assertPropertySetPass">
     <property name="foo" value="bar"/>
     <au:assertPropertySet name="foo"/>
@@ -119,6 +135,30 @@ under the License.
     <au:assertPropertyEquals name="foo" value="BAR"/>
   </target>
 
+  <target name="assertPropertyNotEqualsPass1">
+    <property name="foo" value="bar"/>
+    <au:assertPropertyNotEquals name="foo" value="baz"/>
+  </target>
+
+  <target name="assertPropertyNotEqualsPass2">
+    <property name="foo" value="bar"/>
+    <au:assertPropertyNotEquals name="foo" value="BAR"/>
+  </target>
+
+  <target name="assertPropertyNotEqualsFail1">
+    <au:assertPropertyNotEquals name="foo" value="bar"/>
+  </target>
+
+  <target name="assertPropertyNotEqualsFail2">
+    <property name="foo" value="bar"/>
+    <au:assertPropertyNotEquals name="foo" value="bar"/>
+  </target>
+
+  <target name="assertPropertyNotEqualsCaseFail">
+    <property name="foo" value="bar"/>
+    <au:assertPropertyNotEquals name="foo" value="BAR" casesensitive="false"/>
+  </target>
+
   <target name="assertPropertyContains">
     <property name="foo" value="bar"/>
     <au:assertPropertyContains name="foo" value="ba"/>
@@ -127,6 +167,16 @@ under the License.
   <target name="assertPropertyContainsFail">
     <property name="foo" value="bar"/>
     <au:assertPropertyContains name="foo" value="foo"/>
+  </target>
+
+  <target name="assertPropertyDoesntContain">
+    <property name="foo" value="bar"/>
+    <au:assertPropertyDoesntContain name="foo" value="foo"/>
+  </target>
+
+  <target name="assertPropertyDoesntContainFail">
+    <property name="foo" value="bar"/>
+    <au:assertPropertyDoesntContain name="foo" value="ba"/>
   </target>
 
   <target name="assertFileExistsPass">
@@ -212,6 +262,15 @@ under the License.
 
   <target name="assertReferenceSetFail">
     <au:assertReferenceSet refid="foo2"/>
+  </target>
+
+  <target name="assertReferenceIsNotSetPass">
+    <au:assertReferenceIsNotSet refid="foo3"/>
+  </target>
+
+  <target name="assertReferenceIsNotSetFail">
+    <path id="foo4"/>
+    <au:assertReferenceIsNotSet refid="foo4"/>
   </target>
 
   <target name="assertReferenceIsTypePass">

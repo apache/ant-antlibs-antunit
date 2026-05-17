@@ -46,7 +46,9 @@
       Only works properly with Ant 1.10.13 or later.
     </action>
     <action type="add">
-      Add a new assertPropertyNotSet assertion.
+      Add new assertNotEquals, assertPropertyNotSet,
+      assertPropertyNotEquals, assertPropertyDoesntContain and
+      assertReferenceIsNotSet assertions.
     </action>
   </release>
   <release version="1.4.1" date="2021-07-07">

@@ -89,7 +89,54 @@
 
     <pre>
       &lt;assertEquals message="foo is not bar" expected="bar"
-                      actual="${foo}" casesensitive="false"/&gt;
+                    actual="${foo}" casesensitive="false"/&gt;
+    </pre>
+
+    <h2><a name="assertNotEquals">assertNotEquals</a></h2>
+
+    <p>Asserts that its two arguments are not equal.</p>
+
+    <p><em>Since AntUnit 1.5</em></p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">notExpected</td>
+          <td valign="top">First string to test.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">actual</td>
+          <td valign="top">Second string to test.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Didn't expect
+            '<em>notExpected</em>' to be '<em>actual</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+        <tr>
+          <td valign="top">casesensitive</td>
+          <td valign="top">Perform a case sensitive comparision.
+            Default is true.</td>
+          <td valign="top" align="center">No</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "foo is bar" if the
+      property foo doesn't hold the value bar regardless of case:</p>
+
+    <pre>
+      &lt;assertNotEquals message="foo is bar" notExpected="bar"
+                       actual="${foo}" casesensitive="false"/&gt;
     </pre>
 
     <h2><a name="assertPropertySet">assertPropertySet</a></h2>
@@ -123,6 +170,42 @@
 
     <pre>
       &lt;assertPropertySet name="foo"/&gt;
+    </pre>
+
+    <h2><a name="assertPropertyNotSet">assertPropertyNotSet</a></h2>
+
+    <p><em>Since AntUnit 1.5</em></p>
+
+    <p>Asserts that a property hasn't got a value.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">name</td>
+          <td valign="top">Name of the property.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Didn't expect property
+            '<em>name</em>' to be set but was '<em>actual value</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "Didn't expect property
+      'foo' but was 'bar'" if the property foo is defined and has
+      value bar:</p>
+
+    <pre>
+      &lt;assertPropertyNotSet name="foo"/&gt;
     </pre>
 
     <h2><a name="assertPropertyEquals">assertPropertyEquals</a></h2>
@@ -169,7 +252,54 @@
 
     <pre>
       &lt;assertPropertyEquals message="foo is not bar" value="bar"
-                              name="foo" casesensitive="false"/&gt;
+                            name="foo" casesensitive="false"/&gt;
+    </pre>
+
+    <h2><a name="assertPropertyNotEquals">assertPropertyNotEquals</a></h2>
+
+    <p><em>Since AntUnit 1.5</em></p>
+
+    <p>Asserts that a given property is set but doesn't hold a certain
+      value.</p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">name</td>
+          <td valign="top">Name of the property.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">value</td>
+          <td valign="top">Not expected value.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true. Defaults to "Didn't expect property '<em>name</em>' to have value '<em>value</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+        <tr>
+          <td valign="top">casesensitive</td>
+          <td valign="top">Perform a case sensitive comparision.
+            Default is true.</td>
+          <td valign="top" align="center">No</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "foo is bar" if the
+      property foo holds the value bar regardless of case:</p>
+
+    <pre>
+      &lt;assertPropertyNotEquals message="foo is bar" value="bar"
+                               name="foo" casesensitive="false"/&gt;
     </pre>
 
     <h2><a name="assertPropertyContains">assertPropertyContains</a></h2>
@@ -217,6 +347,55 @@
     <pre>
       &lt;assertPropertyContains message="foo doesn't contain bar" value="bar"
                               name="foo" casesensitive="false"/&gt;
+    </pre>
+
+    <h2><a name="assertPropertyDoesntContain">assertPropertyDoesntContain</a></h2>
+
+    <p>Asserts that a given property is set and doesn't hold a certain
+      value as substring.</p>
+
+    <p><em>Since AntUnit 1.5</em></p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">name</td>
+          <td valign="top">Name of the property.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">value</td>
+          <td valign="top">Not expected substring value.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true. Defaults to "Didn't expect property
+            '<em>name</em>' to contain value '<em>value</em>' but was
+            '<em>value of property name</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+        <tr>
+          <td valign="top">casesensitive</td>
+          <td valign="top">Perform a case sensitive comparision.
+            Default is true.</td>
+          <td valign="top" align="center">No</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "foo contains bar" if the
+      property foo contains the value bar regardless of case:</p>
+
+    <pre>
+      &lt;assertPropertyDoesntContain message="foo contains bar" value="bar"
+                                   name="foo" casesensitive="false"/&gt;
     </pre>
 
     <h2><a name="assertFileExists">assertFileExists</a></h2>
@@ -607,7 +786,7 @@
           <td align="center">No.</td>
         </tr>
     </table>
-    
+
     <h3>Example</h3>
 
     <p>Make the build fail if the file build.xml and backups/build.xml
@@ -645,7 +824,7 @@
           <td align="center">No.</td>
         </tr>
     </table>
-    
+
     <h3>Example</h3>
 
     <p>Make the build fail if the file build.xml and backups/build.xml
@@ -686,6 +865,41 @@
 
     <pre>
       &lt;assertReferenceSet name="foo"/&gt;
+    </pre>
+
+    <h2><a name="assertReferenceIsNotSet">assertReferenceIsNotSet</a></h2>
+
+    <p>Asserts that a reference hasn't got any value.</p>
+
+    <p><em>Since AntUnit 1.5</em></p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+        <tr>
+          <td valign="top"><b>Attribute</b></td>
+          <td valign="top"><b>Description</b></td>
+          <td align="center" valign="top"><b>Required</b></td>
+        </tr>
+        <tr>
+          <td valign="top">refid</td>
+          <td valign="top">Id of the reference.</td>
+          <td valign="top" align="center">Yes</td>
+        </tr>
+        <tr>
+          <td valign="top">message</td>
+          <td valign="top">Message for the exception if the condition
+            doesn't hold true.  Defaults to "Didn't expect reference
+            '<em>id</em>'".</td>
+          <td align="center">No.</td>
+        </tr>
+    </table>
+
+    <h3>Examples</h3>
+
+    <p>Make the build fail with the message "Didn't expect reference 'foo'"
+      if the reference foo is defined:</p>
+
+    <pre>
+      &lt;assertReferenceIsNotSet name="foo"/&gt;
     </pre>
 
     <h2><a name="assertReferenceIsType">assertReferenceIsType</a></h2>
