@@ -22,11 +22,17 @@ under the License.
   <!-- easy way to override properties -->
   <property file="build.properties"/>
 
-  <!-- don't fork junit; regexp classes not available -->
-  <property name="junit.fork" value="false" />
-
-  <property name="javac.-source" value="1.5" />
-  <property name="javac.-target" value="1.5" />
+  <!-- we don't want the build to look for a packaged AntUnit -->
+  <target name="setup-for-antunit-tests" depends="setup,determine-test-types,resolve"
+    unless="skip-antunit">
+    <typedef uri="antlib:org.apache.ant.antunit"
+      resource="org/apache/ant/antunit/antlib.xml">
+      <classpath>
+        <path refid="classpath.test"/>
+        <pathelement location="${antlib.location}"/>
+      </classpath>
+    </typedef>
+  </target>
 
   <import file="common/build.xml"/>
 </project>
