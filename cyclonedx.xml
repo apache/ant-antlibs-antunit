@@ -90,11 +90,20 @@ under the License.
           type="WEBSITE"
           url="https://ant.apache.org/"/>
       <externalReference
+          type="ADVISORIES"
+          url="https://ant.apache.org/security.html#Apache%20Ant%20Security%20Vulnerabilities"/>
+      <externalReference
+          type="DOCUMENTATION"
+          url="https://ant.apache.org/manual/"/>
+      <externalReference
           type="DISTRIBUTION"
           url="https://ant.apache.org/bindownload.cgi"/>
       <externalReference
           type="SOURCE_DISTRIBUTION"
           url="https://ant.apache.org/srcdownload.cgi"/>
+      <externalReference
+          type="RELEASE_NOTES"
+          url="https://github.com/apache/ant/blob/master/WHATSNEW"/>
     </cdx:externalreferenceset>
   </target>
 
