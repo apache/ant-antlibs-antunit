@@ -34,5 +34,17 @@ under the License.
     </typedef>
   </target>
 
+  <target name="ready-for-bin-dist" depends="create-antlib-sbom,common.ready-for-bin-dist">
+    <resources id="additional-bin-patterns">
+      <fileset dir="${build.lib}">
+        <include name="${artifact.stub}-cyclonedx*"/>
+      </fileset>
+    </resources>
+  </target>
+
+  <target name="after-src-dist" depends="src-sboms"/>
+  <target name="after-bin-dist" depends="bin-sboms"/>
+
   <import file="common/build.xml"/>
+  <import file="cyclonedx.xml"/>
 </project>

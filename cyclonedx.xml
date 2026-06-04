@@ -1,0 +1,336 @@
+<?xml version="1.0"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<project name="cyclonedx" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <target name="define-cyclonedx-components" depends="fetch-cyclonedx">
+    <typedef uri="antlib:org.apache.ant.cyclonedx"
+      resource="org/apache/ant/cyclonedx/antlib.xml">
+      <classpath>
+        <path refid="classpath.build"/>
+      </classpath>
+    </typedef>
+    <!-- common definitions for SBOMs -->
+    <cdx:organization
+        name="Apache Ant Project Management Committee"
+        id="ant-pmc"
+        xmlns:cdx="antlib:org.apache.ant.cyclonedx">
+      <url url="https://ant.apache.org/"/>
+    </cdx:organization>
+    <cdx:license
+        licenseId="Apache-2.0"
+        id="apache-2"
+        xmlns:cdx="antlib:org.apache.ant.cyclonedx">
+      <url url="https://www.apache.org/licenses/LICENSE-2.0.txt"/>
+    </cdx:license>
+    <cdx:externalreferenceset
+        id="ant-common-refs"
+        xmlns:cdx="antlib:org.apache.ant.cyclonedx">
+      <externalReference
+          type="LICENSE"
+          url="https://www.apache.org/licenses/LICENSE-2.0.txt"/>
+      <externalReference
+          type="MAILING_LIST"
+          url="https://ant.apache.org/mail.html"/>
+      <externalReference
+          type="SECURITY_CONTACT"
+          url="https://www.apache.org/security/"/>
+    </cdx:externalreferenceset>
+    <cdx:externalreferenceset
+        id="antlib-ext-refs"
+        xmlns:cdx="antlib:org.apache.ant.cyclonedx">
+      <externalReference
+          type="VCS"
+          url="https://gitbox.apache.org/repos/asf/ant-antlibs-antunit.git"/>
+      <externalReference
+          type="BUILD_SYSTEM"
+          url="https://ci-builds.apache.org/job/Ant/job/AntUnit/"/>
+      <externalReference
+          type="ISSUE_TRACKER"
+          url="https://bz.apache.org/bugzilla/buglist.cgi?component=AntUnit&amp;product=Ant"/>
+      <externalReference
+          type="WEBSITE"
+          url="https://ant.apache.org/antlibs/antunit/"/>
+      <externalReference
+          type="DISTRIBUTION"
+          url="https://ant.apache.org/antlibs/bindownload.cgi"/>
+      <externalReference
+          type="SOURCE_DISTRIBUTION"
+          url="https://ant.apache.org/antlibs/srcdownload.cgi"/>
+    </cdx:externalreferenceset>
+    <cdx:externalreferenceset
+        id="ant-ext-refs"
+        xmlns:cdx="antlib:org.apache.ant.cyclonedx">
+      <externalReference
+          type="VCS"
+          url="https://gitbox.apache.org/repos/asf/ant.git"/>
+      <externalReference
+          type="BUILD_SYSTEM"
+          url="https://ci-builds.apache.org/job/Ant/"/>
+      <externalReference
+          type="ISSUE_TRACKER"
+          url="https://bz.apache.org/bugzilla/buglist.cgi?product=Ant"/>
+      <externalReference
+          type="WEBSITE"
+          url="https://ant.apache.org/"/>
+      <externalReference
+          type="DISTRIBUTION"
+          url="https://ant.apache.org/bindownload.cgi"/>
+      <externalReference
+          type="SOURCE_DISTRIBUTION"
+          url="https://ant.apache.org/srcdownload.cgi"/>
+    </cdx:externalreferenceset>
+  </target>
+
+  <target name="create-antlib-sbom" depends="define-cyclonedx-components,antlib">
+    <uptodate property="antlib-sbom-ok"
+              targetfile="${build.lib}/${artifact.stub}-cyclonedx.json">
+      <srcresources>
+        <file file="${jarname}"/>
+        <file file="ivy.xml"/>
+        <file file="cyclonedx.xml"/>
+      </srcresources>
+    </uptodate>
+    <cdx:componentbom
+        bomName="${artifact.stub}-cyclonedx"
+        outputdirectory="${build.lib}"
+        format="all"
+        useComponentSupplier="true"
+        useComponentManufacturer="true"
+        unless:set="antlib-sbom-ok"
+        xmlns:unless="ant:unless"
+        xmlns:cdx="antlib:org.apache.ant.cyclonedx">
+      <component
+          name="${artifact.name}"
+          group="org.apache.ant"
+          version="${artifact.version}"
+          description="Apache AntUnit"
+          publisher="The Apache Software Foundation"
+          supplierIsManufacturer="true">
+        <file file="${jarname}"/>
+        <supplier refid="ant-pmc"/>
+        <license refid="apache-2"/>
+        <externalReferenceSet refid="ant-common-refs"/>
+        <externalReferenceSet refid="antlib-ext-refs"/>
+        <dependency componentRef="ant"/>
+        <dependency componentRef="junit"/>
+      </component>
+      <additionalComponent
+          name="ant"
+          group="org.apache.ant"
+          version="1.10.13"
+          isExternal="true"
+          id="ant">
+        <supplier refid="ant-pmc"/>
+        <license refid="apache-2"/>
+        <externalReferenceSet refid="ant-common-refs"/>
+        <externalReferenceSet refid="ant-ext-refs"/>
+        <dependency componentRef="ant-launcher"/>
+      </additionalComponent>
+      <additionalComponent
+          name="ant-launcher"
+          group="org.apache.ant"
+          version="1.10.13"
+          isExternal="true"
+          id="ant-launcher">
+        <supplier refid="ant-pmc"/>
+        <license refid="apache-2"/>
+        <externalReferenceSet refid="ant-common-refs"/>
+        <externalReferenceSet refid="ant-ext-refs"/>
+      </additionalComponent>
+      <additionalComponent
+          id="junit"
+          name="junit"
+          group="junit"
+          version="4.13.2"
+          description="JUnit is a unit testing framework for Java, created by Erich Gamma and Kent Beck."
+          scope="optional"
+          publisher="JUnit">
+        <license licenseId="EPL-1.0">
+          <url url="http://www.eclipse.org/legal/epl-v10.html"/>
+        </license>
+        <externalReference
+            type="WEBSITE"
+            url="http://junit.org"/>
+        <dependency componentRef="hamcrest"/>
+      </additionalComponent>
+      <additionalComponent
+          id="hamcrest"
+          name="hamcrest-core"
+          group="org.hamcrest"
+          version="1.3"
+          description="Core API and libraries of hamcrest matcher framework."
+          scope="optional">
+        <license licenseId="BSD-3-Clause">
+          <url url="https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE"/>
+        </license>
+        <externalReference
+            type="WEBSITE"
+            url="http://hamcrest.org/JavaHamcrest/"/>
+      </additionalComponent>
+      <license refid="apache-2"/>
+    </cdx:componentbom>
+  </target>
+
+  <target name="after-dist" depends="define-cyclonedx-components">
+    <macrodef name="distributionbom" backtrace="false">
+      <attribute name="version"/>
+      <attribute name="archiveName"/>
+      <attribute name="archiveUrl"/>
+      <attribute name="archiveLocation" default=""/>
+      <attribute name="outputDirectory"/>
+      <attribute name="description"/>
+      <attribute name="publisher"/>
+      <attribute name="componentType" default="file"/>
+      <attribute name="format" default="all"/>
+      <attribute name="useComponentManufacturer" default="true"/>
+      <attribute name="useComponentSupplier" default="true"/>
+      <attribute name="supplierIsManufacturer" default="true"/>
+      <element name="archiveContent"/>
+      <element name="componentChildren" optional="true"/>
+      <element name="additionalBomContent" optional="true"/>
+      <sequential
+        xmlns:cdx="antlib:org.apache.ant.cyclonedx">
+        <cdx:componentbom
+            bomName="@{archiveName}.cyclonedx"
+            outputdirectory="@{outputDirectory}"
+            format="@{format}"
+            useComponentManufacturer="@{useComponentManufacturer}"
+            useComponentSupplier="@{useComponentSupplier}">
+          <component
+              version="@{version}"
+              purl="@{archiveUrl}"
+              name="@{archiveUrl}"
+              description="@{description}"
+              publisher="@{publisher}"
+              type="@{componentType}"
+              supplierIsManufacturer="@{supplierIsManufacturer}">
+            <file file="@{archiveLocation}"
+                  unless:blank="@{archiveLocation}" xmlns:unless="ant:unless"/>
+            <componentChildren/>
+          </component>
+          <pureFileComponents>
+            <archiveContent/>
+          </pureFileComponents>
+          <additionalBomContent/>
+        </cdx:componentbom>
+      </sequential>
+    </macrodef>
+    <macrodef name="create-tarball-bom">
+      <attribute name="distdir"/>
+      <attribute name="distbase"/>
+      <attribute name="binsrc"/>
+      <attribute name="binarysource"/>
+      <attribute name="ext"/>
+      <element name="moreComponentChildren" implicit="true" optional="true"/>
+      <sequential>
+        <distributionbom
+            outputdirectory="@{distbase}"
+            version="${artifact.version}"
+            archiveName="${dist.name}-@{binsrc}.@{ext}"
+            archiveUrl="https://archive.apache.org/dist/ant/antlibs/antunit/${dist.name}-@{binsrc}.@{ext}"
+            archiveLocation="@{distbase}/${dist.name}-@{binsrc}.@{ext}"
+            description="Apache AntUnit @{binarysource}"
+            publisher="The Apache Software Foundation"
+            xmlns:cdx="antlib:org.apache.ant.cyclonedx">
+          <componentChildren>
+            <supplier refid="ant-pmc"/>
+            <license refid="apache-2"/>
+            <externalReferenceSet refid="ant-common-refs"/>
+            <externalReferenceSet refid="antlib-ext-refs"/>
+            <moreComponentChildren/>
+          </componentChildren>
+          <archiveContent>
+            <fileset dir="@{distdir}/..">
+              <include name="${dist.name}/**"/>
+            </fileset>
+          </archiveContent>
+          <additionalBomContent>
+            <license refid="apache-2"/>
+          </additionalBomContent>
+        </distributionbom>
+      </sequential>
+    </macrodef>
+    <macrodef name="create-tarball-boms">
+      <attribute name="distdir"/>
+      <attribute name="distbase"/>
+      <attribute name="binsrc"/>
+      <attribute name="binarysource"/>
+      <element name="componentChildren" implicit="true" optional="true"/>
+      <sequential>
+        <create-tarball-bom
+            distdir="@{distdir}"
+            distbase="@{distbase}"
+            binsrc="@{binsrc}"
+            binarysource="@{binarysource}"
+            ext="tar.gz">
+          <componentChildren/>
+        </create-tarball-bom>
+        <create-tarball-bom
+            distdir="@{distdir}"
+            distbase="@{distbase}"
+            binsrc="@{binsrc}"
+            binarysource="@{binarysource}"
+            ext="tar.bz2">
+          <componentChildren/>
+        </create-tarball-bom>
+        <create-tarball-bom
+            distdir="@{distdir}"
+            distbase="@{distbase}"
+            binsrc="@{binsrc}"
+            binarysource="@{binarysource}"
+            ext="zip">
+          <componentChildren/>
+        </create-tarball-bom>
+      </sequential>
+    </macrodef>
+  </target>
+
+  <target name="src-sboms" depends="after-dist">
+    <create-tarball-boms
+        distdir="${src.dist.dir}"
+        distbase="${dist.base}"
+        binsrc="src"
+        binarysource="Source Distribution"/>
+  </target>
+
+  <target name="bin-sboms" depends="after-dist">
+    <create-tarball-boms
+        distdir="${bin.dist.dir}"
+        distbase="${dist.base}"
+        binsrc="bin"
+        binarysource="Binary Distribution">
+      <component>
+        <sbomLink>
+          <file file="${bin.dist.dir}/${artifact.stub}-cyclonedx.json"/>
+        </sbomLink>
+        <file file="${bin.dist.dir}/${artifact.stub}.jar"/>
+      </component>
+    </create-tarball-boms>
+  </target>
+
+  <target name="fetch-cyclonedx" depends="resolve,-no-fetch-cyclonedx" if="with.ivy">
+    <ivy:retrieve conf="build" pattern="${lib.dir.build}/[artifact]-[revision].[ext]" sync="yes"/>
+    <ivy:cachepath pathid="classpath.build" conf="build"/>
+  </target>
+
+  <target name="-no-fetch-cyclonedx" unless="with.ivy">
+    <path id="classpath.build"/>
+  </target>
+</project>
