@@ -140,10 +140,6 @@ under the License.
         <license refid="apache-2"/>
         <externalReferenceSet refid="ant-common-refs"/>
         <externalReferenceSet refid="antlib-ext-refs"/>
-        <property name="bsi:component:executable" value="non-executable"/>
-        <property name="bsi:component:archive" value="archive"/>
-        <property name="bsi:component:structured" value="structured"/>
-        <property name="bsi:component:filename" value="${artifact.stub}.jar"/>
         <dependency componentRef="ant"/>
         <dependency componentRef="junit"/>
       </component>
@@ -157,9 +153,6 @@ under the License.
         <license refid="apache-2"/>
         <externalReferenceSet refid="ant-common-refs"/>
         <externalReferenceSet refid="ant-ext-refs"/>
-        <property name="bsi:component:executable" value="non-executable"/>
-        <property name="bsi:component:archive" value="archive"/>
-        <property name="bsi:component:structured" value="structured"/>
         <dependency componentRef="ant-launcher"/>
       </additionalComponent>
       <additionalComponent
@@ -172,9 +165,6 @@ under the License.
         <license refid="apache-2"/>
         <externalReferenceSet refid="ant-common-refs"/>
         <externalReferenceSet refid="ant-ext-refs"/>
-        <property name="bsi:component:executable" value="executable"/>
-        <property name="bsi:component:archive" value="archive"/>
-        <property name="bsi:component:structured" value="structured"/>
       </additionalComponent>
       <additionalComponent
           id="junit"
@@ -245,10 +235,6 @@ under the License.
               supplierIsManufacturer="@{supplierIsManufacturer}">
             <file file="@{archiveLocation}"
                   unless:blank="@{archiveLocation}" xmlns:unless="ant:unless"/>
-            <property name="bsi:component:executable" value="non-executable"/>
-            <property name="bsi:component:archive" value="archive"/>
-            <property name="bsi:component:structured" value="structured"/>
-            <property name="bsi:component:filename" value="@{archiveName}"/>
             <componentChildren/>
           </component>
           <pureFileComponents>
