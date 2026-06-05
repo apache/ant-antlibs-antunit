@@ -20,12 +20,6 @@ under the License.
 <project name="cyclonedx" xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <target name="define-cyclonedx-components" depends="fetch-cyclonedx">
-    <typedef uri="antlib:org.apache.ant.cyclonedx"
-      resource="org/apache/ant/cyclonedx/antlib.xml">
-      <classpath>
-        <path refid="classpath.build"/>
-      </classpath>
-    </typedef>
     <!-- common definitions for SBOMs -->
     <cdx:organization
         name="Apache Ant Project Management Committee"
@@ -344,12 +338,16 @@ under the License.
     </create-tarball-boms>
   </target>
 
-  <target name="fetch-cyclonedx" depends="resolve,-no-fetch-cyclonedx" if="with.ivy">
-    <ivy:retrieve conf="build" pattern="${lib.dir.build}/[artifact]-[revision].[ext]" sync="yes"/>
-    <ivy:cachepath pathid="classpath.build" conf="build"/>
-  </target>
-
-  <target name="-no-fetch-cyclonedx" unless="with.ivy">
-    <path id="classpath.build"/>
+  <target name="fetch-cyclonedx" depends="resolve" if="with.ivy">
+    <ivy:cachepath organisation="org.apache.ant"
+                   module="ant-cyclonedx"
+                   revision="0.1"
+                   inline="true"
+                   conf="default"
+                   pathid="cyclonedx.classpath"
+                   log="download-only"/>
+    <typedef uri="antlib:org.apache.ant.cyclonedx"
+             resource="org/apache/ant/cyclonedx/antlib.xml"
+             classpathref="cyclonedx.classpath"/>
   </target>
 </project>
