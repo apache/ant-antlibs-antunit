@@ -1,0 +1,443 @@
+{
+  "bomFormat" : "CycloneDX",
+  "specVersion" : "1.6",
+  "serialNumber" : "urn:uuid:617137fb-8893-44e7-b7eb-ce0334c08f58",
+  "version" : 1,
+  "metadata" : {
+    "timestamp" : "2026-06-07T05:33:46Z",
+    "lifecycles" : [
+      {
+        "phase" : "build"
+      }
+    ],
+    "tools" : {
+      "components" : [
+        {
+          "type" : "library",
+          "supplier" : {
+            "name" : "Apache Ant Project Management Committee",
+            "url" : [
+              "https://ant.apache.org/"
+            ]
+          },
+          "manufacturer" : {
+            "name" : "Apache Ant Project Management Committee",
+            "url" : [
+              "https://ant.apache.org/"
+            ]
+          },
+          "publisher" : "The Apache Software Foundation",
+          "group" : "org.apache.ant",
+          "name" : "ant-cyclonedx",
+          "version" : "0.1",
+          "description" : "Apache CycloneDX Antlib",
+          "licenses" : [
+            {
+              "license" : {
+                "id" : "Apache-2.0",
+                "url" : "https://www.apache.org/licenses/LICENSE-2.0.txt"
+              }
+            }
+          ],
+          "purl" : "pkg:maven/org.apache.ant/ant-cyclonedx@0.1?type=jar",
+          "externalReferences" : [
+            {
+              "type" : "vcs",
+              "url" : "https://gitbox.apache.org/repos/asf/ant-antlibs-cyclonedx.git"
+            },
+            {
+              "type" : "license",
+              "url" : "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            },
+            {
+              "type" : "build-system",
+              "url" : "https://ci-builds.apache.org/job/Ant/job/CycloneDX%20Antlib/"
+            },
+            {
+              "type" : "mailing-list",
+              "url" : "https://ant.apache.org/mail.html"
+            },
+            {
+              "type" : "issue-tracker",
+              "url" : "https://bz.apache.org/bugzilla/buglist.cgi?component=CycloneDX%20Antlib&product=Ant"
+            },
+            {
+              "type" : "website",
+              "url" : "https://ant.apache.org/antlibs/cyclonedx/"
+            },
+            {
+              "type" : "distribution",
+              "url" : "https://ant.apache.org/antlibs/bindownload.cgi"
+            },
+            {
+              "type" : "source-distribution",
+              "url" : "https://ant.apache.org/antlibs/srcdownload.cgi"
+            },
+            {
+              "type" : "security-contact",
+              "url" : "https://www.apache.org/security/"
+            }
+          ]
+        }
+      ]
+    },
+    "component" : {
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.apache.ant/ant-antunit@1.5alpha?type=jar",
+      "supplier" : {
+        "name" : "Apache Ant Project Management Committee",
+        "url" : [
+          "https://ant.apache.org/"
+        ]
+      },
+      "manufacturer" : {
+        "name" : "Apache Ant Project Management Committee",
+        "url" : [
+          "https://ant.apache.org/"
+        ]
+      },
+      "publisher" : "The Apache Software Foundation",
+      "group" : "org.apache.ant",
+      "name" : "ant-antunit",
+      "version" : "1.5alpha",
+      "description" : "Apache AntUnit",
+      "hashes" : [
+        {
+          "alg" : "MD5",
+          "content" : "a9ece2452e6e7f9794496bd366956f0e"
+        },
+        {
+          "alg" : "SHA-1",
+          "content" : "a5419ac679dd3b1f2380a12583e500afe9aa7c0d"
+        },
+        {
+          "alg" : "SHA-256",
+          "content" : "b9655aceb5883dc0ae5d4b7346ca908c26787b873c1cf92fac3b77c5b4b6c552"
+        },
+        {
+          "alg" : "SHA-512",
+          "content" : "fd5ba5df1508f74fef0f3475ac5eeee4fb170a3fd800b263b773da84be2db8179c82d3619aac4edc971b84828b5ab910b1477824a54d678b895b1477ce2b7afe"
+        },
+        {
+          "alg" : "SHA3-256",
+          "content" : "b8a3086b36626961b0ce909ea0de275d413fa09978e78ab3997ae78d9e419484"
+        },
+        {
+          "alg" : "SHA3-512",
+          "content" : "43fc167a62b1586dcfda72092fe56f889a18cd9f443f11183430215ab334e7c1c4a6b9d3ff0360b6732fbb773a5e339c2dc2069bd88265d703f528efa957f3f0"
+        },
+        {
+          "alg" : "SHA-384",
+          "content" : "2eb999a12a55d0006e3e463a913efde1b76c0e2fa6c3b5b105e4cccf7a7064cb9da7efdafc1d9c815411604185d7a171"
+        },
+        {
+          "alg" : "SHA3-384",
+          "content" : "fbba3af52ebcd3ca1d4efa8ebc3441c4a122ee94f67626cc2f70c7da9bfe8b5f56dc5892095b1cce8a08cc76838ed918"
+        }
+      ],
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0",
+            "url" : "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/org.apache.ant/ant-antunit@1.5alpha?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "license",
+          "url" : "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        },
+        {
+          "type" : "mailing-list",
+          "url" : "https://ant.apache.org/mail.html"
+        },
+        {
+          "type" : "security-contact",
+          "url" : "https://www.apache.org/security/"
+        },
+        {
+          "type" : "rfc-9116",
+          "url" : "https://ant.apache.org/.well-known/security.txt"
+        },
+        {
+          "type" : "vcs",
+          "url" : "https://gitbox.apache.org/repos/asf/ant-antlibs-antunit.git"
+        },
+        {
+          "type" : "build-system",
+          "url" : "https://ci-builds.apache.org/job/Ant/job/AntUnit/"
+        },
+        {
+          "type" : "issue-tracker",
+          "url" : "https://bz.apache.org/bugzilla/buglist.cgi?component=AntUnit&product=Ant"
+        },
+        {
+          "type" : "website",
+          "url" : "https://ant.apache.org/antlibs/antunit/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://ant.apache.org/antlibs/bindownload.cgi"
+        },
+        {
+          "type" : "source-distribution",
+          "url" : "https://ant.apache.org/antlibs/srcdownload.cgi"
+        }
+      ]
+    },
+    "manufacturer" : {
+      "name" : "Apache Ant Project Management Committee",
+      "url" : [
+        "https://ant.apache.org/"
+      ]
+    },
+    "supplier" : {
+      "name" : "Apache Ant Project Management Committee",
+      "url" : [
+        "https://ant.apache.org/"
+      ]
+    },
+    "licenses" : [
+      {
+        "license" : {
+          "id" : "Apache-2.0",
+          "url" : "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      }
+    ]
+  },
+  "components" : [
+    {
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.apache.ant/ant@1.10.13?type=jar",
+      "supplier" : {
+        "name" : "Apache Ant Project Management Committee",
+        "url" : [
+          "https://ant.apache.org/"
+        ]
+      },
+      "group" : "org.apache.ant",
+      "name" : "ant",
+      "version" : "1.10.13",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0",
+            "url" : "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/org.apache.ant/ant@1.10.13?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "license",
+          "url" : "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        },
+        {
+          "type" : "mailing-list",
+          "url" : "https://ant.apache.org/mail.html"
+        },
+        {
+          "type" : "security-contact",
+          "url" : "https://www.apache.org/security/"
+        },
+        {
+          "type" : "rfc-9116",
+          "url" : "https://ant.apache.org/.well-known/security.txt"
+        },
+        {
+          "type" : "vcs",
+          "url" : "https://gitbox.apache.org/repos/asf/ant.git"
+        },
+        {
+          "type" : "build-system",
+          "url" : "https://ci-builds.apache.org/job/Ant/"
+        },
+        {
+          "type" : "issue-tracker",
+          "url" : "https://bz.apache.org/bugzilla/buglist.cgi?product=Ant"
+        },
+        {
+          "type" : "website",
+          "url" : "https://ant.apache.org/"
+        },
+        {
+          "type" : "advisories",
+          "url" : "https://ant.apache.org/security.html#Apache%20Ant%20Security%20Vulnerabilities"
+        },
+        {
+          "type" : "documentation",
+          "url" : "https://ant.apache.org/manual/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://ant.apache.org/bindownload.cgi"
+        },
+        {
+          "type" : "source-distribution",
+          "url" : "https://ant.apache.org/srcdownload.cgi"
+        },
+        {
+          "type" : "release-notes",
+          "url" : "https://github.com/apache/ant/blob/master/WHATSNEW"
+        }
+      ]
+    },
+    {
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.apache.ant/ant-launcher@1.10.13?type=jar",
+      "supplier" : {
+        "name" : "Apache Ant Project Management Committee",
+        "url" : [
+          "https://ant.apache.org/"
+        ]
+      },
+      "group" : "org.apache.ant",
+      "name" : "ant-launcher",
+      "version" : "1.10.13",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "Apache-2.0",
+            "url" : "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/org.apache.ant/ant-launcher@1.10.13?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "license",
+          "url" : "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        },
+        {
+          "type" : "mailing-list",
+          "url" : "https://ant.apache.org/mail.html"
+        },
+        {
+          "type" : "security-contact",
+          "url" : "https://www.apache.org/security/"
+        },
+        {
+          "type" : "rfc-9116",
+          "url" : "https://ant.apache.org/.well-known/security.txt"
+        },
+        {
+          "type" : "vcs",
+          "url" : "https://gitbox.apache.org/repos/asf/ant.git"
+        },
+        {
+          "type" : "build-system",
+          "url" : "https://ci-builds.apache.org/job/Ant/"
+        },
+        {
+          "type" : "issue-tracker",
+          "url" : "https://bz.apache.org/bugzilla/buglist.cgi?product=Ant"
+        },
+        {
+          "type" : "website",
+          "url" : "https://ant.apache.org/"
+        },
+        {
+          "type" : "advisories",
+          "url" : "https://ant.apache.org/security.html#Apache%20Ant%20Security%20Vulnerabilities"
+        },
+        {
+          "type" : "documentation",
+          "url" : "https://ant.apache.org/manual/"
+        },
+        {
+          "type" : "distribution",
+          "url" : "https://ant.apache.org/bindownload.cgi"
+        },
+        {
+          "type" : "source-distribution",
+          "url" : "https://ant.apache.org/srcdownload.cgi"
+        },
+        {
+          "type" : "release-notes",
+          "url" : "https://github.com/apache/ant/blob/master/WHATSNEW"
+        }
+      ]
+    },
+    {
+      "type" : "library",
+      "bom-ref" : "pkg:maven/junit/junit@4.13.2?type=jar",
+      "publisher" : "JUnit",
+      "group" : "junit",
+      "name" : "junit",
+      "version" : "4.13.2",
+      "description" : "JUnit is a unit testing framework for Java, created by Erich Gamma and Kent Beck.",
+      "scope" : "optional",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "EPL-1.0",
+            "url" : "http://www.eclipse.org/legal/epl-v10.html"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/junit/junit@4.13.2?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://junit.org"
+        }
+      ]
+    },
+    {
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.hamcrest/hamcrest-core@1.3?type=jar",
+      "group" : "org.hamcrest",
+      "name" : "hamcrest-core",
+      "version" : "1.3",
+      "description" : "Core API and libraries of hamcrest matcher framework.",
+      "scope" : "optional",
+      "licenses" : [
+        {
+          "license" : {
+            "id" : "BSD-3-Clause",
+            "url" : "https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE"
+          }
+        }
+      ],
+      "purl" : "pkg:maven/org.hamcrest/hamcrest-core@1.3?type=jar",
+      "externalReferences" : [
+        {
+          "type" : "website",
+          "url" : "http://hamcrest.org/JavaHamcrest/"
+        }
+      ]
+    }
+  ],
+  "dependencies" : [
+    {
+      "ref" : "pkg:maven/org.apache.ant/ant-antunit@1.5alpha?type=jar",
+      "dependsOn" : [
+        "pkg:maven/org.apache.ant/ant@1.10.13?type=jar",
+        "pkg:maven/junit/junit@4.13.2?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/org.apache.ant/ant@1.10.13?type=jar",
+      "dependsOn" : [
+        "pkg:maven/org.apache.ant/ant-launcher@1.10.13?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/org.apache.ant/ant-launcher@1.10.13?type=jar",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "pkg:maven/junit/junit@4.13.2?type=jar",
+      "dependsOn" : [
+        "pkg:maven/org.hamcrest/hamcrest-core@1.3?type=jar"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/org.hamcrest/hamcrest-core@1.3?type=jar",
+      "dependsOn" : [ ]
+    }
+  ]
+}
