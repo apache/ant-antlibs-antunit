@@ -37,7 +37,10 @@
     <title>Apache AntUnit</title>
   </properties>
 
-  <release version="1.5" date="unreleased">
+  <release version="1.5.1" date="unreleased">
+  </release>
+
+  <release version="1.5.0" date="2026-07-19">
     <action type="add">
       Allow the AntUnit task to use a different classloader when
       running the test by means of a nested classpath or a
