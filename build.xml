@@ -29,6 +29,7 @@ under the License.
       resource="org/apache/ant/antunit/antlib.xml">
       <classpath>
         <path refid="classpath.test"/>
+        <pathelement location="${build.classes}"/>
         <pathelement location="${antlib.location}"/>
       </classpath>
     </typedef>
