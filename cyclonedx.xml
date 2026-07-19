@@ -27,9 +27,6 @@ under the License.
           type="VCS"
           url="https://gitbox.apache.org/repos/asf/ant-antlibs-antunit.git"/>
       <externalReference
-          type="BUILD_SYSTEM"
-          url="https://ci-builds.apache.org/job/Ant/job/AntUnit/"/>
-      <externalReference
           type="ISSUE_TRACKER"
           url="https://bz.apache.org/bugzilla/buglist.cgi?component=AntUnit&amp;product=Ant"/>
     </cdx:externalreferenceset>
