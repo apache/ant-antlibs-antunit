@@ -19,7 +19,9 @@ under the License.
 -->
 <project name="cyclonedx" xmlns:ivy="antlib:org.apache.ivy.ant">
 
-  <target name="define-cyclonedx-components" depends="define-core-ant-components">
+  <target name="define-cyclonedx-components"
+          depends="define-core-ant-components"
+          if="can.use.cyclonedx">
     <cdx:externalreferenceset
         id="antlib-ext-refs"
         xmlns:cdx="antlib:org.apache.ant.cyclonedx">
@@ -32,7 +34,9 @@ under the License.
     </cdx:externalreferenceset>
   </target>
 
-  <target name="create-antlib-sbom" depends="define-cyclonedx-components,antlib">
+  <target name="create-antlib-sbom"
+          depends="define-cyclonedx-components,antlib"
+          if="can.use.cyclonedx">
     <uptodate property="antlib-sbom-ok"
               targetfile="${build.lib}/${artifact.stub}.cdx.json">
       <srcresources>
@@ -102,7 +106,9 @@ under the License.
     </cdx:componentbom>
   </target>
 
-  <target name="after-dist" depends="define-cyclonedx-components">
+  <target name="after-dist"
+          depends="define-cyclonedx-components"
+          if="can.use.cyclonedx">
     <macrodef name="distributionbom" backtrace="false">
       <attribute name="version"/>
       <attribute name="archiveName"/>
@@ -222,7 +228,7 @@ under the License.
     </macrodef>
   </target>
 
-  <target name="src-sboms" depends="after-dist">
+  <target name="src-sboms" depends="after-dist" if="can.use.cyclonedx">
     <create-tarball-boms
         distdir="${src.dist.dir}"
         distbase="${dist.base}"
@@ -231,7 +237,7 @@ under the License.
         binarysource="Source Distribution"/>
   </target>
 
-  <target name="bin-sboms" depends="after-dist">
+  <target name="bin-sboms" depends="after-dist" if="can.use.cyclonedx">
     <create-tarball-boms
         distdir="${bin.dist.dir}"
         distbase="${dist.base}"
