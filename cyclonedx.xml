@@ -245,9 +245,9 @@ under the License.
         binsrc="bin"
         binarysource="Binary Distribution">
       <component>
-        <cdx:sbomLink xmlns:cdx="antlib:org.apache.ant.cyclonedx">
+        <sbomLink>
           <file file="${bin.dist.dir}/${artifact.stub}.cdx.json"/>
-        </cdx:sbomLink>
+        </sbomLink>
         <file file="${bin.dist.dir}/${artifact.stub}.jar"/>
       </component>
     </create-tarball-boms>
